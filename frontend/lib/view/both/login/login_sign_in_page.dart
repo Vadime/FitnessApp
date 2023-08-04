@@ -38,7 +38,6 @@ class SignInForm extends StatelessWidget {
             TextButton(
               onPressed: () =>
                   BlocProvider.of<LoginBloc>(context).add(LoginSignUpEvent()),
-              // TODO:
               child: Text(
                 'Sign Up',
                 style: context.textTheme.labelSmall?.copyWith(

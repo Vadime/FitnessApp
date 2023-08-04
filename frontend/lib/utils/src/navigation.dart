@@ -14,7 +14,9 @@ class Navigation {
 
   static Future<void> flush({required Widget widget}) async =>
       await App.navigatorKey.currentState!.pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => widget), (route) => false);
+        MaterialPageRoute(builder: (context) => widget),
+        (route) => false,
+      );
 
   static void pop() => App.navigatorKey.currentState!.pop();
 

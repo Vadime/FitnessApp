@@ -95,7 +95,7 @@ class LoginSendPasswordState extends LoginState {
         email: emailBloc.state.text!,
       );
       Messaging.show(message: 'Email sent!');
-      context.read<LoginBloc>().add(LoginSignInEvent());
+      if (context.mounted) context.read<LoginBloc>().add(LoginSignInEvent());
     } catch (e) {
       Messaging.show(message: e.toString());
       return;
