@@ -34,11 +34,15 @@ class LoginSignUpState extends LoginState {
     if (rPasswordBloc.state.text != passwordBloc.state.text) {
       return Messaging.show(message: "Passwords don't match!");
     }
-
-    await AuthenticationRepository.createUserWithEmailAndPassword(
-      email: emailBloc.state.text!,
-      password: passwordBloc.state.text!,
-    );
+    try {
+      await UserRepository.createUserWithEmailAndPassword(
+        email: emailBloc.state.text!,
+        password: passwordBloc.state.text!,
+      );
+    } catch (e) {
+      Messaging.show(message: e.toString());
+      return;
+    }
   }
 }
 
@@ -62,11 +66,15 @@ class LoginSignInState extends LoginState {
         message: passwordBloc.errorText,
       );
     }
-
-    await AuthenticationRepository.signInWithEmailAndPassword(
-      email: emailBloc.state.text!,
-      password: passwordBloc.state.text!,
-    );
+    try {
+      await UserRepository.signInWithEmailAndPassword(
+        email: emailBloc.state.text!,
+        password: passwordBloc.state.text!,
+      );
+    } catch (e) {
+      Messaging.show(message: e.toString());
+      return;
+    }
   }
 }
 
@@ -82,17 +90,15 @@ class LoginSendPasswordState extends LoginState {
         message: emailBloc.errorText,
       );
     }
-
-    await AuthenticationRepository.sendPasswordResetEmail(
-      email: emailBloc.state.text!,
-    ).then((value) {
+    try {
+      await UserRepository.sendPasswordResetEmail(
+        email: emailBloc.state.text!,
+      );
       Messaging.show(message: 'Email sent!');
       context.read<LoginBloc>().add(LoginSignInEvent());
-    }).catchError(
-      (e) {
-        Messaging.show(message: e.toString().split('] ').last);
-        return;
-      },
-    );
+    } catch (e) {
+      Messaging.show(message: e.toString());
+      return;
+    }
   }
 }

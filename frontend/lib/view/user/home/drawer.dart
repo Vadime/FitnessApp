@@ -1,12 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fitness_app/bloc/theme/theme_bloc.dart';
 import 'package:fitness_app/utils/utils.dart';
+import 'package:fitness_app/view/both/about_screen.dart';
 import 'package:fitness_app/view/both/home/drawer_theme_change_popup.dart';
 import 'package:fitness_app/view/both/home/profile_edit_screen.dart';
+import 'package:fitness_app/view/both/privacy_screen.dart';
+import 'package:fitness_app/view/both/terms_screen.dart';
 import 'package:fitness_app/view/user/home/drawer_accunt_delete_popup.dart';
-import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:widgets/widgets.dart';
 
 class UserDrawer extends StatelessWidget {
   const UserDrawer({super.key});
@@ -90,7 +94,51 @@ class UserDrawer extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          const HomeFooter(),
+          Footer(
+            commercialText: 'made with ❤️',
+            socials: [
+              SocialButton(
+                text: 'Twitter',
+                onPressed: () async => await UriLaunching.launch(
+                  Uri.parse('https://pornhub.com'),
+                ),
+                icon: const FaIcon(FontAwesomeIcons.twitter),
+              )
+            ],
+            buttons: [
+              FooterButton(
+                text: 'About',
+                onPressed: () => Navigation.push(widget: const AboutScreen()),
+              ),
+              FooterButton(
+                text: 'Contact',
+                onPressed: () async {
+                  await UriLaunching.launch(
+                    Uri.parse(
+                      'mailto:traumteam@email.de?subject=Angelegenheit',
+                    ),
+                  ).then((value) {
+                    if (!value) {
+                      Navigation.pop();
+                      Messaging.show(
+                        message: 'Could not launch url',
+                      );
+                    }
+                  }).catchError((e) {
+                    debugPrint(e.toString());
+                  });
+                },
+              ),
+              FooterButton(
+                text: 'Privacy',
+                onPressed: () => Navigation.push(widget: const PrivacyScreen()),
+              ),
+              FooterButton(
+                text: 'Terms',
+                onPressed: () => Navigation.push(widget: const TermsScreen()),
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -102,7 +102,7 @@ class _WorkoutInfoScreenState extends State<WorkoutInfoScreen> {
                   ),
                   itemBuilder: (context, index) {
                     bool contains = widget.workout.workoutExercises
-                        .map((e) => e.exerciceUID)
+                        .map((e) => e.exerciseUID)
                         .contains(exercises[index].id);
                     return contains
                         ? Card(

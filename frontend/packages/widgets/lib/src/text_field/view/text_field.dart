@@ -1,10 +1,8 @@
 library widgets;
 
-import 'package:fitness_app/bloc/widgets/my_text_field_bloc.dart';
-import 'package:fitness_app/bloc/widgets/my_text_field_event.dart';
-import 'package:fitness_app/bloc/widgets/my_text_field_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:widgets/src/text_field/text_field.dart';
 
 class MyTextField extends StatelessWidget {
   const MyTextField({
@@ -14,7 +12,7 @@ class MyTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
   }) : super(key: key);
 
-  final MyTextFieldBloc bloc;
+  final TextFieldBloc bloc;
   final bool autocorrect;
 
   final TextInputType keyboardType;
@@ -22,7 +20,7 @@ class MyTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var c = TextEditingController(text: bloc.state.text);
-    return BlocBuilder<MyTextFieldBloc, MyTextFieldState>(
+    return BlocBuilder<TextFieldBloc, TextFieldState>(
       bloc: bloc,
       builder: (_, state) => TextField(
         controller: c,
@@ -33,7 +31,7 @@ class MyTextField extends StatelessWidget {
           labelText: bloc.hintText,
           errorText: bloc.state.errorText,
         ),
-        onChanged: (text) => bloc.add(MyTextFieldChangedEvent(text)),
+        onChanged: (text) => bloc.add(TextFieldChangedEvent(text)),
       ),
     );
   }

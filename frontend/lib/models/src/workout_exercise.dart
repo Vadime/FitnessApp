@@ -2,32 +2,32 @@
 import 'package:equatable/equatable.dart';
 
 class WorkoutExercise extends Equatable {
-  final String exerciceUID;
-  final int recommendedSets;
-  final int recommendedReps;
-  const WorkoutExercise({
-    required this.exerciceUID,
+  final String exerciseUID;
+  int recommendedSets;
+  int recommendedReps;
+  WorkoutExercise({
+    required this.exerciseUID,
     required this.recommendedSets,
     required this.recommendedReps,
   });
 
   // to json
   Map<String, dynamic> toJson() => {
-        'exerciceUID': exerciceUID,
+        'exerciseUID': exerciseUID,
         'recommendedSets': recommendedSets,
         'recommendedReps': recommendedReps,
       };
   // from json
   factory WorkoutExercise.fromJson(Map<String, dynamic> json) =>
       WorkoutExercise(
-        exerciceUID: json['exerciceUID'],
+        exerciseUID: json['exerciseUID'],
         recommendedSets: json['recommendedSets'],
         recommendedReps: json['recommendedReps'],
       );
 
   @override
   List<Object?> get props => [
-        exerciceUID,
+        exerciseUID,
         recommendedSets,
         recommendedReps,
       ];

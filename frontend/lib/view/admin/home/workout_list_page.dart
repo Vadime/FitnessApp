@@ -28,10 +28,13 @@ class _AdminWorkoutListPageState extends State<AdminWorkoutListPage> {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (snapshot.data == null) {
+
+        List<Workout>? workouts = snapshot.data;
+
+        if (snapshot.data == null || workouts!.isEmpty) {
           return const Center(child: Text('No workouts found'));
         }
-        var workouts = snapshot.data!;
+
         return ListView.builder(
           itemCount: workouts.length,
           padding: const EdgeInsets.all(10).addSafeArea(context),

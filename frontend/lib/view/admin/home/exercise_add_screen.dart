@@ -2,14 +2,14 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:fitness_app/bloc/widgets/my_text_field_bloc.dart';
 import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/src/file_picking.dart';
+import 'package:fitness_app/utils/src/logging.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/both/home/home_screen.dart';
-import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class AdminAddExercisesScreen extends StatefulWidget {
   final Exercise? exercise;
@@ -67,8 +67,10 @@ class _AdminAddExercisesScreenState extends State<AdminAddExercisesScreen> {
                     child: SizedBox(),
                   ),
                   Container(
+                    alignment: Alignment.bottomRight,
                     height: 200,
                     margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: context.theme.cardColor,
@@ -79,42 +81,30 @@ class _AdminAddExercisesScreenState extends State<AdminAddExercisesScreen> {
                             )
                           : null,
                     ),
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: IconButton(
-                            onPressed: () async {
-                              var file = await FilePicking.pickImage();
-                              if (file == null) {
-                                Messaging.show(
-                                  message: 'Error picking image',
-                                );
-                                return;
-                              }
-                              setState(() {
-                                imageFile = file;
-                              });
-                              //
-                              Messaging.show(message: 'Upload Image');
-                            },
-                            icon: Icon(
-                              Icons.upload_rounded,
-                              color: context.theme.scaffoldBackgroundColor,
-                              size: 56,
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 20,
-                          left: 20,
-                          right: 20,
-                          child: Text(
-                            'Bro wäre echt korrekt wenn du hier ein Bild hochladen würdest',
-                            textAlign: TextAlign.center,
-                            style: context.textTheme.labelSmall,
-                          ),
-                        )
-                      ],
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor:
+                            context.theme.cardColor.withOpacity(0.8),
+                      ),
+                      onPressed: () async {
+                        var file = await FilePicking.pickImage();
+                        if (file == null) {
+                          Messaging.show(
+                            message: 'Error picking image',
+                          );
+                          return;
+                        }
+                        setState(() {
+                          imageFile = file;
+                        });
+                        //
+                        Messaging.show(message: 'Upload Image');
+                      },
+                      child: Text(
+                        'Upload Image',
+                        style: context.textTheme.labelMedium!
+                            .copyWith(color: context.theme.primaryColor),
+                      ),
                     ),
                   ),
                   Card(
@@ -351,16 +341,25 @@ class DeleteExercisePopup extends StatelessWidget {
               onPressed: () async {
                 if (widget.exercise != null) {
                   // delete image from storage
-                  await FirebaseStorage.instance
-                      .refFromURL(
-                        widget.exercise!.imageURL!,
-                      )
-                      .delete();
-                  // delete exercise from database
-                  await FirebaseFirestore.instance
-                      .collection('exercises')
-                      .doc(widget.exercise!.uid)
-                      .delete();
+                  try {
+                    await FirebaseStorage.instance
+                        .refFromURL(
+                          widget.exercise!.imageURL!,
+                        )
+                        .delete();
+                    // delete exercise from database
+                    await FirebaseFirestore.instance
+                        .collection('exercises')
+                        .doc(widget.exercise!.uid)
+                        .delete();
+                  } catch (e, s) {
+                    Logging.error(e, s);
+                    Messaging.show(
+                      message: 'Error deleting exercise: $e',
+                    );
+                    Navigation.pop();
+                    return;
+                  }
                 }
                 Navigation.flush(
                   widget: const HomeScreen(initialIndex: 1),

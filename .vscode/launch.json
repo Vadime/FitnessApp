@@ -10,8 +10,9 @@
             "type": "dart",
             "program": "frontend/lib/main.dart",
             "args": [
+              "--no-enable-impeller",
               "--dart-define-from-file",
-              "res/config/general.json"
+              "config.json"
             ]
           }
     ]

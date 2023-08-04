@@ -1,8 +1,8 @@
-import 'package:fitness_app/bloc/widgets/my_text_field_bloc.dart';
-import 'package:fitness_app/database/authentication_repository.dart';
+import 'package:fitness_app/database/user_repository.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:widgets/widgets.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';

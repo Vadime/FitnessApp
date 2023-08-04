@@ -11,12 +11,14 @@ extension on BuildContext {
 }
 
 class OnboardingScreen extends StatefulWidget {
+  final List<OnboardingPageData> data;
   final double padding;
   final Function()? onDone;
 
   const OnboardingScreen({
     this.padding = 20,
     this.onDone,
+    required this.data,
     super.key,
   });
 
@@ -36,7 +38,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
 
-  bool get lastPage => currentPage == OnboardingData.data.length - 1;
+  bool get lastPage => currentPage == widget.data.length - 1;
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +47,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           // view pages
           PageView.builder(
-            itemCount: OnboardingData.data.length,
+            itemCount: widget.data.length,
             itemBuilder: (context, index) => _OnboardingPage(
-              data: OnboardingData.data[index],
+              data: widget.data[index],
               padding: widget.padding,
             ),
             controller: pageController,
@@ -72,7 +74,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Row(
                 children: [
                   // indicator dots
-                  for (int i = 0; i < OnboardingData.data.length; i++)
+                  for (int i = 0; i < widget.data.length; i++)
                     if (i == currentPage)
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 200),

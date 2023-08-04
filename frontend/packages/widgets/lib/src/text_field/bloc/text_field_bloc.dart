@@ -1,29 +1,29 @@
 library widgets;
 
-import 'package:fitness_app/bloc/widgets/my_text_field_event.dart';
-import 'package:fitness_app/bloc/widgets/my_text_field_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-abstract class MyTextFieldBloc
-    extends Bloc<MyTextFieldEvent, MyTextFieldState> {
+part 'text_field_event.dart';
+part 'text_field_state.dart';
+
+abstract class TextFieldBloc extends Bloc<TextFieldEvent, TextFieldState> {
   final int minLength;
   final String errorText;
   final String constraints;
   final String? hintText;
   final String? initialValue;
 
-  MyTextFieldBloc({
+  TextFieldBloc({
     this.initialValue,
     this.minLength = 0,
     required this.hintText,
     required this.errorText,
     required this.constraints,
-  }) : super(MyTextFieldNormalState(initialValue)) {
-    on<MyTextFieldChangedEvent>((event, emit) {
+  }) : super(TextFieldNormalState(initialValue)) {
+    on<TextFieldChangedEvent>((event, emit) {
       if (_isValid(event.text)) {
-        emit(MyTextFieldNormalState(event.text));
+        emit(TextFieldNormalState(event.text));
       } else {
-        emit(MyTextFieldErrorState(event.text, errorText));
+        emit(TextFieldErrorState(event.text, errorText));
       }
     });
   }
@@ -72,7 +72,7 @@ abstract class MyTextFieldBloc
   }
 }
 
-class EmailBloc extends MyTextFieldBloc {
+class EmailBloc extends TextFieldBloc {
   EmailBloc({initialValue})
       : super(
           initialValue: initialValue,
@@ -82,7 +82,7 @@ class EmailBloc extends MyTextFieldBloc {
         );
 }
 
-class NameBloc extends MyTextFieldBloc {
+class NameBloc extends TextFieldBloc {
   NameBloc({initialValue})
       : super(
           initialValue: initialValue,
@@ -92,7 +92,7 @@ class NameBloc extends MyTextFieldBloc {
         );
 }
 
-class TextBloc extends MyTextFieldBloc {
+class TextBloc extends TextFieldBloc {
   TextBloc({initialValue, hint})
       : super(
           initialValue: initialValue,
@@ -102,7 +102,7 @@ class TextBloc extends MyTextFieldBloc {
         );
 }
 
-class PasswordBloc extends MyTextFieldBloc {
+class PasswordBloc extends TextFieldBloc {
   PasswordBloc({String? hintText})
       : super(
           hintText: hintText ?? 'Password',

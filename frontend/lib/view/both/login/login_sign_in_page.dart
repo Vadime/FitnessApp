@@ -2,9 +2,9 @@ library login_flow;
 
 import 'package:fitness_app/bloc/login/login_bloc.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:widgets/widgets.dart';
 
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});

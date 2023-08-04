@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness_app/bloc/widgets/my_text_field_bloc.dart';
 import 'package:fitness_app/database/user_repository.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class UserWorkoutAddScreen extends StatefulWidget {
   final Workout? workout;
@@ -30,9 +29,7 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
       initialValue: widget.workout?.description,
       hint: 'Description',
     );
-    exerciceUIDs =
-        widget.workout?.workoutExercises.map((e) => e.exerciceUID).toList() ??
-            [];
+
   }
 
   @override

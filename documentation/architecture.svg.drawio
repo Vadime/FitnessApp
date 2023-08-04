@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="8O3gJFYXngl0h--qhgRL" name="Modelle">
-        <mxGraphModel dx="308" dy="407" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="800" math="0" shadow="0">
+        <mxGraphModel dx="893" dy="610" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="800" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -76,11 +76,11 @@
                 <mxCell id="xl_VdABn302iVjI30lWS-37" value="displayName - String" style="text;strokeColor=default;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="xl_VdABn302iVjI30lWS-34" vertex="1">
                     <mxGeometry y="120" width="200" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="13" value="imageURL - String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="xl_VdABn302iVjI30lWS-34">
+                <mxCell id="13" value="imageURL - String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="xl_VdABn302iVjI30lWS-34" vertex="1">
                     <mxGeometry y="150" width="200" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="xl_VdABn302iVjI30lWS-43" value="Workout" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;strokeColor=default;" parent="1" vertex="1">
-                    <mxGeometry x="550" y="10" width="240" height="150" as="geometry"/>
+                    <mxGeometry x="550" y="10" width="240" height="180" as="geometry"/>
                 </mxCell>
                 <mxCell id="xl_VdABn302iVjI30lWS-44" value="uid - String" style="text;strokeColor=default;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="xl_VdABn302iVjI30lWS-43" vertex="1">
                     <mxGeometry y="30" width="240" height="30" as="geometry"/>
@@ -91,8 +91,11 @@
                 <mxCell id="xl_VdABn302iVjI30lWS-45" value="name - String" style="text;strokeColor=default;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="xl_VdABn302iVjI30lWS-43" vertex="1">
                     <mxGeometry y="90" width="240" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="xl_VdABn302iVjI30lWS-46" value="workoutExercises - List&amp;lt;WorkoutExercise&amp;gt;" style="text;strokeColor=default;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="xl_VdABn302iVjI30lWS-43" vertex="1">
+                <mxCell id="14" value="description - String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="xl_VdABn302iVjI30lWS-43">
                     <mxGeometry y="120" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="xl_VdABn302iVjI30lWS-46" value="workoutExercises - List&amp;lt;WorkoutExercise&amp;gt;" style="text;strokeColor=default;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" parent="xl_VdABn302iVjI30lWS-43" vertex="1">
+                    <mxGeometry y="150" width="240" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="11" style="edgeStyle=none;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="xl_VdABn302iVjI30lWS-47" target="xl_VdABn302iVjI30lWS-46" edge="1">
                     <mxGeometry relative="1" as="geometry"/>

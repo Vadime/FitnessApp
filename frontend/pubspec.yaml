@@ -1,11 +1,10 @@
 name: fitness_app
-description: A new Flutter project.
-publish_to: 'none' 
-
 version: 1.0.0+1
-
-environment:
-  sdk: '>=3.0.5 <4.0.0'
+description: Fitness App for Android and iOS
+homepage: https://github.com/Vadime/FitnessApp
+repository: https://github.com/Vadime/FitnessApp
+issue_tracker: https://github.com/Vadime/FitnessApp/issues
+documentation: https://github.com/Vadime/FitnessApp/docs
 
 dependencies:
   bloc: ^8.1.2
@@ -21,14 +20,21 @@ dependencies:
   firebase_auth: ^4.7.2
   firebase_core: ^2.15.0
   cloud_firestore: ^4.8.4
-  onboarding: 
-    path: packages/onboarding
+
   cloud_functions: ^4.3.4
   firebase_storage: ^11.2.5
   shared_preferences: ^2.2.0
   file_picker: ^5.3.3
   flutter_native_splash: ^2.3.1
   firebase_crashlytics: ^3.3.4
+
+  onboarding: 
+    path: packages/onboarding
+  widgets: 
+    path: packages/widgets
+  cloud_firestore_odm: ^1.0.0-dev.64
+  json_annotation: ^4.8.1
+  firebase_analytics: ^10.4.4
 
 dev_dependencies:
   flutter_test:
@@ -42,6 +48,28 @@ dev_dependencies:
 
   flutter_rename_app:
     path: packages/flutter_rename_app
+  build_runner: ^2.4.6
+  cloud_firestore_odm_generator: ^1.0.0-dev.58
+  json_serializable: ^6.7.1
+
+# dependency_overrides:
+
+environment:
+  sdk: '>=3.0.5 <4.0.0'
+
+# executables:
+
+platforms: [android, ios, web]
+
+publish_to: 'none' 
+
+funding: [https://paypal.me/vadimenovikau]
+
+# false_secrets: 
+
+# screenshots:
+
+topics: [fitness,workout,health,sport,app]
 
 flutter:
 
@@ -50,8 +78,6 @@ flutter:
   assets:
     - res/images/dark_background.jpg
     - res/logo/foreground.png
-    - res/config/onboarding.json
-    - res/config/general.json
 
   fonts:
     - family: Varela Round

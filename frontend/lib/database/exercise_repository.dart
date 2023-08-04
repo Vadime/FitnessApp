@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:fitness_app/models/models.dart';
+import 'package:fitness_app/utils/src/logging.dart';
 
 class ExerciseRepository {
   static firestore.CollectionReference<Map<String, dynamic>>
@@ -33,14 +34,20 @@ class ExerciseRepository {
   }
 
   static Future<File?> getExerciseImage(Exercise exercise) async {
-    Uint8List? data = await storage.FirebaseStorage.instance
-        .refFromURL(exercise.imageURL!)
-        .getData();
-    if (data == null) return null;
-    File image = File(
-      '${Directory.systemTemp.path}/${exercise.uid}',
-    )..writeAsBytesSync(data.toList());
-    return image;
+    if (exercise.imageURL == null) return null;
+    try {
+      Uint8List? data = await storage.FirebaseStorage.instance
+          .refFromURL(exercise.imageURL!)
+          .getData();
+      if (data == null) return null;
+      File image = File(
+        '${Directory.systemTemp.path}/${exercise.uid}',
+      )..writeAsBytesSync(data.toList());
+      return image;
+    } catch (e, s) {
+      Logging.error(e.toString(), s);
+      return null;
+    }
   }
 
   // Nimm alle Exercises aus einer Collection

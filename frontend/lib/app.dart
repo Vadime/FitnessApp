@@ -7,7 +7,7 @@ import 'package:fitness_app/view/both/splash_error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:onboarding/view/onboarding_screen.dart';
+import 'package:onboarding/onboarding.dart';
 
 ThemeData genTheme(
   String primaryStr,
@@ -40,10 +40,14 @@ ThemeData genTheme(
       ),
     ),
     listTileTheme: ListTileThemeData(
-      contentPadding: const EdgeInsets.fromLTRB(padding, 0, padding, 0),
+      contentPadding:
+          const EdgeInsets.fromLTRB(padding, padding / 2, padding, padding / 2),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
       ),
+      minLeadingWidth: 0,
+      horizontalTitleGap: 0,
+      minVerticalPadding: 0,
     ),
     segmentedButtonTheme: SegmentedButtonThemeData(
       style: ButtonStyle(
@@ -123,10 +127,9 @@ ThemeData genTheme(
         fontWeight: FontWeight.bold,
         color: text.withOpacity(0.6),
       ),
-      labelMedium: TextStyle(
+      labelMedium: const TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.bold,
-        color: text.withOpacity(0.6),
       ),
       labelSmall: TextStyle(fontSize: 12, color: text.withOpacity(0.6)),
     ),
@@ -248,13 +251,37 @@ class App extends StatelessWidget {
       child: BlocListener<AuthenticationBloc, AuthenticationState?>(
         listener: (context, state) {
           if (state is UserAuthenticatedState) {
-            Messaging.show(message: 'User authenticated');
             Navigation.replace(widget: const HomeScreen());
             return;
           } else if (state is UserUnauthenticatedState) {
-            Messaging.show(message: 'User deauthenticated');
             Navigation.replace(
               widget: OnboardingScreen(
+                data: const [
+                  OnboardingPageData(
+                    title: 'OB FETT',
+                    description: 'Pläne für jeden Fitnesslevel',
+                    image: 'res/logo/foreground.png',
+                    color: Colors.red,
+                  ),
+                  OnboardingPageData(
+                    title: 'DÜNN',
+                    description: 'Pläne für jeden Fitnesslevel',
+                    image: 'res/logo/foreground.png',
+                    color: Colors.blue,
+                  ),
+                  OnboardingPageData(
+                    title: 'ODER DOOF',
+                    description: 'Pläne für jeden Fitnesslevel',
+                    image: 'res/logo/foreground.png',
+                    color: Colors.green,
+                  ),
+                  OnboardingPageData(
+                    title: 'DU BIST HIER RICHTIG',
+                    description: 'Pläne für jeden Fitnesslevel',
+                    image: 'res/logo/foreground.png',
+                    color: Colors.amber,
+                  ),
+                ],
                 onDone: () => Navigation.replace(widget: const LoginScreen()),
               ),
             );

@@ -1,7 +1,8 @@
 library widgets;
 
-import 'package:fitness_app/widgets/logo.dart';
 import 'package:flutter/material.dart';
+
+import 'logo.dart';
 
 class AnimatedLogo extends StatefulWidget {
   final double size;

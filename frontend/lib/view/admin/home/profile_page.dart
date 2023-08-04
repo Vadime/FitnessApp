@@ -1,4 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_app/database/database.dart';
+import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 
@@ -10,17 +11,14 @@ class AdminProfilePage extends StatefulWidget {
 }
 
 class _AdminProfilePageState extends State<AdminProfilePage> {
-  User? currentUser;
-
   @override
   void initState() {
     super.initState();
-
-    currentUser = FirebaseAuth.instance.currentUser;
   }
 
   @override
   Widget build(BuildContext context) {
+    User? currentUser = UserRepository.currentUser;
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -35,10 +33,11 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
               CircleAvatar(
                 radius: context.shortestSide / 7,
                 backgroundColor: context.theme.cardColor,
-                foregroundImage: NetworkImage(
-                  currentUser?.photoURL ?? 
-                      'https://images.rawpixel.com/image_png_400/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvczc4LW1ja2luc2V5LTAwMDMtam9iNTgzLnBuZw.png',
-                ),
+                foregroundImage: currentUser?.imageURL == null
+                    ? null
+                    : NetworkImage(
+                        currentUser!.imageURL!,
+                      ),
                 child: Icon(
                   Icons.person_4_rounded,
                   size: context.shortestSide / (5),
@@ -52,10 +51,12 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ListTile(
+                        contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         title: const Text('Name'),
                         subtitle: Text(currentUser?.displayName ?? '-'),
                       ),
                       ListTile(
+                        contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         title: const Text('Email'),
                         subtitle: Text(currentUser?.email ?? '-'),
                       ),
@@ -68,9 +69,21 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
           const Card(
             margin: EdgeInsets.all(20),
             child: ListTile(
+              contentPadding: EdgeInsets.fromLTRB(20, 0, 20, 0),
               title: Text('Role'),
               subtitle: Text('Administrator'),
             ),
+          ),
+          const Spacer(),
+          Text(
+            'Vieleicht noch ein paar Statistiken von Nutzern\n👍',
+            textAlign: TextAlign.center,
+            style: context.textTheme.labelMedium,
+          ),
+          const Spacer(),
+          const SafeArea(
+            top: false,
+            child: SizedBox(height: 20),
           ),
         ],
       ),

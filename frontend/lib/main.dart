@@ -1,18 +1,18 @@
-import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fitness_app/app.dart';
 import 'package:fitness_app/bloc/theme/theme_bloc.dart';
 import 'package:fitness_app/database/database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:onboarding/models/onboarding_data.dart';
 
 FirebaseOptions get firebaseOptions {
   if (kIsWeb) {
@@ -78,11 +78,6 @@ void main() async {
   // make sure that the splash screen is shown until the app is ready to be shown
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  // initialize onboarding data
-  var onboardingData =
-      await rootBundle.loadString('res/config/onboarding.json');
-  OnboardingData.fromJson(json.decode(onboardingData));
-
   String? error;
   try {
     // initialize firebase app
@@ -94,12 +89,33 @@ void main() async {
     FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
     await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
 
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+
+    Isolate.current.addErrorListener(
+      RawReceivePort((pair) async {
+        final List<dynamic> errorAndStacktrace = pair;
+        await FirebaseCrashlytics.instance.recordError(
+          errorAndStacktrace.first,
+          errorAndStacktrace.last,
+          fatal: true,
+        );
+      }).sendPort,
+    );
+
+    await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+
     await FirebaseAuth.instance.currentUser?.reload();
 
     // load theme data from storage
     await ThemeBloc.getThemeFromStorage();
   } on FirebaseAuthException {
-    AuthenticationRepository.signOut();
+    UserRepository.signOutCurrentUser();
   } catch (e) {
     error = e.toString().split('] ').last;
   }

@@ -1,16 +1,19 @@
 import 'package:equatable/equatable.dart';
+import 'package:fitness_app/models/src/schedule.dart';
 import 'package:fitness_app/models/src/workout_exercise.dart';
 
 class Workout extends Equatable {
   final String uid;
   final String name;
   final String description;
+  final Schedule schedule;
   final List<WorkoutExercise> workoutExercises;
 
   const Workout({
     required this.uid,
     required this.name,
     required this.description,
+    required this.schedule,
     required this.workoutExercises,
   });
 
@@ -18,6 +21,7 @@ class Workout extends Equatable {
   Map<String, dynamic> toJson() => {
         'name': name,
         'description': description,
+        'schedule': schedule.index,
         'workoutExercises': workoutExercises.map((e) => e.toJson()).toList(),
       };
 
@@ -26,6 +30,7 @@ class Workout extends Equatable {
         uid: uid,
         name: json['name'],
         description: json['description'],
+        schedule: Schedule.values[json['schedule']],
         workoutExercises: (json['workoutExercises'] as List<dynamic>)
             .map((e) => WorkoutExercise.fromJson(e))
             .toList(),
@@ -36,6 +41,7 @@ class Workout extends Equatable {
         uid,
         name,
         description,
+        schedule,
         workoutExercises,
       ];
 }

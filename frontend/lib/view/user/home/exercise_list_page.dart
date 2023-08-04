@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:fitness_app/database/authentication_repository.dart';
+import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/user/home/exercise_info_screen.dart';
@@ -13,13 +12,13 @@ class UserExercisesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-      stream: AuthenticationRepository().getUserAsStream(),
+    return StreamBuilder<List<String>>(
+      stream: UserRepository.currentUserFavoriteExercises,
       builder: (context, userSnapshot) {
         if (!userSnapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (userSnapshot.data?.data() == null) {
+        if (userSnapshot.data == null) {
           return const Center(
             child: Text(
               'Keine Daten gefunden\nSorry bro',
@@ -27,25 +26,22 @@ class UserExercisesPage extends StatelessWidget {
             ),
           );
         }
-        List<String> favoriteExerciseIDs =
-            (userSnapshot.data?['favoriteExercises'] as List<dynamic>)
-                .map((e) => e.toString())
-                .toList();
-        return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          stream: loadExercises(),
+        List<String> favoriteExerciseIDs = userSnapshot.data!;
+        return StreamBuilder<List<Exercise>>(
+          stream: ExerciseRepository.streamExercises,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            var exercises = snapshot.data!.docs;
+            var exercises = snapshot.data!;
 
             // sort exercises with matching favoriteExerciseIDs first
             exercises.sort((a, b) {
-              if (favoriteExerciseIDs.contains(a.id) &&
-                  !favoriteExerciseIDs.contains(b.id)) {
+              if (favoriteExerciseIDs.contains(a.uid) &&
+                  !favoriteExerciseIDs.contains(b.uid)) {
                 return -1;
-              } else if (!favoriteExerciseIDs.contains(a.id) &&
-                  favoriteExerciseIDs.contains(b.id)) {
+              } else if (!favoriteExerciseIDs.contains(a.uid) &&
+                  favoriteExerciseIDs.contains(b.uid)) {
                 return 1;
               } else {
                 return 0;
@@ -55,7 +51,7 @@ class UserExercisesPage extends StatelessWidget {
             // how many with matching favoriteExerciseIDs
             int matchingFavoriteExerciseIDs = 0;
             for (var exercise in exercises) {
-              if (favoriteExerciseIDs.contains(exercise.id)) {
+              if (favoriteExerciseIDs.contains(exercise.uid)) {
                 matchingFavoriteExerciseIDs++;
               } else {
                 break;
@@ -90,12 +86,12 @@ class UserExercisesPage extends StatelessWidget {
                     StatefulBuilder(
                       builder: (context, setState) {
                         FirebaseStorage.instance
-                            .refFromURL(exercises[index]['imageURL'])
+                            .refFromURL(exercises[index].imageURL!)
                             .getData()
                             .then(
                           (value) {
                             imageFile = File(
-                              '${Directory.systemTemp.path}/${exercises[index].id}',
+                              '${Directory.systemTemp.path}/${exercises[index].uid}',
                             );
                             imageFile!.writeAsBytesSync(value!.toList());
                             setState(() {});
@@ -123,18 +119,14 @@ class UserExercisesPage extends StatelessWidget {
                                         ),
                                 ),
                                 ListTile(
-                                  title: Text(exercises[index]['name']),
-                                  subtitle:
-                                      Text(exercises[index]['description']),
+                                  title: Text(exercises[index].name),
+                                  subtitle: Text(exercises[index].description),
                                   onTap: () => Navigation.push(
                                     widget: ExerciseInfoScreen(
-                                      exercise: Exercise.fromJson(
-                                        exercises[index].id,
-                                        exercises[index].data(),
-                                      ),
+                                      exercise: exercises[index],
                                       imageFile: imageFile!,
                                       isFavorite: favoriteExerciseIDs
-                                          .contains(exercises[index].id),
+                                          .contains(exercises[index].uid),
                                     ),
                                   ),
                                 ),
@@ -153,7 +145,4 @@ class UserExercisesPage extends StatelessWidget {
       },
     );
   }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> loadExercises() =>
-      FirebaseFirestore.instance.collection('exercises').snapshots();
 }

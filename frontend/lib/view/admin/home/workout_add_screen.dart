@@ -1,22 +1,13 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness_app/bloc/widgets/my_text_field_bloc.dart';
 import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
+import 'package:fitness_app/models/src/schedule.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitness_app/view/admin/home/exercise_image.dart';
 import 'package:flutter/material.dart';
-
-class WorkoutExerciseUI {
-  final String exerciceUID;
-  final TextBloc recommendedSets;
-  final TextBloc recommendedReps;
-
-  WorkoutExerciseUI({
-    required this.exerciceUID,
-    required this.recommendedSets,
-    required this.recommendedReps,
-  });
-}
+import 'package:widgets/widgets.dart';
 
 class AdminWorkoutAddScreen extends StatefulWidget {
   final Workout? workout;
@@ -30,7 +21,13 @@ class AdminWorkoutAddScreen extends StatefulWidget {
 class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
   late NameBloc nameBloc;
   late TextBloc descriptionBloc;
-  late List<WorkoutExerciseUI> workoutExerciseUIs;
+
+  List<File?> imageFiles = [];
+
+  late Stream<List<Exercise>> exerciseStream;
+
+  late List<WorkoutExercise> selectedExercises;
+  late Set<Schedule> selectedSchedule;
 
   @override
   void initState() {
@@ -42,6 +39,20 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
       initialValue: widget.workout?.description,
       hint: 'Description',
     );
+    exerciseStream = ExerciseRepository.streamExercises;
+    ExerciseRepository.getExercises().then(
+      (exercises) {
+        for (int i = 0; i < exercises.length; i++) {
+          ExerciseRepository.getExerciseImage(exercises[i]).then(
+            (value) => setState(() => imageFiles.insert(i, value)),
+          );
+        }
+      },
+    );
+    selectedExercises = widget.workout?.workoutExercises ?? [];
+    selectedSchedule = widget.workout?.schedule != null
+        ? {widget.workout!.schedule}
+        : {Schedule.daily};
   }
 
   @override
@@ -54,8 +65,7 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
       ),
       body: Stack(
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          ListView(
             children: [
               const SafeArea(
                 bottom: false,
@@ -81,107 +91,156 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                 child: Text(
+                  'Schedule',
+                  style: context.textTheme.bodyMedium,
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                  child: SegmentedButton<Schedule>(
+                    emptySelectionAllowed: false,
+                    segments: [
+                      for (var type in Schedule.values)
+                        ButtonSegment(
+                          label: Text(type.strName),
+                          value: type,
+                        ),
+                    ],
+                    selected: selectedSchedule,
+                    onSelectionChanged: (p0) =>
+                        setState(() => selectedSchedule = p0),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: Text(
                   'Exercises',
                   style: context.textTheme.bodyMedium,
                 ),
               ),
-              Expanded(
-                child: StreamBuilder<List<Exercise>>(
-                  stream: ExerciseRepository.streamExercises,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.data == null) {
-                      return const Center(child: Text('No exercises found'));
-                    }
-                    List<Exercise> exercises = snapshot.data!;
+              StreamBuilder<List<Exercise>>(
+                stream: exerciseStream,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                    return ListView.builder(
-                      itemCount: exercises.length,
-                      padding: EdgeInsets.fromLTRB(
-                        10,
-                        0,
-                        10,
-                        context.bottomInset + 66,
-                      ),
-                      itemBuilder: (context, index) {
-                        Exercise exercise = exercises[index];
+                  List<Exercise>? exercises = snapshot.data;
 
-                        bool contains = workoutExerciseUIs
-                            .map((e) => e.exerciceUID)
-                            .contains(exercise.uid);
+                  if (exercises == null || exercises.isEmpty) {
+                    return const Center(child: Text('No exercises found'));
+                  }
 
-                        return Card(
-                          margin: const EdgeInsets.all(10),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.fromLTRB(
-                              20,
-                              contains ? 20 : 5,
-                              20,
-                              5,
-                            ),
-                            minVerticalPadding: 0,
-                            title: Text(exercise.name),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                const SizedBox(height: 5),
-                                Text(exercise.description),
-                                if (contains)
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Expanded(
-                                        child: MyTextField(
-                                          bloc: workoutExerciseUIs[index]
-                                              .recommendedSets,
-                                          keyboardType: TextInputType.number,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: MyTextField(
-                                          bloc: workoutExerciseUIs[index]
-                                              .recommendedReps,
-                                          keyboardType: TextInputType.number,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                              ],
-                            ),
-                            selected: contains,
-                            selectedTileColor: context.theme.highlightColor,
-                            trailing: Checkbox(
-                              value: contains,
-                              onChanged: (value) {
-                                if (!contains) {
-                                  var workoutExerciseUI = WorkoutExerciseUI(
-                                    exerciceUID: exercise.uid,
-                                    recommendedSets: TextBloc(
-                                      initialValue: '3',
-                                      hint: 'Sets',
-                                    ),
-                                    recommendedReps: TextBloc(
-                                      initialValue: '10',
-                                      hint: 'Reps',
-                                    ),
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const ScrollPhysics(),
+                    itemCount: exercises.length,
+                    padding: EdgeInsets.fromLTRB(
+                      10,
+                      0,
+                      10,
+                      context.bottomInset + 66,
+                    ),
+                    itemBuilder: (context, index) {
+                      Exercise exercise = exercises[index];
+                      bool contains = false;
+                      WorkoutExercise? currentExercise;
+                      for (WorkoutExercise e in selectedExercises) {
+                        if (e.exerciseUID == exercise.uid) {
+                          contains = true;
+                          currentExercise = e;
+                          break;
+                        }
+                      }
+
+                      return Card(
+                        margin: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Text(exercise.name),
+                              trailing: ExerciseImage(
+                                imageFiles: imageFiles,
+                                index: index,
+                              ),
+                              subtitle: Text(exercise.description),
+                              onTap: () {
+                                // add to list
+                                if (contains) {
+                                  selectedExercises.removeWhere(
+                                    (e) => e.exerciseUID == exercise.uid,
                                   );
-                                  workoutExerciseUIs.add(workoutExerciseUI);
                                 } else {
-                                  workoutExerciseUIs.removeWhere(
-                                    (e) => e.exerciceUID == exercise.uid,
+                                  selectedExercises.add(
+                                    currentExercise ??
+                                        WorkoutExercise(
+                                          exerciseUID: exercise.uid,
+                                          recommendedSets: 0,
+                                          recommendedReps: 0,
+                                        ),
                                   );
                                 }
                                 setState(() {});
                               },
+                              selected: contains,
+                              selectedTileColor: context.theme.highlightColor,
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
+                            if (contains) ...[
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: TextField(
+                                        controller: TextEditingController(
+                                          text: currentExercise?.recommendedSets
+                                              .toString(),
+                                        ),
+                                        onChanged: (c) =>
+                                            currentExercise?.recommendedSets =
+                                                int.tryParse(
+                                                      c.toString(),
+                                                    ) ??
+                                                    0,
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          labelText: 'Recommended Sets',
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: TextField(
+                                        controller: TextEditingController(
+                                          text: currentExercise?.recommendedReps
+                                              .toString(),
+                                        ),
+                                        onChanged: (c) =>
+                                            currentExercise?.recommendedReps =
+                                                int.tryParse(
+                                                      c.toString(),
+                                                    ) ??
+                                                    0,
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+                                          labelText: 'Recommended Reps',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ]
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
             ],
           ),
@@ -213,59 +272,32 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
         onPressed: () async {
           if (!nameBloc.isValid()) {
             return Messaging.show(
-              message: nameBloc.state.errorText!,
+              message: nameBloc.state.errorText ?? 'Invalid name',
             );
           }
           if (!descriptionBloc.isValid()) {
             return Messaging.show(
-              message: descriptionBloc.state.errorText!,
-            );
-          }
-          if (workoutExerciseUIs.isEmpty) {
-            return Messaging.show(
-              message: 'Please select at least one exercise',
+              message: descriptionBloc.state.errorText ?? 'Invalid description',
             );
           }
           try {
+            Workout workout = Workout(
+              uid: widget.workout?.uid ??
+                  WorkoutRepository.collectionReference.doc().id,
+              name: nameBloc.state.text ?? '-',
+              description: descriptionBloc.state.text ?? '-',
+              schedule: Schedule.daily,
+              workoutExercises: selectedExercises,
+            );
             if (widget.workout != null) {
               await FirebaseFirestore.instance
                   .collection('workouts')
                   .doc(widget.workout!.uid)
-                  .update({
-                'name': nameBloc.state.text,
-                'description': descriptionBloc.state.text,
-                'workoutExercises': workoutExerciseUIs.map((e) {
-                  return WorkoutExercise(
-                    exerciceUID: e.exerciceUID,
-                    recommendedSets: int.tryParse(
-                          e.recommendedSets.state.text ?? '0',
-                        ) ??
-                        0,
-                    recommendedReps: int.tryParse(
-                          e.recommendedReps.state.text ?? '0',
-                        ) ??
-                        0,
-                  ).toJson();
-                }).toList(),
-              });
+                  .update(workout.toJson());
             } else {
-              await FirebaseFirestore.instance.collection('workouts').add({
-                'name': nameBloc.state.text,
-                'description': descriptionBloc.state.text,
-                'workoutExercises': workoutExerciseUIs.map((e) {
-                  return WorkoutExercise(
-                    exerciceUID: e.exerciceUID,
-                    recommendedSets: int.tryParse(
-                          e.recommendedSets.state.text ?? '0',
-                        ) ??
-                        0,
-                    recommendedReps: int.tryParse(
-                          e.recommendedReps.state.text ?? '0',
-                        ) ??
-                        0,
-                  ).toJson();
-                }).toList(),
-              });
+              await FirebaseFirestore.instance
+                  .collection('workouts')
+                  .add(workout.toJson());
             }
             Messaging.show(
               message:
