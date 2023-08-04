@@ -1,0 +1,21 @@
+# dart run flutter_launcher_icons -f <your config file name here>
+# update colors according to res/config/colors.xml
+# update image_path according to res/logo/foreground.png
+
+flutter_launcher_icons:
+  image_path: "res/logo/foreground.png"
+
+  android: true
+  adaptive_icon_background: "#2196F3"
+  adaptive_icon_foreground: "res/logo/foreground.png"
+  min_sdk_android: 21
+
+  ios: true
+  image_path_ios: "res/logo/logo.png"
+  remove_alpha_ios: true
+
+  web:
+    generate: true
+    image_path: "res/logo/foreground.png"
+    background_color: "#f5f5f5"
+    theme_color: "#2196F3"

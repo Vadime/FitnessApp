@@ -1,0 +1,8 @@
+# dart run flutter_launcher_icons -f <your config file name here>
+
+flutter_rename_app:
+  application_name: Fitness App
+  dart_package_name: fitness_app
+  # application_id: com.android.bank
+  # bundle_id: com.ios.bank
+  # android_package_name: com.bank.app
