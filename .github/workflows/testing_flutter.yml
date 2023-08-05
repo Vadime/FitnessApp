@@ -21,6 +21,9 @@ jobs:
           channel: stable
           version: 3.0.2
 
+      - name: Change directory to flutter project
+        run: cd ./frontend
+
       - name: Install dependencies
         run: flutter pub get
 
