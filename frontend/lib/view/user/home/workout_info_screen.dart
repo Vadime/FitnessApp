@@ -97,9 +97,7 @@ class _WorkoutInfoScreenState extends State<WorkoutInfoScreen> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: ElevatedButton(
-            onPressed: () {
-              
-            },
+            onPressed: () {},
             child: const Text('Start Workout'),
           ),
         ),

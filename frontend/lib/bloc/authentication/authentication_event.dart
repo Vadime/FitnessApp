@@ -6,7 +6,6 @@ abstract class _AuthenticationEvent extends Equatable {
 
 // go to onboarding screen
 class _UserAuthenticatedEvent extends _AuthenticationEvent {
-
   const _UserAuthenticatedEvent();
 
   @override

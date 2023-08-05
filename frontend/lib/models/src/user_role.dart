@@ -7,8 +7,6 @@ extension UserRoleExtension on UserRole {
         return 'User';
     }
   }
-
-
 }
 
 enum UserRole {

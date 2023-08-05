@@ -59,7 +59,6 @@ class UserWorkoutsPage extends StatelessWidget {
                         workout: workouts[index],
                         isAlreadyCopied: true,
                       ),
-                  
                     ),
                   ),
                 );
