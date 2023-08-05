@@ -13,13 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Change to a directory with pubspec.yaml
-        run: cd frontend
-
       - uses: dart-lang/setup-dart@v1
 
       - name: Install dependencies
-        run: dart pub get
+        run: cd frontend && dart pub get
 
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
