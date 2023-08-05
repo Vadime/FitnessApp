@@ -9,6 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - uses: actions/checkout@v2
@@ -21,12 +25,7 @@ jobs:
           channel: stable
           version: 3.0.2
           cache: true
-
-      - name: Debugging
-        run: ls -la
-
-      - name: Change directory to flutter project
-        run: cd frontend
+          cache-key: flutter-workflow-cache
 
       - name: Debugging
         run: ls -la
