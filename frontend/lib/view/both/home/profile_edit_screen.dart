@@ -78,13 +78,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: Card(
                   margin: const EdgeInsets.all(20),
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         MyTextField(
                           bloc: nameBloc,
                         ),
+                        const SizedBox(height: 10),
                         MyTextField(
                           bloc: emailBloc,
                         ),

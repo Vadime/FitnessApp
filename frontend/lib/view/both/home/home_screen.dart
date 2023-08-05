@@ -3,13 +3,13 @@ import 'package:fitness_app/bloc/home/home_item.dart';
 import 'package:fitness_app/database/user_repository.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/admin/home/drawer.dart';
 import 'package:fitness_app/view/admin/home/exercise_add_screen.dart';
 import 'package:fitness_app/view/admin/home/exercise_list_page.dart';
 import 'package:fitness_app/view/admin/home/profile_page.dart';
 import 'package:fitness_app/view/admin/home/workout_add_screen.dart';
 import 'package:fitness_app/view/admin/home/workout_list_page.dart';
-import 'package:fitness_app/view/user/home/drawer.dart';
+import 'package:fitness_app/view/both/home/profile_edit_screen.dart';
+import 'package:fitness_app/view/both/footer.dart';
 import 'package:fitness_app/view/user/home/exercise_list_page.dart';
 import 'package:fitness_app/view/user/home/profile_page.dart';
 import 'package:fitness_app/view/user/home/workout_add_screen.dart';
@@ -49,10 +49,16 @@ class HomeScreen extends StatelessWidget {
                 tooltip: 'Add Exercise',
               ),
             ),
-            const HomeItem(
+            HomeItem(
               title: 'Profile',
               icon: Icons.person_rounded,
-              page: AdminProfilePage(),
+              page: const AdminProfilePage(),
+              action: IconButton(
+                onPressed: () =>
+                    Navigation.push(widget: const EditProfileScreen()),
+                icon: const Icon(Icons.edit_rounded),
+                tooltip: 'Edit Profile',
+              ),
             ),
           ],
           UserRole.user: [
@@ -72,10 +78,16 @@ class HomeScreen extends StatelessWidget {
               icon: Icons.list_rounded,
               page: UserExercisesPage(),
             ),
-            const HomeItem(
+            HomeItem(
               title: 'Profile',
               icon: Icons.person_rounded,
-              page: UserProfilePage(),
+              page: const UserProfilePage(),
+              action: IconButton(
+                onPressed: () =>
+                    Navigation.push(widget: const EditProfileScreen()),
+                icon: const Icon(Icons.edit_rounded),
+                tooltip: 'Edit Profile',
+              ),
             ),
           ],
         };
@@ -90,6 +102,12 @@ class HomeScreen extends StatelessWidget {
             extendBody: true,
             extendBodyBehindAppBar: true,
             appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => Navigation.pushPopup(
+                  widget: const HomeFooter(),
+                ),
+              ),
               title: Text(
                 state.title,
               ),
@@ -97,9 +115,6 @@ class HomeScreen extends StatelessWidget {
                 state.action ?? const SizedBox(),
               ],
             ),
-            drawer: UserRepository.currentUserRole == UserRole.admin
-                ? const AdminDrawer()
-                : const UserDrawer(),
             body: state.page,
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: state.index,

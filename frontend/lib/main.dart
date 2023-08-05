@@ -93,7 +93,7 @@ void main() async {
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
     PlatformDispatcher.instance.onError = (error, stack) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: false);
       return true;
     };
 
@@ -103,7 +103,7 @@ void main() async {
         await FirebaseCrashlytics.instance.recordError(
           errorAndStacktrace.first,
           errorAndStacktrace.last,
-          fatal: true,
+          fatal: false,
         );
       }).sendPort,
     );

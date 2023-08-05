@@ -41,17 +41,20 @@ class SignUpPage extends StatelessWidget {
           const Spacer(),
           Card(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+
               child: Column(
                 children: [
                   MyTextField(
                     bloc: (context.read<LoginBloc>().state as LoginSignUpState)
                         .emailBloc,
                   ),
+                  const SizedBox(height: 10),
                   MyTextField(
                     bloc: (context.read<LoginBloc>().state as LoginSignUpState)
                         .passwordBloc,
                   ),
+                  const SizedBox(height: 10),
                   MyTextField(
                     bloc: (context.read<LoginBloc>().state as LoginSignUpState)
                         .rPasswordBloc,

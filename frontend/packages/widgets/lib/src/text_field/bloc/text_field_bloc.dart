@@ -11,6 +11,7 @@ abstract class TextFieldBloc extends Bloc<TextFieldEvent, TextFieldState> {
   final String constraints;
   final String? hintText;
   final String? initialValue;
+  final bool obscure;
 
   TextFieldBloc({
     this.initialValue,
@@ -18,25 +19,34 @@ abstract class TextFieldBloc extends Bloc<TextFieldEvent, TextFieldState> {
     required this.hintText,
     required this.errorText,
     required this.constraints,
-  }) : super(TextFieldNormalState(initialValue)) {
-    on<TextFieldChangedEvent>((event, emit) {
-      if (_isValid(event.text)) {
-        emit(TextFieldNormalState(event.text));
-      } else {
-        emit(TextFieldErrorState(event.text, errorText));
-      }
+    this.obscure = false,
+  }) : super(
+          TextFieldState(
+            text: initialValue,
+            errorText: null,
+            hintText: hintText,
+            obscure: obscure,
+            autocorrect: false,
+            visible: false,
+          ),
+        ) {
+    on<TextFieldEvent>((event, emit) {
+      emit(
+        TextFieldState(
+          text: event.text,
+          errorText: _isValid(event.text) ? null : errorText,
+          hintText: hintText,
+          obscure: obscure,
+          autocorrect: false,
+          visible: event.visible,
+        ),
+      );
     });
   }
 
   bool isValid() {
     return _isValid(state.text ?? '');
   }
-
-  // @override
-  // void onChange(Change<MyTextFieldState> change) {
-  //   super.onChange(change);
-  //   print(change.nextState.text);
-  // }
 
   bool _isValid(String data) {
     // check for uppercase
@@ -107,6 +117,7 @@ class PasswordBloc extends TextFieldBloc {
       : super(
           hintText: hintText ?? 'Password',
           minLength: 6,
+          obscure: true,
           errorText: 'Password invalid',
           constraints: r'[0-9a-zA-Z]{6}',
         );

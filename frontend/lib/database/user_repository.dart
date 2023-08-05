@@ -176,8 +176,38 @@ class UserRepository {
 
   static Stream<List<String>> get currentUserFavoriteExercises =>
       _storeInstance.collection('users').doc(currentUserUID).snapshots().map(
-            (event) => (event.data()?['favoriteExercises'] as List<dynamic>)
-                .map((e) => e.toString())
-                .toList(),
+            (event) =>
+                (event.data()?['favoriteExercises'] as List<dynamic>?)
+                    ?.map((e) => e.toString())
+                    .toList() ??
+                [],
           );
+
+  static Stream<List<Workout>> get currentUserCustomWorkouts => firestore
+      .FirebaseFirestore.instance
+      .collection('users')
+      .doc(UserRepository.currentUserUID)
+      .collection('workouts')
+      .snapshots()
+      .map(
+        (event) =>
+            event.docs.map((e) => Workout.fromJson(e.id, e.data())).toList(),
+      );
+
+  static Future<void> updateCurrentUserPassword(
+    String oldPassword,
+    String newPassword,
+  ) async {
+    try {
+      await _authInstance.currentUser?.reauthenticateWithCredential(
+        auth.EmailAuthProvider.credential(
+          email: currentUserEmail ?? '',
+          password: oldPassword,
+        ),
+      );
+      await _authInstance.currentUser?.updatePassword(newPassword);
+    } catch (e) {
+      throw e.toString().split('] ').last;
+    }
+  }
 }

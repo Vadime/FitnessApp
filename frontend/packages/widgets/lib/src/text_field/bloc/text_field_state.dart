@@ -1,15 +1,21 @@
 part of 'text_field_bloc.dart';
 
-abstract class TextFieldState {
-  final String? errorText;
+class TextFieldState {
   final String? text;
-  TextFieldState(this.text, {this.errorText});
-}
+  final String? errorText;
+  final String? hintText;
 
-class TextFieldNormalState extends TextFieldState {
-  TextFieldNormalState(text) : super(text);
-}
+  final bool obscure;
+  final bool autocorrect;
 
-class TextFieldErrorState extends TextFieldState {
-  TextFieldErrorState(text, errorText) : super(text, errorText: errorText);
+  bool visible;
+
+  TextFieldState({
+    required this.text,
+    required this.errorText,
+    required this.hintText,
+    required this.obscure,
+    required this.autocorrect,
+    this.visible = false,
+  });
 }

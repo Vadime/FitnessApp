@@ -1,144 +1,181 @@
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/utils.dart';
+import 'package:fitness_app/view/admin/home/exercise_image.dart';
 import 'package:fitness_app/view/user/home/exercise_info_screen.dart';
 import 'package:flutter/material.dart';
 
-class UserExercisesPage extends StatelessWidget {
+class UserExercisesPage extends StatefulWidget {
   const UserExercisesPage({super.key});
+
+  @override
+  State<UserExercisesPage> createState() => _UserExercisesPageState();
+}
+
+class _UserExercisesPageState extends State<UserExercisesPage> {
+  List<File?> imageFiles = [];
+
+  late Stream<List<Exercise>> exerciseStream;
+  late Stream<List<String>> favoriteStream;
+
+  @override
+  void initState() {
+    super.initState();
+    exerciseStream = ExerciseRepository.streamExercises;
+    favoriteStream = UserRepository.currentUserFavoriteExercises;
+    ExerciseRepository.getExercises().then(
+      (exercises) {
+        for (int i = 0; i < exercises.length; i++) {
+          ExerciseRepository.getExerciseImage(exercises[i]).then(
+            (value) => setState(() => imageFiles.insert(i, value)),
+          );
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<String>>(
-      stream: UserRepository.currentUserFavoriteExercises,
-      builder: (context, userSnapshot) {
-        if (!userSnapshot.hasData) {
+      stream: favoriteStream,
+      builder: (context, favoritesSnapshot) {
+        if (!favoritesSnapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (userSnapshot.data == null) {
-          return const Center(
-            child: Text(
-              'Keine Daten gefunden\nSorry bro',
-              textAlign: TextAlign.center,
-            ),
-          );
-        }
-        List<String> favoriteExerciseIDs = userSnapshot.data!;
         return StreamBuilder<List<Exercise>>(
-          stream: ExerciseRepository.streamExercises,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+          stream: exerciseStream,
+          builder: (context, exercisesSnapshot) {
+            if (!exercisesSnapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            var exercises = snapshot.data!;
 
-            // sort exercises with matching favoriteExerciseIDs first
-            exercises.sort((a, b) {
-              if (favoriteExerciseIDs.contains(a.uid) &&
-                  !favoriteExerciseIDs.contains(b.uid)) {
-                return -1;
-              } else if (!favoriteExerciseIDs.contains(a.uid) &&
-                  favoriteExerciseIDs.contains(b.uid)) {
-                return 1;
-              } else {
-                return 0;
-              }
-            });
+            List<Exercise>? allExercises = exercisesSnapshot.data;
+            List<String>? favoriteUIDs = favoritesSnapshot.data;
 
-            // how many with matching favoriteExerciseIDs
-            int matchingFavoriteExerciseIDs = 0;
-            for (var exercise in exercises) {
-              if (favoriteExerciseIDs.contains(exercise.uid)) {
-                matchingFavoriteExerciseIDs++;
-              } else {
-                break;
-              }
+            if (allExercises == null || allExercises.isEmpty) {
+              return const Center(child: Text('No exercises found'));
             }
 
-            return ListView.builder(
-              itemCount: exercises.length,
-              padding: const EdgeInsets.all(10).addSafeArea(context),
-              itemBuilder: (context, index) {
-                File? imageFile;
+            List<Exercise> favoriteExercises = [];
+            List<File?> favoriteImages = [];
+            List<Exercise> otherExercises = [];
+            List<File?> otherImages = [];
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (index == 0)
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          'Favorites',
-                          style: context.textTheme.bodyMedium,
+            for (int i = 0; i < allExercises.length; i++) {
+              Exercise e = allExercises[i];
+              bool contains = false;
+              if (favoriteUIDs != null) {
+                for (String s in favoriteUIDs) {
+                  if (s == e.uid) {
+                    favoriteExercises.add(e);
+                    favoriteImages.add(imageFiles.elementAtOrNull(i));
+                    contains = true;
+                    break;
+                  }
+                }
+              }
+              if (!contains) otherExercises.add(e);
+              if (!contains) otherImages.add(imageFiles.elementAtOrNull(i));
+            }
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SafeArea(
+                  bottom: false,
+                  child: SizedBox(),
+                ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  child: Text('Favorites'),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const ScrollPhysics(),
+                  itemCount: favoriteExercises.length,
+                  padding: const EdgeInsets.all(10),
+                  itemBuilder: (context, index) {
+                    Exercise exercise = favoriteExercises[index];
+
+                    return Card(
+                      margin: const EdgeInsets.all(10),
+                      child: ListTile(
+                        title: Text(exercise.name),
+                        trailing: ExerciseImage(
+                          imageFiles: favoriteImages,
+                          index: index,
                         ),
-                      ),
-                    if (index == matchingFavoriteExerciseIDs)
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          'All Exercises',
-                          style: context.textTheme.bodyMedium,
+                        subtitle: Text(
+                          exercise.description,
                         ),
-                      ),
-                    StatefulBuilder(
-                      builder: (context, setState) {
-                        FirebaseStorage.instance
-                            .refFromURL(exercises[index].imageURL!)
-                            .getData()
-                            .then(
-                          (value) {
-                            imageFile = File(
-                              '${Directory.systemTemp.path}/${exercises[index].uid}',
-                            );
-                            imageFile!.writeAsBytesSync(value!.toList());
-                            setState(() {});
-                          },
-                        );
-                        return Card(
-                          margin: const EdgeInsets.all(10),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                  right: 0,
-                                  top: 0,
-                                  bottom: 0,
-                                  child: imageFile == null
-                                      ? Container(
-                                          color: context.theme.highlightColor,
-                                          width: 100,
-                                        )
-                                      : Image.file(
-                                          imageFile!,
-                                          width: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                ),
-                                ListTile(
-                                  title: Text(exercises[index].name),
-                                  subtitle: Text(exercises[index].description),
-                                  onTap: () => Navigation.push(
-                                    widget: ExerciseInfoScreen(
-                                      exercise: exercises[index],
-                                      imageFile: imageFile!,
-                                      isFavorite: favoriteExerciseIDs
-                                          .contains(exercises[index].uid),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                        onTap: () => Navigation.push(
+                          widget: ExerciseInfoScreen(
+                            exercise: exercise,
+                            imageFile: favoriteImages[index]!,
+                            isFavorite: true,
                           ),
-                        );
-                      },
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                if (favoriteExercises.isEmpty)
+                  SizedBox(
+                    height: 100,
+                    child: Center(
+                      child: Text(
+                        'No favorites yet',
+                        style: context.textTheme.labelSmall,
+                      ),
                     ),
-                  ],
-                );
-              },
+                  ),
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                  child: Text('Other'),
+                ),
+                if (otherExercises.isEmpty)
+                  SizedBox(
+                    height: 100,
+                    child: Center(
+                      child: Text(
+                        'No other exercises',
+                        style: context.textTheme.labelSmall,
+                      ),
+                    ),
+                  ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const ScrollPhysics(),
+                  itemCount: otherExercises.length,
+                  padding: const EdgeInsets.all(10),
+                  itemBuilder: (context, index) {
+                    Exercise exercise = otherExercises[index];
+
+                    return Card(
+                      margin: const EdgeInsets.all(10),
+                      child: ListTile(
+                        title: Text(exercise.name),
+                        trailing: ExerciseImage(
+                          imageFiles: otherImages,
+                          index: index,
+                        ),
+                        subtitle: Text(
+                          exercise.description,
+                        ),
+                        onTap: () => Navigation.push(
+                          widget: ExerciseInfoScreen(
+                            exercise: exercise,
+                            imageFile: otherImages[index]!,
+                            isFavorite: false,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             );
           },
         );

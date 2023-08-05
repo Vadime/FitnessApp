@@ -110,13 +110,14 @@ class _AdminAddExercisesScreenState extends State<AdminAddExercisesScreen> {
                   Card(
                     margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           MyTextField(
                             bloc: nameBloc,
                           ),
+                          const SizedBox(height: 10),
                           MyTextField(
                             bloc: descriptionBloc,
                           ),

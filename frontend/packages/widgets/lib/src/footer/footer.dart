@@ -40,9 +40,8 @@ class Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: context.theme.cardColor,
-      padding: EdgeInsets.fromLTRB(padding, padding, padding, 0),
+    return Padding(
+      padding: EdgeInsets.fromLTRB(padding, 20, padding, 0),
       child: SafeArea(
         top: false,
         child: Column(

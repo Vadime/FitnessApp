@@ -2,16 +2,12 @@ library login_flow;
 
 import 'package:fitness_app/bloc/login/login_bloc.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/both/about_screen.dart';
+import 'package:fitness_app/view/both/footer.dart';
 import 'package:fitness_app/view/both/login/login_send_password_page.dart';
 import 'package:fitness_app/view/both/login/login_sign_in_page.dart';
 import 'package:fitness_app/view/both/login/login_sign_up_page.dart';
-import 'package:fitness_app/view/both/privacy_screen.dart';
-import 'package:fitness_app/view/both/terms_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:widgets/widgets.dart';
 
 extension on PageController {
   void goToPage(int page) => animateToPage(
@@ -49,54 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
           IconButton(
             icon: const Icon(Icons.menu_rounded),
             onPressed: () => Navigation.pushPopup(
-              widget: Footer(
-                commercialText: 'made with ❤️',
-                socials: [
-                  SocialButton(
-                    text: 'Twitter',
-                    onPressed: () async => await UriLaunching.launch(
-                      Uri.parse('https://pornhub.com'),
-                    ),
-                    icon: const FaIcon(FontAwesomeIcons.twitter),
-                  )
-                ],
-                buttons: [
-                  FooterButton(
-                    text: 'About',
-                    onPressed: () =>
-                        Navigation.push(widget: const AboutScreen()),
-                  ),
-                  FooterButton(
-                    text: 'Contact',
-                    onPressed: () async {
-                      await UriLaunching.launch(
-                        Uri.parse(
-                          'mailto:traumteam@email.de?subject=Angelegenheit',
-                        ),
-                      ).then((value) {
-                        if (!value) {
-                          Navigation.pop();
-                          Messaging.show(
-                            message: 'Could not launch url',
-                          );
-                        }
-                      }).catchError((e) {
-                        debugPrint(e.toString());
-                      });
-                    },
-                  ),
-                  FooterButton(
-                    text: 'Privacy',
-                    onPressed: () =>
-                        Navigation.push(widget: const PrivacyScreen()),
-                  ),
-                  FooterButton(
-                    text: 'Terms',
-                    onPressed: () =>
-                        Navigation.push(widget: const TermsScreen()),
-                  ),
-                ],
-              ),
+              widget: const HomeFooter(),
             ),
           ),
         ],

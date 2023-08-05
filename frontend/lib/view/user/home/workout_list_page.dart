@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness_app/database/user_repository.dart';
+import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
+import 'package:fitness_app/models/src/schedule.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/user/home/workout_add_screen.dart';
 import 'package:fitness_app/view/user/home/workout_info_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -24,13 +23,25 @@ class UserWorkoutsPage extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
           child: Text('Your Workouts', style: context.textTheme.bodyMedium),
         ),
-        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          stream: loadUserWorkouts(),
+        StreamBuilder<List<Workout>>(
+          stream: UserRepository.currentUserCustomWorkouts,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            var workouts = snapshot.data!.docs;
+            var workouts = snapshot.data!;
+            if (workouts.isEmpty) {
+              return SizedBox(
+                height: 100,
+                child: Center(
+                  child: Text(
+                    'No favorites yet',
+                    style: context.textTheme.labelSmall,
+                  ),
+                ),
+              );
+            }
+
             return ListView.builder(
               itemCount: workouts.length,
               shrinkWrap: true,
@@ -40,15 +51,15 @@ class UserWorkoutsPage extends StatelessWidget {
                 return Card(
                   margin: const EdgeInsets.all(10),
                   child: ListTile(
-                    title: Text(workouts[index]['name']),
-                    subtitle: Text(workouts[index]['description']),
+                    title: Text(workouts[index].name),
+                    subtitle: Text(workouts[index].description),
+                    trailing: Text(workouts[index].schedule.strName),
                     onTap: () => Navigation.push(
-                      widget: UserWorkoutAddScreen(
-                        workout: Workout.fromJson(
-                          workouts[index].id,
-                          workouts[index].data(),
-                        ),
+                      widget: WorkoutInfoScreen(
+                        workout: workouts[index],
+                        isAlreadyCopied: true,
                       ),
+                  
                     ),
                   ),
                 );
@@ -60,13 +71,13 @@ class UserWorkoutsPage extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
           child: Text('All Workouts', style: context.textTheme.bodyMedium),
         ),
-        StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-          stream: loadWorkouts(),
+        StreamBuilder<List<Workout>>(
+          stream: WorkoutRepository.streamWorkouts,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            var workouts = snapshot.data!.docs;
+            var workouts = snapshot.data!;
             return ListView.builder(
               physics: const ScrollPhysics(),
               itemCount: workouts.length,
@@ -76,14 +87,12 @@ class UserWorkoutsPage extends StatelessWidget {
                 return Card(
                   margin: const EdgeInsets.all(10),
                   child: ListTile(
-                    title: Text(workouts[index]['name']),
-                    subtitle: Text(workouts[index]['description']),
+                    title: Text(workouts[index].name),
+                    subtitle: Text(workouts[index].description),
+                    trailing: Text(workouts[index].schedule.strName),
                     onTap: () => Navigation.push(
                       widget: WorkoutInfoScreen(
-                        workout: Workout.fromJson(
-                          workouts[index].id,
-                          workouts[index].data(),
-                        ),
+                        workout: workouts[index],
                       ),
                     ),
                   ),
@@ -95,15 +104,4 @@ class UserWorkoutsPage extends StatelessWidget {
       ],
     );
   }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> loadUserWorkouts() =>
-      FirebaseFirestore.instance
-          .collection('users')
-          .doc(UserRepository.currentUserUID)
-          .collection('workouts')
-          .snapshots();
-
-  // Nimm alle Workouts aus einer Collection
-  Stream<QuerySnapshot<Map<String, dynamic>>> loadWorkouts() =>
-      FirebaseFirestore.instance.collection('workouts').snapshots();
 }

@@ -139,6 +139,11 @@ ThemeData genTheme(
       brightness: brightness,
       seedColor: primary,
     ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: background,
+      modalBackgroundColor: background,
+      surfaceTintColor: background,
+    ),
     useMaterial3: true,
     scaffoldBackgroundColor: background,
     appBarTheme: AppBarTheme(
@@ -223,7 +228,7 @@ class App extends StatelessWidget {
         theme: genTheme(
           const String.fromEnvironment('primary'),
           const String.fromEnvironment('backgroundLight'),
-          const String.fromEnvironment('neutralLight'),
+          const String.fromEnvironment('cardLight'),
           const String.fromEnvironment('neutralLight'),
           const String.fromEnvironment('backgroundDark'),
           Brightness.light,

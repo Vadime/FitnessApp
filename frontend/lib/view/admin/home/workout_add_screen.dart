@@ -74,13 +74,14 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
               Card(
                 margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       MyTextField(
                         bloc: nameBloc,
                       ),
+                      const SizedBox(height: 10),
                       MyTextField(
                         bloc: descriptionBloc,
                       ),
@@ -286,7 +287,7 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
                   WorkoutRepository.collectionReference.doc().id,
               name: nameBloc.state.text ?? '-',
               description: descriptionBloc.state.text ?? '-',
-              schedule: Schedule.daily,
+              schedule: selectedSchedule.first,
               workoutExercises: selectedExercises,
             );
             if (widget.workout != null) {

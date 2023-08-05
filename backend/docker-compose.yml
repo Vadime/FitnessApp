@@ -1,0 +1,16 @@
+version: '3'
+services:
+  firebase:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/serviceAccountKey.json
+    volumes:
+      - .:/app
+    ports:
+      - "9099:9099" # Firebase Authentication emulator
+      - "5001:5001" # Firebase Functions emulator
+      - "8080:8080" # Firebase Hosting emulator
+      - "9199:9199" # Firebase Firestore emulator
+      - "4000:4000" # Firebase UI emulator

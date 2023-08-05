@@ -51,7 +51,8 @@ class SignInForm extends StatelessWidget {
         const Spacer(),
         Card(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+
             child: Column(
               children: [
                 MyTextField(
@@ -59,6 +60,7 @@ class SignInForm extends StatelessWidget {
                           as LoginSignInState)
                       .emailBloc,
                 ),
+                const SizedBox(height: 10),
                 MyTextField(
                   bloc: (BlocProvider.of<LoginBloc>(context).state
                           as LoginSignInState)

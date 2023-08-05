@@ -8,9 +8,8 @@ class ChangeThemePopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Padding(
       padding: const EdgeInsets.all(20),
-      color: context.theme.scaffoldBackgroundColor,
       child: SafeArea(
         top: false,
         child: Column(

@@ -1,12 +1,22 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness_app/database/user_repository.dart';
+import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
+import 'package:fitness_app/models/src/schedule.dart';
 import 'package:fitness_app/utils/utils.dart';
+import 'package:fitness_app/view/admin/home/exercise_image.dart';
+import 'package:fitness_app/view/user/home/workout_add_screen.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutInfoScreen extends StatefulWidget {
   final Workout workout;
-  const WorkoutInfoScreen({required this.workout, super.key});
+  final bool isAlreadyCopied;
+  const WorkoutInfoScreen({
+    required this.workout,
+    this.isAlreadyCopied = false,
+    super.key,
+  });
 
   @override
   State<WorkoutInfoScreen> createState() => _WorkoutInfoScreenState();
@@ -14,6 +24,33 @@ class WorkoutInfoScreen extends StatefulWidget {
 
 class _WorkoutInfoScreenState extends State<WorkoutInfoScreen> {
   bool copied = false;
+  List<Exercise> exercises = [];
+  List<File?> images = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadExercises();
+  }
+
+  loadExercises() async {
+    for (WorkoutExercise w in widget.workout.workoutExercises) {
+      var doc = await FirebaseFirestore.instance
+          .collection('exercises')
+          .doc(w.exerciseUID)
+          .get();
+      if (doc.data() == null) return;
+      Exercise exercise = Exercise.fromJson(
+        doc.id,
+        doc.data()!,
+      );
+      exercises.add(exercise);
+      setState(() {});
+      var image = await ExerciseRepository.getExerciseImage(exercise);
+      images.add(image);
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,31 +60,49 @@ class _WorkoutInfoScreenState extends State<WorkoutInfoScreen> {
       appBar: AppBar(
         title: Text(widget.workout.name),
         actions: [
-          IconButton(
-            onPressed: () async {
-              // copy workout to users workouts
-              setState(() {
-                copied = true;
-              });
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(UserRepository.currentUserUID)
-                  .collection('workouts')
-                  .add({
-                'name': 'My ${widget.workout.name}',
-                'description': widget.workout.description,
-                'exerciceUIDs': widget.workout.workoutExercises
-                    .map((e) => e.toJson())
-                    .toList(),
-              });
+          if (widget.isAlreadyCopied)
+            IconButton(
+              onPressed: () async {
+                Navigation.push(
+                  widget: UserWorkoutAddScreen(
+                    workout: widget.workout,
+                  ),
+                );
+              },
+              icon: const Icon(Icons.edit_rounded),
+            )
+          else
+            IconButton(
+              onPressed: () async {
+                // copy workout to users workouts
+                setState(() {
+                  copied = true;
+                });
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(UserRepository.currentUserUID)
+                    .collection('workouts')
+                    .add(widget.workout.toJson());
 
-              Navigation.pop();
-            },
-            icon: !copied
-                ? const Icon(Icons.copy_rounded)
-                : const Icon(Icons.check_rounded, color: Colors.green),
-          )
+                Navigation.pop();
+              },
+              icon: !copied
+                  ? const Icon(Icons.copy_rounded)
+                  : const Icon(Icons.check_rounded, color: Colors.green),
+            )
         ],
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          child: ElevatedButton(
+            onPressed: () {
+              
+            },
+            child: const Text('Start Workout'),
+          ),
+        ),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -75,6 +130,21 @@ class _WorkoutInfoScreenState extends State<WorkoutInfoScreen> {
                   ),
                 ],
               ),
+              TableRow(
+                decoration: BoxDecoration(
+                  color: context.theme.cardColor.withOpacity(0.5),
+                ),
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text('Schedule'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Text(widget.workout.schedule.strName),
+                  ),
+                ],
+              ),
             ],
           ),
 
@@ -83,46 +153,85 @@ class _WorkoutInfoScreenState extends State<WorkoutInfoScreen> {
             child: Text('Exercises'),
           ),
           // workout exercises
-          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: loadExercises(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              var exercises = snapshot.data!.docs;
 
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: exercises.length,
-                  padding: const EdgeInsets.fromLTRB(
-                    10,
-                    0,
-                    10,
-                    0,
-                  ),
-                  itemBuilder: (context, index) {
-                    bool contains = widget.workout.workoutExercises
-                        .map((e) => e.exerciseUID)
-                        .contains(exercises[index].id);
-                    return contains
-                        ? Card(
-                            margin: const EdgeInsets.all(10),
-                            child: ListTile(
-                              title: Text(exercises[index]['name']),
-                              subtitle: Text(exercises[index]['description']),
+          if (exercises.isEmpty)
+            const Center(child: CircularProgressIndicator.adaptive())
+          else
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              itemCount: exercises.length,
+              padding: const EdgeInsets.fromLTRB(
+                10,
+                0,
+                10,
+                0,
+              ),
+              itemBuilder: (context, index) {
+                return Card(
+                  margin: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(exercises[index].name),
+                        subtitle: Text(exercises[index].description),
+                        tileColor: context.theme.highlightColor,
+                        trailing: ExerciseImage(
+                          imageFiles: images,
+                          index: index,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Table(
+                          columnWidths: const {
+                            0: FlexColumnWidth(6),
+                          },
+                          children: [
+                            TableRow(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Text('Sets'),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    widget.workout.workoutExercises[index]
+                                        .recommendedSets
+                                        .toString(),
+                                  ),
+                                ),
+                              ],
                             ),
-                          )
-                        : const SizedBox.shrink();
-                  },
-                ),
-              );
-            },
-          ),
+                            TableRow(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Text('Reps'),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    widget.workout.workoutExercises[index]
+                                        .recommendedReps
+                                        .toString(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
         ],
       ),
     );
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> loadExercises() =>
-      FirebaseFirestore.instance.collection('exercises').snapshots();
+  //  FirebaseFirestore.instance.collection('exercises').snapshots();
 }
