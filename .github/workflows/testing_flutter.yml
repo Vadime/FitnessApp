@@ -1,0 +1,44 @@
+name: Flutter
+
+on:
+  push:
+    branches: [ development-* ]
+  pull_request:
+    branches: [ development-* ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true  
+
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v2
+        with:
+          channel: stable
+          version: 3.10.5
+          cache: true
+          cache-key: flutter-workflow-cache
+
+      - name: Debugging
+        run: ls -la
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --set-exit-if-changed . || true
+      
+
+      - name: Analyze project source
+        run: dart analyze || true # '--fatal-infos' for slightly stricter analysis
+
+      - name: Run tests
+        run: flutter test

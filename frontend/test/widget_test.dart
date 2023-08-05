@@ -20,5 +20,4 @@ void main() {
     // Verify that the error gets shown on the screen.
     expect(find.text('Testing Error'), findsOneWidget);
   });
-  
 }
