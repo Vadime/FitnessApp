@@ -1,0 +1,31 @@
+name: Testing Frontend
+
+on:
+  push:
+    branches: [ "development-*" ]
+  pull_request:
+    branches: [ "development-*" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Change to a directory with pubspec.yaml
+        run: cd frontend
+
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze project source
+        run: dart analyze # '--fatal-infos' for slightly stricter analysis
+
+      - name: Run tests
+        run: flutter test
