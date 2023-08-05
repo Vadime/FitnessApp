@@ -20,9 +20,13 @@ jobs:
         with:
           channel: stable
           version: 3.0.2
+          cache: true
+
+      - name: Debugging
+        run: ls -la
 
       - name: Change directory to flutter project
-        run: cd ./frontend
+        run: cd frontend
 
       - name: Install dependencies
         run: flutter pub get
