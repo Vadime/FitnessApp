@@ -28,6 +28,9 @@ jobs:
       - name: Change directory to flutter project
         run: cd frontend
 
+      - name: Debugging
+        run: ls -la
+
       - name: Install dependencies
         run: flutter pub get
 
