@@ -19,7 +19,7 @@ class ExerciseImage extends StatelessWidget {
       radius: 30,
       foregroundImage: imageFiles.elementAtOrNull(index) == null
           ? null
-          : FileImage(imageFiles[index]!),
+          : FileImage(imageFiles.elementAtOrNull(index)!),
     );
   }
 }

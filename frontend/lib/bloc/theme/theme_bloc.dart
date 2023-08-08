@@ -33,7 +33,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeMode> {
   static Future<ThemeMode> getThemeFromStorage() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     _themeMode = ThemeMode.values[prefs.getInt(_themeModeKey) ?? 0];
-    return _themeMode ?? ThemeMode.system;
+    return _themeMode ?? ThemeMode.dark;
   }
 
   Future<void> setThemeToStorage(ThemeMode mode) async {

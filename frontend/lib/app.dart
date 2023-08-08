@@ -29,6 +29,9 @@ ThemeData genTheme(
   return ThemeData(
     primaryColor: primary,
     brightness: brightness,
+    iconTheme: IconThemeData(
+      color: primary.withOpacity(opacity),
+    ),
     snackBarTheme: SnackBarThemeData(
       elevation: elevation,
       backgroundColor: background.withOpacity(opacity),
@@ -48,6 +51,7 @@ ThemeData genTheme(
       minLeadingWidth: 0,
       horizontalTitleGap: 0,
       minVerticalPadding: 0,
+      iconColor: primary.withOpacity(opacity),
     ),
     segmentedButtonTheme: SegmentedButtonThemeData(
       style: ButtonStyle(

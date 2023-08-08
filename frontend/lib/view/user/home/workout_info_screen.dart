@@ -7,6 +7,7 @@ import 'package:fitness_app/models/src/schedule.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/admin/home/exercise_image.dart';
 import 'package:fitness_app/view/user/home/workout_add_screen.dart';
+import 'package:fitness_app/view/user/home/workout_in_progress_screen.dart';
 import 'package:flutter/material.dart';
 
 class WorkoutInfoScreen extends StatefulWidget {
@@ -97,13 +98,19 @@ class _WorkoutInfoScreenState extends State<WorkoutInfoScreen> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigation.push(
+                widget: WorkoutInProgressScreen(
+                  workout: widget.workout,
+                ),
+              );
+            },
             child: const Text('Start Workout'),
           ),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: ListView(
+        physics: const ScrollPhysics(),
         children: [
           const SafeArea(
             bottom: false,
@@ -213,6 +220,22 @@ class _WorkoutInfoScreenState extends State<WorkoutInfoScreen> {
                                   child: Text(
                                     widget.workout.workoutExercises[index]
                                         .recommendedReps
+                                        .toString(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.all(10),
+                                  child: Text('Weights'),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Text(
+                                    widget
+                                        .workout.workoutExercises[index].weight
                                         .toString(),
                                   ),
                                 ),

@@ -26,7 +26,6 @@ class _AdminAddExercisesScreenState extends State<AdminAddExercisesScreen> {
   late TextBloc descriptionBloc;
 
   late Set<ExerciseMuscles> selectedMuscles;
-  late Set<ExerciseDifficulty> selectedDifficulty;
   File? imageFile;
 
   @override
@@ -42,9 +41,6 @@ class _AdminAddExercisesScreenState extends State<AdminAddExercisesScreen> {
     );
 
     selectedMuscles = widget.exercise?.muscles.toSet() ?? {};
-    selectedDifficulty = widget.exercise?.difficulty != null
-        ? {widget.exercise!.difficulty}
-        : {};
   }
 
   @override
@@ -55,146 +51,98 @@ class _AdminAddExercisesScreenState extends State<AdminAddExercisesScreen> {
       appBar: AppBar(
         title: Text('${widget.exercise != null ? 'Update' : 'Add'} Exercise'),
       ),
-      body: Stack(
-        children: [
-          Center(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SafeArea(
-                    bottom: false,
-                    child: SizedBox(),
-                  ),
-                  Container(
-                    alignment: Alignment.bottomRight,
-                    height: 200,
-                    margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: context.theme.cardColor,
-                      image: imageFile != null
-                          ? DecorationImage(
-                              image: FileImage(imageFile!),
-                              fit: BoxFit.cover,
-                            )
-                          : null,
-                    ),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor:
-                            context.theme.cardColor.withOpacity(0.8),
-                      ),
-                      onPressed: () async {
-                        var file = await FilePicking.pickImage();
-                        if (file == null) {
-                          Messaging.show(
-                            message: 'Error picking image',
-                          );
-                          return;
-                        }
-                        setState(() {
-                          imageFile = file;
-                        });
-                        //
-                        Messaging.show(message: 'Upload Image');
-                      },
-                      child: Text(
-                        'Upload Image',
-                        style: context.textTheme.labelMedium!
-                            .copyWith(color: context.theme.primaryColor),
-                      ),
-                    ),
-                  ),
-                  Card(
-                    margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          MyTextField(
-                            bloc: nameBloc,
-                          ),
-                          const SizedBox(height: 10),
-                          MyTextField(
-                            bloc: descriptionBloc,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    child: Text(
-                      'Muscles Worked',
-                      style: context.textTheme.bodyMedium,
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                      child: SegmentedButton<ExerciseMuscles>(
-                        multiSelectionEnabled: true,
-                        emptySelectionAllowed: true,
-                        segments: [
-                          for (var type in ExerciseMuscles.values)
-                            ButtonSegment(
-                              label: Text(type.strName),
-                              value: type,
-                            ),
-                        ],
-                        selected: selectedMuscles,
-                        onSelectionChanged: (p0) =>
-                            setState(() => selectedMuscles = p0),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    child: Text(
-                      'Difficulty',
-                      style: context.textTheme.bodyMedium,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    child: SegmentedButton<ExerciseDifficulty>(
-                      emptySelectionAllowed: true,
-                      selectedIcon: Icon(
-                        Icons.check_rounded,
-                        color: context.theme.primaryColor,
-                      ),
-                      segments: [
-                        for (var type in ExerciseDifficulty.values)
-                          ButtonSegment(
-                            label: Text(type.strName),
-                            value: type,
-                          ),
-                      ],
-                      selected: selectedDifficulty,
-                      onSelectionChanged: (p0) =>
-                          setState(() => selectedDifficulty = p0),
-                    ),
-                  ),
-                  const SafeArea(
-                    top: false,
-                    child: SizedBox(
-                      height: 56,
-                    ),
-                  ),
-                ],
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              alignment: Alignment.bottomRight,
+              height: 200,
+              margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: context.theme.cardColor,
+                image: imageFile != null
+                    ? DecorationImage(
+                        image: FileImage(imageFile!),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
+              ),
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: context.theme.cardColor.withOpacity(0.8),
+                ),
+                onPressed: () async {
+                  var file = await FilePicking.pickImage();
+                  if (file == null) {
+                    Messaging.show(
+                      message: 'Error picking image',
+                    );
+                    return;
+                  }
+                  setState(() {
+                    imageFile = file;
+                  });
+                  //
+                  Messaging.show(message: 'Upload Image');
+                },
+                child: Text(
+                  'Upload Image',
+                  style: context.textTheme.labelMedium!
+                      .copyWith(color: context.theme.primaryColor),
+                ),
               ),
             ),
-          ),
-          Positioned(
-            left: 10,
-            right: 10,
-            bottom: 0,
-            child: SafeArea(
-              top: false,
+            Card(
+              margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    MyTextField(
+                      bloc: nameBloc,
+                    ),
+                    const SizedBox(height: 10),
+                    MyTextField(
+                      bloc: descriptionBloc,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              child: Text(
+                'Muscles Worked',
+                style: context.textTheme.bodyMedium,
+              ),
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: SegmentedButton<ExerciseMuscles>(
+                  multiSelectionEnabled: true,
+                  emptySelectionAllowed: true,
+                  segments: [
+                    for (var type in ExerciseMuscles.values)
+                      ButtonSegment(
+                        label: Text(type.strName),
+                        value: type,
+                      ),
+                  ],
+                  selected: selectedMuscles,
+                  onSelectionChanged: (p0) =>
+                      setState(() => selectedMuscles = p0),
+                ),
+              ),
+            ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: Row(
                 children: [
                   // delete button
@@ -240,11 +188,7 @@ class _AdminAddExercisesScreenState extends State<AdminAddExercisesScreen> {
                               message: 'Please select at least one muscle',
                             );
                           }
-                          if (selectedDifficulty.isEmpty) {
-                            return Messaging.show(
-                              message: 'Please select a difficulty',
-                            );
-                          }
+
                           if (imageFile == null) {
                             return Messaging.show(
                               message: 'Please select an image',
@@ -265,7 +209,6 @@ class _AdminAddExercisesScreenState extends State<AdminAddExercisesScreen> {
                             name: nameBloc.state.text!,
                             description: descriptionBloc.state.text!,
                             muscles: selectedMuscles.toList(),
-                            difficulty: selectedDifficulty.first,
                           );
                           // Upload image
                           exercise.imageURL =
@@ -301,8 +244,8 @@ class _AdminAddExercisesScreenState extends State<AdminAddExercisesScreen> {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -345,9 +288,10 @@ class DeleteExercisePopup extends StatelessWidget {
                   try {
                     await FirebaseStorage.instance
                         .refFromURL(
-                          widget.exercise!.imageURL!,
+                          widget.exercise!.imageURL ?? '',
                         )
-                        .delete();
+                        .delete()
+                        .catchError((_) {});
                     // delete exercise from database
                     await FirebaseFirestore.instance
                         .collection('exercises')

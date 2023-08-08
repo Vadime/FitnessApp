@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class ExerciseInfoScreen extends StatefulWidget {
   final Exercise exercise;
-  final File imageFile;
+  final File? imageFile;
   final bool isFavorite;
   const ExerciseInfoScreen({
     required this.exercise,
@@ -82,10 +82,12 @@ class _ExerciseInfoScreenState extends State<ExerciseInfoScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: context.theme.cardColor,
-                image: DecorationImage(
-                  image: FileImage(widget.imageFile),
-                  fit: BoxFit.cover,
-                ),
+                image: widget.imageFile == null
+                    ? null
+                    : DecorationImage(
+                        image: FileImage(widget.imageFile!),
+                        fit: BoxFit.cover,
+                      ),
               ),
             ),
             Card(
@@ -123,18 +125,6 @@ class _ExerciseInfoScreenState extends State<ExerciseInfoScreen> {
                                 .map((e) => e.strName)
                                 .join(', '),
                           ),
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text('Difficulty'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(widget.exercise.difficulty.strName),
                         ),
                       ],
                     ),

@@ -80,8 +80,7 @@ class _UserExercisesPageState extends State<UserExercisesPage> {
               if (!contains) otherImages.add(imageFiles.elementAtOrNull(i));
             }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            return ListView(
               children: [
                 const SafeArea(
                   bottom: false,
@@ -167,7 +166,7 @@ class _UserExercisesPageState extends State<UserExercisesPage> {
                         onTap: () => Navigation.push(
                           widget: ExerciseInfoScreen(
                             exercise: exercise,
-                            imageFile: otherImages[index]!,
+                            imageFile: otherImages.elementAtOrNull(index),
                             isFavorite: false,
                           ),
                         ),

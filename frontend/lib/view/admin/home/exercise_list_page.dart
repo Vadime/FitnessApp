@@ -65,7 +65,7 @@ class _AdminExercisesPageState extends State<AdminExercisesPage> {
                 onTap: () => Navigation.push(
                   widget: AdminAddExercisesScreen(
                     exercise: exercise,
-                    imageFile: imageFiles[index],
+                    imageFile: imageFiles.elementAtOrNull(index),
                   ),
                 ),
               ),

@@ -7,7 +7,13 @@ class Exercise extends Equatable {
   final String description;
   String? imageURL;
   final List<ExerciseMuscles> muscles;
-  final ExerciseDifficulty difficulty;
+
+  static Exercise emptyExercise = Exercise(
+    uid: '-',
+    name: '-',
+    description: '-',
+    muscles: const [ExerciseMuscles.other],
+  );
 
   Exercise({
     required this.uid,
@@ -15,7 +21,6 @@ class Exercise extends Equatable {
     required this.description,
     this.imageURL,
     required this.muscles,
-    required this.difficulty,
   });
 
   Map<String, dynamic> toJson() => {
@@ -23,7 +28,6 @@ class Exercise extends Equatable {
         'description': description,
         'imageURL': imageURL,
         'muscles': muscles.map((e) => e.index).toList(),
-        'difficulty': difficulty.index,
       };
 
   factory Exercise.fromJson(String uid, Map<String, dynamic> json) => Exercise(
@@ -34,7 +38,6 @@ class Exercise extends Equatable {
         muscles: (json['muscles'] as List<dynamic>)
             .map((e) => ExerciseMuscles.values[e])
             .toList(),
-        difficulty: ExerciseDifficulty.values[json['difficulty']],
       );
 
   @override
@@ -44,6 +47,5 @@ class Exercise extends Equatable {
         description,
         imageURL,
         muscles,
-        difficulty,
       ];
 }

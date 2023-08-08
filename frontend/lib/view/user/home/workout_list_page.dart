@@ -10,10 +10,8 @@ class UserWorkoutsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return ListView(
+      physics: const ScrollPhysics(),
       children: [
         const SafeArea(
           bottom: false,
@@ -50,16 +48,27 @@ class UserWorkoutsPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Card(
                   margin: const EdgeInsets.all(10),
-                  child: ListTile(
-                    title: Text(workouts[index].name),
-                    subtitle: Text(workouts[index].description),
-                    trailing: Text(workouts[index].schedule.strName),
-                    onTap: () => Navigation.push(
-                      widget: WorkoutInfoScreen(
-                        workout: workouts[index],
-                        isAlreadyCopied: true,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      ListTile(
+                        title: Text(workouts[index].name),
+                        subtitle: Text(workouts[index].description),
+                        onTap: () => Navigation.push(
+                          widget: WorkoutInfoScreen(
+                            workout: workouts[index],
+                            isAlreadyCopied: true,
+                          ),
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                        child: Text(
+                          workouts[index].schedule.strName,
+                          style: context.textTheme.labelSmall,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
@@ -85,15 +94,26 @@ class UserWorkoutsPage extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Card(
                   margin: const EdgeInsets.all(10),
-                  child: ListTile(
-                    title: Text(workouts[index].name),
-                    subtitle: Text(workouts[index].description),
-                    trailing: Text(workouts[index].schedule.strName),
-                    onTap: () => Navigation.push(
-                      widget: WorkoutInfoScreen(
-                        workout: workouts[index],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      ListTile(
+                        title: Text(workouts[index].name),
+                        subtitle: Text(workouts[index].description),
+                        onTap: () => Navigation.push(
+                          widget: WorkoutInfoScreen(
+                            workout: workouts[index],
+                          ),
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                        child: Text(
+                          workouts[index].schedule.strName,
+                          style: context.textTheme.labelSmall,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
