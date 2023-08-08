@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "faker": "^5.5.3",
-    "firebase-admin": "^11.10.1",
-    "kill-port": "^2.0.1"
-  }
-}

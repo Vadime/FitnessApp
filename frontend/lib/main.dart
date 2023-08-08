@@ -83,11 +83,13 @@ void main() async {
     // initialize firebase app
     await Firebase.initializeApp(options: firebaseOptions);
 
-    // use emulators for development
-    await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-    FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-    FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
-    await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+    if (const String.fromEnvironment('env') == 'dev') {
+      // use the local emulators
+      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+      FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+      FirebaseFunctions.instance.useFunctionsEmulator('localhost', 5001);
+      await FirebaseStorage.instance.useStorageEmulator('localhost', 9199);
+    }
 
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;

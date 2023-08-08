@@ -1,9 +1,9 @@
 import 'package:fitness_app/bloc/authentication/authentication_bloc.dart';
 import 'package:fitness_app/bloc/theme/theme_bloc.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/both/home/home_screen.dart';
-import 'package:fitness_app/view/both/login/login_screen.dart';
-import 'package:fitness_app/view/both/splash_error_screen.dart';
+import 'package:fitness_app/view/home_screen.dart';
+import 'package:fitness_app/view/app_splash_error_screen.dart';
+import 'package:fitness_app/view/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,8 +43,7 @@ ThemeData genTheme(
       ),
     ),
     listTileTheme: ListTileThemeData(
-      contentPadding:
-          const EdgeInsets.fromLTRB(padding, padding / 2, padding, padding / 2),
+      contentPadding: const EdgeInsets.fromLTRB(padding, 0, padding, 0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
       ),
@@ -147,6 +146,9 @@ ThemeData genTheme(
       backgroundColor: background,
       modalBackgroundColor: background,
       surfaceTintColor: background,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
     ),
     useMaterial3: true,
     scaffoldBackgroundColor: background,
@@ -172,6 +174,7 @@ ThemeData genTheme(
       elevation: elevation,
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      type: BottomNavigationBarType.fixed,
       elevation: elevation,
       backgroundColor: background.withOpacity(opacity),
       showSelectedLabels: false,
@@ -260,10 +263,10 @@ class App extends StatelessWidget {
       child: BlocListener<AuthenticationBloc, AuthenticationState?>(
         listener: (context, state) {
           if (state is UserAuthenticatedState) {
-            Navigation.replace(widget: const HomeScreen());
+            Navigation.flush(widget: const HomeScreen());
             return;
           } else if (state is UserUnauthenticatedState) {
-            Navigation.replace(
+            Navigation.flush(
               widget: OnboardingScreen(
                 data: const [
                   OnboardingPageData(

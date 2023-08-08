@@ -11,7 +11,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeMode> {
   // only for initial state
   static ThemeMode? _themeMode;
 
-  ThemeBloc() : super(_themeMode ?? ThemeMode.system) {
+  ThemeBloc() : super(_themeMode ?? ThemeMode.dark) {
     //when app is started
     on<ThemeSystemEvent>((event, emit) async {
       await setThemeToStorage(ThemeMode.system);

@@ -1,27 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:widgets/src/footer/footer_button.dart';
+import 'package:widgets/src/footer/social_button.dart';
+
+export 'package:widgets/src/footer/footer_button.dart';
+export 'package:widgets/src/footer/social_button.dart';
 
 extension on BuildContext {
   TextTheme get textTheme => Theme.of(this).textTheme;
-  ThemeData get theme => Theme.of(this);
-}
-
-class FooterButton {
-  final String text;
-  final Function()? onPressed;
-
-  const FooterButton({required this.text, this.onPressed});
-}
-
-class SocialButton {
-  final String text;
-  final Function()? onPressed;
-  final Widget icon;
-
-  const SocialButton({
-    required this.text,
-    required this.onPressed,
-    required this.icon,
-  });
 }
 
 class Footer extends StatelessWidget {
@@ -67,12 +52,13 @@ class Footer extends StatelessWidget {
             ),
             SizedBox(height: padding),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                SizedBox(width: padding),
                 // social buttons
                 ...socials.map(
                   (e) => Padding(
-                    padding: EdgeInsets.fromLTRB(padding, padding, 0, 0),
+                    padding: EdgeInsets.fromLTRB(0, padding, 0, padding),
                     child: IconButton(
                       icon: e.icon,
                       onPressed: e.onPressed,
@@ -82,7 +68,12 @@ class Footer extends StatelessWidget {
 
                 const Spacer(),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(padding, padding, padding, 0),
+                  padding: EdgeInsets.fromLTRB(
+                    padding,
+                    padding,
+                    padding,
+                    2 * padding,
+                  ),
                   child: Text(
                     commercialText,
                     style: context.textTheme.labelMedium!.copyWith(

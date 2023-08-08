@@ -1,6 +1,7 @@
 library utils;
 
 import 'package:fitness_app/app.dart';
+import 'package:fitness_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class Navigation {
@@ -23,7 +24,24 @@ class Navigation {
   static void pushPopup({required Widget widget}) async {
     await showModalBottomSheet(
       context: App.navigatorKey.currentContext!,
-      builder: (context) => widget,
+      backgroundColor: Colors.transparent,
+      showDragHandle: true,
+      isScrollControlled: true,
+      enableDrag: true,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: context.theme.scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        margin: EdgeInsets.fromLTRB(
+          10,
+          0,
+          10,
+          MediaQuery.of(App.navigatorKey.currentContext!).viewInsets.bottom +
+              10,
+        ),
+        child: widget,
+      ),
     );
   }
 }
