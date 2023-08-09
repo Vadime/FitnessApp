@@ -4,12 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:widgets/src/text_field/text_field.dart';
 
-extension on BuildContext {
-  // theme
-  ThemeData get theme => Theme.of(this);
-  TextTheme get textTheme => theme.textTheme;
-}
-
 class MyTextField extends StatelessWidget {
   const MyTextField({
     Key? key,
