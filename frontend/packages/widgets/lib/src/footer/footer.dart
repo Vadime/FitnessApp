@@ -27,64 +27,61 @@ class Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(padding, 20, padding, 0),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Wrap(
-              alignment: WrapAlignment.spaceAround,
-              children: buttons
-                  .map(
-                    (e) => Padding(
-                      padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
-                      child: TextButton(
-                        onPressed: e.onPressed,
-                        child: Text(
-                          e.text,
-                          style: context.textTheme.labelMedium,
-                        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Wrap(
+            alignment: WrapAlignment.spaceAround,
+            children: buttons
+                .map(
+                  (e) => Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 2, 2, 2),
+                    child: TextButton(
+                      onPressed: e.onPressed,
+                      child: Text(
+                        e.text,
+                        style: context.textTheme.labelMedium,
                       ),
                     ),
-                  )
-                  .toList(),
-            ),
-            SizedBox(height: padding),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                SizedBox(width: padding),
-                // social buttons
-                ...socials.map(
-                  (e) => Padding(
-                    padding: EdgeInsets.fromLTRB(0, padding, 0, padding),
-                    child: IconButton(
-                      icon: e.icon,
-                      onPressed: e.onPressed,
-                    ),
+                  ),
+                )
+                .toList(),
+          ),
+          SizedBox(height: padding),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              SizedBox(width: padding),
+              // social buttons
+              ...socials.map(
+                (e) => Padding(
+                  padding: EdgeInsets.fromLTRB(0, padding, 0, padding),
+                  child: IconButton(
+                    icon: e.icon,
+                    onPressed: e.onPressed,
                   ),
                 ),
+              ),
 
-                const Spacer(),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    padding,
-                    padding,
-                    padding,
-                    2 * padding,
-                  ),
-                  child: Text(
-                    commercialText,
-                    style: context.textTheme.labelMedium!.copyWith(
-                      color: Colors.grey,
-                    ),
+              const Spacer(),
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                  padding,
+                  padding,
+                  padding,
+                  2 * padding,
+                ),
+                child: Text(
+                  commercialText,
+                  style: context.textTheme.labelMedium!.copyWith(
+                    color: Colors.grey,
                   ),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

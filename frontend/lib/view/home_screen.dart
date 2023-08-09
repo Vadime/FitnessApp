@@ -137,14 +137,14 @@ class HomeScreen extends StatelessWidget {
             body: state.page,
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.fromLTRB(
-                30,
-                0,
-                30,
                 10,
+                0,
+                10,
+                0,
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  20,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
                 ),
                 child: BottomNavigationBar(
                   currentIndex: state.index,

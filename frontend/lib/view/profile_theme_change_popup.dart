@@ -10,49 +10,46 @@ class ThemeChangePopup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Change Theme',
-              style: context.textTheme.titleLarge,
-            ),
-            const SizedBox(height: 20),
-            BlocBuilder<ThemeBloc, ThemeMode>(
-              builder: (context, state) {
-                return SegmentedButton<ThemeMode>(
-                  segments: const [
-                    ButtonSegment(
-                      value: ThemeMode.system,
-                      label: Text('System'),
-                    ),
-                    ButtonSegment(value: ThemeMode.light, label: Text('Light')),
-                    ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
-                  ],
-                  selected: {state},
-                  onSelectionChanged: (selected) {
-                    switch (selected.first) {
-                      case ThemeMode.system:
-                        context.read<ThemeBloc>().add(ThemeSystemEvent());
-                        break;
-                      case ThemeMode.light:
-                        context.read<ThemeBloc>().add(ThemeLightEvent());
-                        break;
-                      case ThemeMode.dark:
-                        context.read<ThemeBloc>().add(ThemeDarkEvent());
-                        break;
-                      default:
-                        break;
-                    }
-                  },
-                );
-              },
-            )
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Change Theme',
+            style: context.textTheme.titleLarge,
+          ),
+          const SizedBox(height: 20),
+          BlocBuilder<ThemeBloc, ThemeMode>(
+            builder: (context, state) {
+              return SegmentedButton<ThemeMode>(
+                segments: const [
+                  ButtonSegment(
+                    value: ThemeMode.system,
+                    label: Text('System'),
+                  ),
+                  ButtonSegment(value: ThemeMode.light, label: Text('Light')),
+                  ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
+                ],
+                selected: {state},
+                onSelectionChanged: (selected) {
+                  switch (selected.first) {
+                    case ThemeMode.system:
+                      context.read<ThemeBloc>().add(ThemeSystemEvent());
+                      break;
+                    case ThemeMode.light:
+                      context.read<ThemeBloc>().add(ThemeLightEvent());
+                      break;
+                    case ThemeMode.dark:
+                      context.read<ThemeBloc>().add(ThemeDarkEvent());
+                      break;
+                    default:
+                      break;
+                  }
+                },
+              );
+            },
+          )
+        ],
       ),
     );
   }

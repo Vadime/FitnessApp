@@ -25,9 +25,10 @@ class Navigation {
     await showModalBottomSheet(
       context: App.navigatorKey.currentContext!,
       backgroundColor: Colors.transparent,
-      showDragHandle: true,
+      showDragHandle: false,
       isScrollControlled: true,
-      enableDrag: true,
+      enableDrag: false,
+      barrierColor: Colors.black38,
       builder: (context) => Container(
         decoration: BoxDecoration(
           color: context.theme.scaffoldBackgroundColor,
@@ -37,7 +38,10 @@ class Navigation {
           10,
           0,
           10,
-          MediaQuery.of(App.navigatorKey.currentContext!).viewInsets.bottom +
+          context.bottomInset +
+              MediaQuery.of(App.navigatorKey.currentContext!)
+                  .viewInsets
+                  .bottom +
               10,
         ),
         child: widget,

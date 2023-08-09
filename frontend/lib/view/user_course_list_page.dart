@@ -57,34 +57,26 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
       itemCount: courses!.length,
       itemBuilder: (context, index) {
         final e = courses![index];
-        return Card(
-          margin: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              ListTile(
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Text(
+                e.date,
+                style: context.textTheme.labelSmall,
+              ),
+            ),
+            Card(
+              margin: const EdgeInsets.all(10),
+              child: ListTile(
                 contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                 title: Text(e.name),
                 subtitle: Text(e.description),
                 trailing: ExerciseImage(imageFiles: imageFiles, index: index),
-                // onTap: () {
-                //   Navigation.push(
-                //     widget: AdminCourseAddScreen(
-                //       course: e,
-                //       imageFile: imageFiles.elementAtOrNull(index),
-                //     ),
-                //   );
-                // },
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                child: Text(
-                  e.date,
-                  style: context.textTheme.labelSmall,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );

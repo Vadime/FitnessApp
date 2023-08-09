@@ -140,60 +140,57 @@ class _WorkoutFinishedPopupState extends State<WorkoutFinishedPopup> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Congratulations!',
-              style: context.textTheme.titleMedium,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Congratulations!',
+            style: context.textTheme.titleMedium,
+          ),
+          const SizedBox(height: 10),
+          const Text('You have finished your workout! How was it?'),
+          const SizedBox(height: 10),
+          // WorkoutDifficulty
+          SegmentedButton<WorkoutDifficulty>(
+            segments: [
+              for (WorkoutDifficulty dif in WorkoutDifficulty.values)
+                ButtonSegment(
+                  label: Text(dif.name),
+                  value: dif,
+                ),
+            ],
+            emptySelectionAllowed: true,
+            selected: selectedDifficulty == null ? {} : {selectedDifficulty!},
+            multiSelectionEnabled: false,
+            onSelectionChanged: (v) =>
+                setState(() => selectedDifficulty = v.first),
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: selectedDifficulty == null
+                ? null
+                : () async {
+                    // save workout to firebase
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(UserRepository.currentUserUID)
+                        .collection('workoutStatistics')
+                        .add({
+                      'uid': widget.workout.uid,
+                      'difficulty': selectedDifficulty!.name,
+                      'date': DateTime.now().formattedDate,
+                    });
+                    Navigation.push(widget: const HomeScreen());
+                  },
+            style: ElevatedButton.styleFrom(
+              disabledBackgroundColor: context.theme.disabledColor,
             ),
-            const SizedBox(height: 10),
-            const Text('You have finished your workout! How was it?'),
-            const SizedBox(height: 10),
-            // WorkoutDifficulty
-            SegmentedButton<WorkoutDifficulty>(
-              segments: [
-                for (WorkoutDifficulty dif in WorkoutDifficulty.values)
-                  ButtonSegment(
-                    label: Text(dif.name),
-                    value: dif,
-                  ),
-              ],
-              emptySelectionAllowed: true,
-              selected: selectedDifficulty == null ? {} : {selectedDifficulty!},
-              multiSelectionEnabled: false,
-              onSelectionChanged: (v) =>
-                  setState(() => selectedDifficulty = v.first),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: selectedDifficulty == null
-                  ? null
-                  : () async {
-                      // save workout to firebase
-                      await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(UserRepository.currentUserUID)
-                          .collection('workoutStatistics')
-                          .add({
-                        'uid': widget.workout.uid,
-                        'difficulty': selectedDifficulty!.name,
-                        'date': DateTime.now().formattedDate,
-                      });
-                      Navigation.push(widget: const HomeScreen());
-                    },
-              style: ElevatedButton.styleFrom(
-                disabledBackgroundColor: context.theme.disabledColor,
-              ),
-              child: const Text('Back to Home'),
-            ),
-          ],
-        ),
+            child: const Text('Back to Home'),
+          ),
+        ],
       ),
     );
   }

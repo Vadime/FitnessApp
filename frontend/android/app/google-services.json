@@ -35,7 +35,7 @@
               "client_id": "534633074686-74kdm7jf0gujl4u04vassm56na18ujtm.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "de.ass.fitnessapp.RunnerTests"
+                "bundle_id": "com.example.frontend.RunnerTests"
               }
             }
           ]

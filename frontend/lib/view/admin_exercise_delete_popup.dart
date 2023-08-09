@@ -18,57 +18,54 @@ class AdminExerciseDeletePopup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Delete Exercise',
-              style: context.textTheme.titleLarge,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Delete Exercise',
+            style: context.textTheme.titleLarge,
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Are you sure you want to delete this exercise?',
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
             ),
-            const SizedBox(height: 10),
-            const Text(
-              'Are you sure you want to delete this exercise?',
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
-              onPressed: () async {
-                if (widget.exercise != null) {
-                  // delete image from storage
-                  try {
-                    await FirebaseStorage.instance
-                        .refFromURL(
-                          widget.exercise!.imageURL ?? '',
-                        )
-                        .delete()
-                        .catchError((_) {});
-                    // delete exercise from database
-                    await FirebaseFirestore.instance
-                        .collection('exercises')
-                        .doc(widget.exercise!.uid)
-                        .delete();
-                  } catch (e, s) {
-                    Logging.error(e, s);
-                    Messaging.show(
-                      message: 'Error deleting exercise: $e',
-                    );
-                    Navigation.pop();
-                    return;
-                  }
+            onPressed: () async {
+              if (widget.exercise != null) {
+                // delete image from storage
+                try {
+                  await FirebaseStorage.instance
+                      .refFromURL(
+                        widget.exercise!.imageURL ?? '',
+                      )
+                      .delete()
+                      .catchError((_) {});
+                  // delete exercise from database
+                  await FirebaseFirestore.instance
+                      .collection('exercises')
+                      .doc(widget.exercise!.uid)
+                      .delete();
+                } catch (e, s) {
+                  Logging.error(e, s);
+                  Messaging.show(
+                    message: 'Error deleting exercise: $e',
+                  );
+                  Navigation.pop();
+                  return;
                 }
-                Navigation.flush(
-                  widget: const HomeScreen(initialIndex: 2),
-                );
-              },
-              child: const Text('Delete'),
-            ),
-          ],
-        ),
+              }
+              Navigation.flush(
+                widget: const HomeScreen(initialIndex: 2),
+              );
+            },
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }

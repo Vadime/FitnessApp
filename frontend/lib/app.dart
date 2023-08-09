@@ -1,8 +1,8 @@
 import 'package:fitness_app/bloc/authentication/authentication_bloc.dart';
 import 'package:fitness_app/bloc/theme/theme_bloc.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/home_screen.dart';
 import 'package:fitness_app/view/app_splash_error_screen.dart';
+import 'package:fitness_app/view/home_screen.dart';
 import 'package:fitness_app/view/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
