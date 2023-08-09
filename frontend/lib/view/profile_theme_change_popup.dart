@@ -3,8 +3,8 @@ import 'package:fitness_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ThemeChangePopup extends StatelessWidget {
-  const ThemeChangePopup({super.key});
+class ProfileThemeChangePopup extends StatelessWidget {
+  const ProfileThemeChangePopup({super.key});
 
   @override
   Widget build(BuildContext context) {

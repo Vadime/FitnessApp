@@ -11,4 +11,6 @@ extension AppExtensions on BuildContext {
 
   // get bottom inset
   double get bottomInset => MediaQuery.of(this).viewPadding.bottom;
+
+  double get topInset => MediaQuery.of(this).viewPadding.top;
 }

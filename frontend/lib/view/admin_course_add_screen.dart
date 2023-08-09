@@ -1,7 +1,6 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/src/course.dart';
 import 'package:fitness_app/utils/src/file_picking.dart';
 import 'package:fitness_app/utils/utils.dart';
@@ -11,12 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class AdminCourseAddScreen extends StatefulWidget {
-  final Course? course;
-  final File? imageFile;
-
+  final MapEntry<Course, File?>? entry;
   const AdminCourseAddScreen({
-    this.course,
-    this.imageFile,
+    this.entry,
     super.key,
   });
 
@@ -34,123 +30,123 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
   @override
   void initState() {
     super.initState();
-    imageFile = widget.imageFile;
+    imageFile = widget.entry?.value;
 
     nameBloc = NameBloc(
-      initialValue: widget.course?.name ?? '',
+      initialValue: widget.entry?.key.name ?? '',
     );
     descriptionBloc = TextBloc(
-      initialValue: widget.course?.description ?? '',
+      initialValue: widget.entry?.key.description ?? '',
       hint: 'Description',
     );
     dateBloc = TextBloc(
-      initialValue: widget.course?.date ?? '',
+      initialValue: widget.entry?.key.date ?? '',
       hint: 'Date',
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add Course'),
-        actions: [
-          // delete button
-          if (widget.course != null)
-            IconButton(
-              onPressed: () {
-                // delete exercise
-                Navigation.pushPopup(
-                  widget: AdminCourseDeletePopup(
-                    widget: widget,
-                  ),
-                );
-              },
-              icon: const Icon(
-                Icons.delete_rounded,
-                color: Colors.red,
-              ),
-            ),
-          // add and update button
-          IconButton(
-            onPressed: () async {
-              if (!nameBloc.isValid()) {
-                return Messaging.show(
-                  message: nameBloc.state.errorText!,
-                );
-              }
-              if (!descriptionBloc.isValid()) {
-                return Messaging.show(
-                  message: descriptionBloc.state.errorText!,
-                );
-              }
-              if (!dateBloc.isValid()) {
-                return Messaging.show(
-                  message: dateBloc.state.errorText!,
-                );
-              }
+  Widget saveCourseButton() => Expanded(
+        child: ElevatedButton(
+          onPressed: () async {
+            if (!nameBloc.isValid()) {
+              return Navigation.pushMessage(
+                message: nameBloc.state.errorText!,
+              );
+            }
+            if (!descriptionBloc.isValid()) {
+              return Navigation.pushMessage(
+                message: descriptionBloc.state.errorText!,
+              );
+            }
+            if (!dateBloc.isValid()) {
+              return Navigation.pushMessage(
+                message: dateBloc.state.errorText!,
+              );
+            }
 
-              if (imageFile == null) {
-                return Messaging.show(
-                  message: 'Please select an image',
-                );
-              }
-              // generate id, for storage and firestore
-              String id;
-              if (widget.course == null) {
-                id = FirebaseFirestore.instance.collection('courses').doc().id;
-              } else {
-                id = widget.course!.uid;
-              }
+            if (imageFile == null) {
+              return Navigation.pushMessage(
+                message: 'Please select an image',
+              );
+            }
+            // generate id, for storage and firestore
+            String id;
+            if (widget.entry?.key == null) {
+              id = CourseRepository.genId();
+            } else {
+              id = widget.entry!.key.uid;
+            }
 
-              // create exercise
+            try {
               var course = Course(
                 uid: id,
                 name: nameBloc.state.text!,
                 description: descriptionBloc.state.text!,
                 date: dateBloc.state.text!,
+                userUIDS: widget.entry?.key.userUIDS ?? [],
+                imageURL: await CourseRepository.uploadCourseImage(
+                  id,
+                  imageFile!,
+                ),
               );
-              // Upload image
-              course.imageURL = await (await FirebaseStorage.instance
-                      .ref('courses/${course.uid}')
-                      .putFile(imageFile!))
-                  .ref
-                  .getDownloadURL();
+              await CourseRepository.uploadCourse(course);
 
-              await FirebaseFirestore.instance
-                  .collection('courses')
-                  .doc(course.uid)
-                  .set(course.toJson())
-                  .then((value) {
-                Messaging.show(
-                  message:
-                      'Course ${widget.course == null ? 'added' : 'updated'}',
-                );
-                Navigation.flush(
-                  widget: const HomeScreen(),
-                );
-              }).catchError(
-                (e) {
-                  Messaging.show(
-                    message:
-                        'Error ${widget.course == null ? 'adding' : 'updating'} course: $e',
-                  );
-                },
+              Navigation.flush(widget: const HomeScreen());
+            } catch (e) {
+              Navigation.pushMessage(
+                message: 'Error saving course: $e',
               );
-            },
-            icon: const Icon(
-              Icons.save_rounded,
+            }
+          },
+          child: const Text(
+            'Save Course',
+          ),
+        ),
+      );
+
+  Widget deleteCourseButton() => Padding(
+        padding: const EdgeInsets.only(right: 20),
+        child: IconButton(
+          onPressed: () => Navigation.pushPopup(
+            widget: AdminCourseDeletePopup(
+              widget: widget,
             ),
           ),
-        ],
+          icon: const Icon(
+            Icons.delete_rounded,
+          ),
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      extendBody: true,
+      appBar: const MyAppBar(
+        title: 'Add Course',
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            const SizedBox(width: 30),
+            if (widget.entry?.key != null) deleteCourseButton(),
+            saveCourseButton(),
+            const SizedBox(width: 30),
+          ],
+        ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
         children: [
+          const SafeArea(
+            bottom: false,
+            child: SizedBox(),
+          ),
           Container(
             alignment: Alignment.bottomRight,
             height: 200,
-            margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
@@ -169,7 +165,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
               onPressed: () async {
                 var file = await FilePicking.pickImage();
                 if (file == null) {
-                  Messaging.show(
+                  Navigation.pushMessage(
                     message: 'Error picking image',
                   );
                   return;
@@ -177,8 +173,6 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
                 setState(() {
                   imageFile = file;
                 });
-                //
-                Messaging.show(message: 'Upload Image');
               },
               child: Text(
                 'Upload Image',
@@ -187,27 +181,26 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
               ),
             ),
           ),
-          Card(
-            margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  MyTextField(
-                    bloc: nameBloc,
-                  ),
-                  const SizedBox(height: 10),
-                  MyTextField(
-                    bloc: descriptionBloc,
-                  ),
-                  const SizedBox(height: 10),
-                  MyTextField(
-                    bloc: dateBloc,
-                  ),
-                ],
+          const SizedBox(height: 20),
+          MyCard(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            children: [
+              MyTextField(
+                bloc: nameBloc,
               ),
-            ),
+              const SizedBox(height: 10),
+              MyTextField(
+                bloc: descriptionBloc,
+              ),
+              const SizedBox(height: 10),
+              MyTextField(
+                bloc: dateBloc,
+              ),
+            ],
+          ),
+          const SafeArea(
+            top: false,
+            child: SizedBox(),
           ),
         ],
       ),

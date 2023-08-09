@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/admin_workout_add_screen.dart';
+import 'package:fitness_app/view/home_screen.dart';
 import 'package:flutter/material.dart';
 
-class DeleteWorkoutPopup extends StatelessWidget {
-  const DeleteWorkoutPopup({
+class AdminWorkoutDeletePopup extends StatelessWidget {
+  const AdminWorkoutDeletePopup({
     super.key,
     required this.widget,
   });
@@ -34,15 +35,10 @@ class DeleteWorkoutPopup extends StatelessWidget {
             ),
             onPressed: () async {
               if (widget.workout != null) {
-                // delete exercise from database
-                await FirebaseFirestore.instance
-                    .collection('workouts')
-                    .doc(widget.workout!.uid)
-                    .delete();
+                await WorkoutRepository.deleteWorkout(widget.workout!);
               }
 
-              Navigation.pop();
-              Navigation.pop();
+              Navigation.flush(widget: const HomeScreen(initialIndex: 1));
             },
             child: const Text('Delete'),
           ),

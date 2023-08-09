@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -49,14 +49,7 @@ class _UserAccountDeletePopupState extends State<UserAccountDeletePopup> {
             ),
             onPressed: () async {
               try {
-                await FirebaseAuth.instance.currentUser
-                    ?.reauthenticateWithCredential(
-                  EmailAuthProvider.credential(
-                    email: FirebaseAuth.instance.currentUser!.email!,
-                    password: passwordBloc.state.text ?? '',
-                  ),
-                );
-                await FirebaseAuth.instance.currentUser?.delete();
+                await UserRepository.deleteUser(passwordBloc.state.text ?? '');
               } catch (e) {
                 error = e.toString().split('] ').last;
                 setState(() {});

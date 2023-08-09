@@ -9,9 +9,8 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeMode> {
 
   // some cached themeMode when loading from storage
   // only for initial state
-  static ThemeMode? _themeMode;
 
-  ThemeBloc() : super(_themeMode ?? ThemeMode.dark) {
+  ThemeBloc() : super(ThemeMode.dark) {
     //when app is started
     on<ThemeSystemEvent>((event, emit) async {
       await setThemeToStorage(ThemeMode.system);
@@ -28,12 +27,26 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeMode> {
       await setThemeToStorage(ThemeMode.dark);
       emit(ThemeMode.dark);
     });
+
+    // load theme from storage
+    ThemeBloc.getThemeFromStorage().then((mode) {
+      switch (mode) {
+        case ThemeMode.light:
+          add(ThemeLightEvent());
+          break;
+        case ThemeMode.dark:
+          add(ThemeDarkEvent());
+          break;
+        case ThemeMode.system:
+          add(ThemeSystemEvent());
+          break;
+      }
+    });
   }
 
   static Future<ThemeMode> getThemeFromStorage() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    _themeMode = ThemeMode.values[prefs.getInt(_themeModeKey) ?? 0];
-    return _themeMode ?? ThemeMode.dark;
+    return ThemeMode.values[prefs.getInt(_themeModeKey) ?? 0];
   }
 
   Future<void> setThemeToStorage(ThemeMode mode) async {

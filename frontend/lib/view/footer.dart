@@ -11,10 +11,10 @@ class Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return widgets.Footer(
+    return widgets.MyFooter(
       commercialText: '© 2023 Traumteam',
       socials: [
-        widgets.SocialButton(
+        widgets.MyFutterSocialButton(
           text: 'Instagram',
           onPressed: () async => await UriLaunching.launch(
             Uri.parse('https://instagram.com'),
@@ -24,7 +24,7 @@ class Footer extends StatelessWidget {
             color: Colors.pink,
           ),
         ),
-        widgets.SocialButton(
+        widgets.MyFutterSocialButton(
           text: 'Twitter',
           onPressed: () async => await UriLaunching.launch(
             Uri.parse('https://twitter.com'),
@@ -33,11 +33,11 @@ class Footer extends StatelessWidget {
         )
       ],
       buttons: [
-        widgets.FooterButton(
+        widgets.MyFooterButton(
           text: 'About',
           onPressed: () => Navigation.push(widget: const FooterAboutScreen()),
         ),
-        widgets.FooterButton(
+        widgets.MyFooterButton(
           text: 'Contact',
           onPressed: () async {
             await UriLaunching.launch(
@@ -47,20 +47,17 @@ class Footer extends StatelessWidget {
             ).then((value) {
               if (!value) {
                 Navigation.pop();
-                Messaging.show(
-                  message: 'Could not launch url',
-                );
               }
             }).catchError((e) {
               debugPrint(e.toString());
             });
           },
         ),
-        widgets.FooterButton(
+        widgets.MyFooterButton(
           text: 'Privacy',
           onPressed: () => Navigation.push(widget: const FooterPrivacyScreen()),
         ),
-        widgets.FooterButton(
+        widgets.MyFooterButton(
           text: 'Terms',
           onPressed: () => Navigation.push(widget: const FooterTermsScreen()),
         ),

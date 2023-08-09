@@ -1,14 +1,18 @@
+import 'dart:io';
+
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/user_workout_in_progress_exercise_page.dart';
 import 'package:fitness_app/view/user_workout_in_progress_finished_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class UserWorkoutInProgressScreen extends StatefulWidget {
   final Workout workout;
-
+  final Map<Tupel<Exercise, WorkoutExercise>, File?> exercises;
   const UserWorkoutInProgressScreen({
     required this.workout,
+    required this.exercises,
     super.key,
   });
 
@@ -21,101 +25,91 @@ class _UserWorkoutInProgressScreenState
     extends State<UserWorkoutInProgressScreen> {
   PageController pageController = PageController();
 
-  // get index of current page
-  int currentPageIndex = 0;
+  int get currentPageIndex =>
+      pageController.hasClients ? pageController.page!.round() : 0;
 
-  // step value
-  double get stepValue => 1 / widget.workout.workoutExercises.length;
+  double get stepValue => 1 / widget.exercises.length;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.workout.name),
+      appBar: MyAppBar(
+        title: widget.workout.name,
       ),
       body: Column(
         children: [
-          LinearProgressIndicator(
-            value: stepValue * currentPageIndex + stepValue,
-            color: Theme.of(context).primaryColor,
-            semanticsValue:
-                '$currentPageIndex/${widget.workout.workoutExercises.length}',
-            semanticsLabel: 'Workout Progress',
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: MyLinearProgressIndicator(
+              progress: stepValue * currentPageIndex + stepValue,
+            ),
           ),
           Expanded(
             child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
               controller: pageController,
-              onPageChanged: (_) => setState(() => currentPageIndex = _),
-              children: widget.workout.workoutExercises
+              children: widget.exercises.entries
                   .map(
                     (e) => UserWorkoutInProgressExercisePage(
-                      workoutExercise: e,
+                      exercise: e,
                     ),
                   )
                   .toList(),
             ),
           ),
-          SafeArea(
+          Row(
+            children: [
+              const SizedBox(width: 30),
+              previousButton(),
+              const SizedBox(width: 20),
+              nextButton(),
+              const SizedBox(width: 30),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const SafeArea(
             top: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (currentPageIndex > 0)
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            pageController.previousPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          },
-                          child: const Text('Previous'),
-                        ),
-                      ),
-                    ),
-                  if (currentPageIndex <
-                      widget.workout.workoutExercises.length - 1)
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            pageController.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          },
-                          child: const Text('Next'),
-                        ),
-                      ),
-                    ),
-                  if (currentPageIndex ==
-                      widget.workout.workoutExercises.length - 1)
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigation.pushPopup(
-                              widget: UserWorkoutInProgressFinishedPopup(
-                                workout: widget.workout,
-                              ),
-                            );
-                          },
-                          child: const Text('Finish'),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
+            child: SizedBox(),
           ),
         ],
       ),
     );
   }
+
+  Widget previousButton() => IconButton(
+        onPressed: () async {
+          await pageController.previousPage(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+          setState(() {});
+        },
+        icon: Icon(Icons.adaptive.arrow_back_rounded),
+      );
+
+  Widget nextButton() => Expanded(
+        child: ElevatedButton(
+          onPressed: () async {
+            if (currentPageIndex ==
+                widget.workout.workoutExercises.length - 1) {
+              Navigation.pushPopup(
+                widget: UserWorkoutInProgressFinishedPopup(
+                  workout: widget.workout,
+                ),
+              );
+            } else {
+              await pageController.nextPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            }
+            setState(() {});
+          },
+          child: Text(
+            (currentPageIndex == widget.workout.workoutExercises.length - 1)
+                ? 'Finish'
+                : 'Next',
+          ),
+        ),
+      );
 }

@@ -3,6 +3,7 @@ library utils;
 import 'package:fitness_app/app.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class Navigation {
   static Future<void> push({required Widget widget}) async =>
@@ -48,4 +49,38 @@ class Navigation {
       ),
     );
   }
+
+  static void pushMessage({String? message}) {
+    if (message == null) return;
+    pushPopup(
+      widget: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Message',
+              style: App.navigatorKey.currentContext!.textTheme.titleMedium,
+            ),
+            const SizedBox(height: 10),
+            Text(message),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Navigation.pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static void disableInput() => showDialog(
+        context: App.navigatorKey.currentContext!,
+        barrierDismissible: false,
+        builder: (context) => const MyLoadingWidget(),
+      );
+
+  static void enableInput() => pop();
 }

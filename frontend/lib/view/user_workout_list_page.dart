@@ -4,121 +4,93 @@ import 'package:fitness_app/models/src/schedule.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/user_workout_info_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
-class UserWorkoutListPage extends StatelessWidget {
+class UserWorkoutListPage extends StatefulWidget {
   const UserWorkoutListPage({super.key});
+
+  @override
+  State<UserWorkoutListPage> createState() => _UserWorkoutListPageState();
+}
+
+class _UserWorkoutListPageState extends State<UserWorkoutListPage> {
+  List<Workout>? userWorkouts;
+  List<Workout>? adminWorkouts;
+
+  @override
+  void initState() {
+    super.initState();
+    loadWorkouts();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      physics: const ScrollPhysics(),
+      padding: const EdgeInsets.all(20).addSafeArea(context),
       children: [
-        const SafeArea(
-          bottom: false,
-          child: SizedBox(),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-          child: Text('Your Workouts', style: context.textTheme.bodyMedium),
-        ),
-        StreamBuilder<List<Workout>>(
-          stream: UserRepository.currentUserCustomWorkouts,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            var workouts = snapshot.data!;
-            if (workouts.isEmpty) {
-              return SizedBox(
-                height: 100,
-                child: Center(
-                  child: Text(
-                    'No favorites yet',
-                    style: context.textTheme.labelSmall,
-                  ),
-                ),
-              );
-            }
-
-            return ListView.builder(
-              itemCount: workouts.length,
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(10),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    title: Text(workouts[index].name),
-                    subtitle: Text(workouts[index].description),
-                    onTap: () => Navigation.push(
-                      widget: UserWorkoutInfoScreen(
-                        workout: workouts[index],
-                        isAlreadyCopied: true,
-                      ),
-                    ),
-                    trailing: Text(
-                      workouts[index].schedule.strName,
-                      style: context.textTheme.labelSmall,
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-          child: Text('All Workouts', style: context.textTheme.bodyMedium),
-        ),
-        StreamBuilder<List<Workout>>(
-          stream: WorkoutRepository.streamWorkouts,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            var workouts = snapshot.data!;
-            if (workouts.isEmpty) {
-              return SizedBox(
-                height: 100,
-                child: Center(
-                  child: Text(
-                    'No workouts yet',
-                    style: context.textTheme.labelSmall,
-                  ),
-                ),
-              );
-            }
-
-            return ListView.builder(
-              physics: const ScrollPhysics(),
-              itemCount: workouts.length,
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(10),
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(10),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                    title: Text(workouts[index].name),
-                    subtitle: Text(workouts[index].description),
-                    onTap: () => Navigation.push(
-                      widget: UserWorkoutInfoScreen(
-                        workout: workouts[index],
-                      ),
-                    ),
-                    trailing: Text(
-                      workouts[index].schedule.strName,
-                      style: context.textTheme.labelSmall,
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
+        const Text('Your Workouts'),
+        if (userWorkouts == null)
+          const SizedBox(
+            height: 100,
+            child: MyLoadingWidget(),
+          )
+        else if (userWorkouts!.isEmpty)
+          const SizedBox(
+            height: 100,
+            child: MyErrorWidget(
+              error: 'No favorites yet',
+            ),
+          )
+        else
+          for (var u in userWorkouts!) workoutListTile(u, true),
+        const SizedBox(height: 10),
+        const Text('All Workouts'),
+        if (adminWorkouts == null)
+          const SizedBox(
+            height: 100,
+            child: MyLoadingWidget(),
+          )
+        else if (adminWorkouts!.isEmpty)
+          const SizedBox(
+            height: 100,
+            child: MyErrorWidget(
+              error: 'No favorites yet',
+            ),
+          )
+        else
+          for (var u in adminWorkouts!) workoutListTile(u, false),
       ],
     );
   }
+
+  loadWorkouts() async {
+    if (!mounted) return;
+    userWorkouts = await UserRepository.currentUserCustomWorkoutsAsFuture;
+    if (mounted) setState(() {});
+    adminWorkouts = await WorkoutRepository.adminWorkoutsAsFuture;
+    if (mounted) setState(() {});
+  }
+
+  Widget workoutListTile(Workout workout, bool userWorkout) => Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            workout.schedule.strName,
+            style: context.textTheme.labelSmall,
+          ),
+          const SizedBox(height: 10),
+          MyListTile(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            title: workout.name,
+            subtitle: workout.description,
+            onTap: () => Navigation.push(
+              widget: UserWorkoutInfoScreen(
+                workout: workout,
+                isAlreadyCopied: userWorkout,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+        ],
+      );
 }

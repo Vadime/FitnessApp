@@ -3,6 +3,7 @@ import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/admin_workout_add_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class AdminWorkoutListPage extends StatefulWidget {
   const AdminWorkoutListPage({super.key});
@@ -12,51 +13,43 @@ class AdminWorkoutListPage extends StatefulWidget {
 }
 
 class _AdminWorkoutListPageState extends State<AdminWorkoutListPage> {
-  late Stream<List<Workout>> workoutStream;
+  List<Workout>? workouts;
 
   @override
   void initState() {
     super.initState();
-    workoutStream = WorkoutRepository.streamWorkouts;
+    loadWorkouts();
+  }
+
+  loadWorkouts() async {
+    workouts = await WorkoutRepository.adminWorkoutsAsFuture;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Workout>>(
-      stream: workoutStream,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    if (workouts == null) {
+      return const MyLoadingWidget();
+    }
+    if (workouts!.isEmpty) {
+      return const MyErrorWidget(
+        error: 'No workouts found',
+      );
+    }
 
-        List<Workout>? workouts = snapshot.data;
-
-        if (snapshot.data == null || workouts!.isEmpty) {
-          return Center(
-            child: Text(
-              'No workouts found',
-              style: context.textTheme.labelSmall,
+    return ListView.builder(
+      itemCount: workouts!.length,
+      padding: const EdgeInsets.all(20).addSafeArea(context),
+      itemBuilder: (context, index) {
+        return MyListTile(
+          title: workouts![index].name,
+          subtitle: workouts![index].description,
+          margin: const EdgeInsets.only(bottom: 20),
+          onTap: () => Navigation.push(
+            widget: AdminWorkoutAddScreen(
+              workout: workouts![index],
             ),
-          );
-        }
-
-        return ListView.builder(
-          itemCount: workouts.length,
-          padding: const EdgeInsets.all(10).addSafeArea(context),
-          itemBuilder: (context, index) {
-            return Card(
-              margin: const EdgeInsets.all(10),
-              child: ListTile(
-                title: Text(workouts[index].name),
-                subtitle: Text(workouts[index].description),
-                onTap: () => Navigation.push(
-                  widget: AdminWorkoutAddScreen(
-                    workout: workouts[index],
-                  ),
-                ),
-              ),
-            );
-          },
+          ),
         );
       },
     );

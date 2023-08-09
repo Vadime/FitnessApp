@@ -1,4 +1,4 @@
-import 'package:fitness_app/database/user_repository.dart';
+import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

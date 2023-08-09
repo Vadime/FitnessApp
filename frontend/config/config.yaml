@@ -24,10 +24,7 @@ flutter_launcher_icons:
   remove_alpha_ios: true
 
   web:
-    generate: true
-    image_path: "res/logo/foreground.png"
-    background_color: "#f5f5f5"
-    theme_color: "#2196F3"
+    generate: false
 
 
 # dart run flutter_native_splash:create --path=path/to/my/file.yaml

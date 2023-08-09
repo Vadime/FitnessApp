@@ -1,8 +1,7 @@
-import 'package:equatable/equatable.dart';
 import 'package:fitness_app/models/src/schedule.dart';
 import 'package:fitness_app/models/src/workout_exercise.dart';
 
-class Workout extends Equatable {
+class Workout {
   final String uid;
   final String name;
   final String description;
@@ -35,13 +34,4 @@ class Workout extends Equatable {
             .map((e) => WorkoutExercise.fromJson(e))
             .toList(),
       );
-
-  @override
-  List<Object?> get props => [
-        uid,
-        name,
-        description,
-        schedule,
-        workoutExercises,
-      ];
 }

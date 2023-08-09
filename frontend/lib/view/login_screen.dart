@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
             SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                padding: const EdgeInsets.fromLTRB(30, 0, 30, 10),
                 child: BlocConsumer<LoginBloc, LoginState>(
                   listener: (context, state) =>
                       pageController.goToPage(state.page),

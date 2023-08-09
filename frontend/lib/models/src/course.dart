@@ -1,19 +1,18 @@
-
-import 'package:equatable/equatable.dart';
-
-class Course extends Equatable {
+class Course {
   final String uid;
   final String name;
   final String description;
-  String? imageURL;
+  final String? imageURL;
+  final List<String> userUIDS;
 
   final String date;
 
-  Course({
+  const Course({
     required this.uid,
     required this.name,
     required this.description,
     required this.date,
+    required this.userUIDS,
     this.imageURL,
   });
 
@@ -23,6 +22,7 @@ class Course extends Equatable {
         'description': description,
         'date': date,
         'imageURL': imageURL,
+        'userUIDS': userUIDS,
       };
 
   // from json
@@ -32,8 +32,6 @@ class Course extends Equatable {
         description: json['description'],
         date: json['date'],
         imageURL: json['imageURL'],
+        userUIDS: List<String>.from(json['userUIDS'] ?? []),
       );
-
-  @override
-  List<Object?> get props => [uid, name, description, date, imageURL];
 }

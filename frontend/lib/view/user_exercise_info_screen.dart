@@ -1,10 +1,11 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness_app/database/user_repository.dart';
+import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/utils.dart';
+import 'package:fitness_app/view/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class UserExerciseInfoScreen extends StatefulWidget {
   final Exercise exercise;
@@ -33,8 +34,9 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.exercise.name),
+      extendBodyBehindAppBar: true,
+      appBar: MyAppBar(
+        title: widget.exercise.name,
         actions: [
           // add to favorites
           IconButton(
@@ -42,28 +44,22 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
               // add or remove this exercise to favorites in firestore in user collection
 
               if (isFavorite) {
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(UserRepository.currentUserUID)
-                    .update({
-                  'favoriteExercises':
-                      FieldValue.arrayRemove([widget.exercise.uid]),
-                });
+                await UserRepository.removeFavoriteExercise(
+                  widget.exercise.uid,
+                );
               } else {
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(UserRepository.currentUserUID)
-                    .set(
-                  {
-                    'favoriteExercises':
-                        FieldValue.arrayUnion([widget.exercise.uid]),
-                  },
-                  SetOptions(merge: true),
+                await UserRepository.addFavoriteExercise(
+                  widget.exercise.uid,
                 );
               }
               setState(() {
                 isFavorite = !isFavorite;
               });
+              Navigation.flush(
+                widget: const HomeScreen(
+                  initialIndex: 2,
+                ),
+              );
             },
             icon: Icon(
               !isFavorite
@@ -73,67 +69,66 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Container(
-              height: 200,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: context.theme.cardColor,
-                image: widget.imageFile == null
-                    ? null
-                    : DecorationImage(
-                        image: FileImage(widget.imageFile!),
-                        fit: BoxFit.cover,
+      body: ListView(
+        padding: const EdgeInsets.all(20).addSafeArea(context),
+        children: [
+          SizedBox(height: context.topInset),
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: context.theme.cardColor,
+              image: widget.imageFile == null
+                  ? null
+                  : DecorationImage(
+                      image: FileImage(widget.imageFile!),
+                      fit: BoxFit.cover,
+                    ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Table(
+                columnWidths: const {
+                  0: FlexColumnWidth(1),
+                  1: FlexColumnWidth(2),
+                },
+                children: [
+                  TableRow(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text('Description'),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(widget.exercise.description),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text('Muscles'),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          widget.exercise.muscles
+                              .map((e) => e.strName)
+                              .join(', '),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            Card(
-              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Table(
-                  columnWidths: const {
-                    0: FlexColumnWidth(1),
-                    1: FlexColumnWidth(2),
-                  },
-                  children: [
-                    TableRow(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text('Description'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(widget.exercise.description),
-                        ),
-                      ],
-                    ),
-                    TableRow(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(10),
-                          child: Text('Muscles'),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            widget.exercise.muscles
-                                .map((e) => e.strName)
-                                .join(', '),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

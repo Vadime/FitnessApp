@@ -42,3 +42,53 @@ exports.addUserRole = functions.https.onCall(async (data, context) => {
         };
     }
 });
+
+// Friend Data structure
+// class Friend {
+//     constructor(uid, email, displayName, imageURL) {
+//         this.uid = uid;
+//         this.email = email;
+//         this.displayName = displayName;
+//         this.imageURL = imageURL;
+//     }
+
+//     // to json
+//     toJSON() {
+//         return {
+//             uid: this.uid,
+//             email: this.email,
+//             displayName: this.displayName,
+//             imageURL: this.imageURL,
+//         };
+//     }
+// }
+
+exports.getFriendByEmail = functions.https.onCall(async (data, context) => {
+    try {
+        const user = await admin.auth().getUserByEmail(data.email);
+        return {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            imageURL: user.photoURL,
+        };
+    } catch (error) {
+        return null;
+    }
+});
+
+
+
+exports.getFriendByUID = functions.https.onCall(async (data, context) => {
+    try {
+        const user = await admin.auth().getUser(data.uid);
+        return {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            imageURL: user.photoURL,
+        };
+    } catch (error) {
+        return null;
+    }
+});

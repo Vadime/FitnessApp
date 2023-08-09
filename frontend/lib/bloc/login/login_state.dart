@@ -19,20 +19,20 @@ class LoginSignUpState extends LoginState {
   Future<void> onDone(BuildContext context) async {
     // check if there is an error in email
     if (!emailBloc.isValid()) {
-      return Messaging.show(
+      return Navigation.pushMessage(
         message: emailBloc.errorText,
       );
     }
     // check if there is an error in password
     if (!passwordBloc.isValid()) {
-      return Messaging.show(
+      return Navigation.pushMessage(
         message: passwordBloc.errorText,
       );
     }
 
     // check if there is an error in rPassword
     if (rPasswordBloc.state.text != passwordBloc.state.text) {
-      return Messaging.show(message: "Passwords don't match!");
+      return Navigation.pushMessage(message: "Passwords don't match!");
     }
     try {
       await UserRepository.createUserWithEmailAndPassword(
@@ -40,7 +40,7 @@ class LoginSignUpState extends LoginState {
         password: passwordBloc.state.text!,
       );
     } catch (e) {
-      Messaging.show(message: e.toString());
+      Navigation.pushMessage(message: e.toString());
       return;
     }
   }
@@ -56,13 +56,13 @@ class LoginSignInState extends LoginState {
   Future<void> onDone(BuildContext context) async {
     // check if there is an error in email
     if (!emailBloc.isValid()) {
-      return Messaging.show(
+      return Navigation.pushMessage(
         message: emailBloc.errorText,
       );
     }
     // check if there is an error in password
     if (!passwordBloc.isValid()) {
-      return Messaging.show(
+      return Navigation.pushMessage(
         message: passwordBloc.errorText,
       );
     }
@@ -72,7 +72,7 @@ class LoginSignInState extends LoginState {
         password: passwordBloc.state.text!,
       );
     } catch (e) {
-      Messaging.show(message: e.toString());
+      Navigation.pushMessage(message: e.toString());
       return;
     }
   }
@@ -86,7 +86,7 @@ class LoginSendPasswordState extends LoginState {
   Future<void> onDone(BuildContext context) async {
     // check if there is an error in email
     if (!emailBloc.isValid()) {
-      return Messaging.show(
+      return Navigation.pushMessage(
         message: emailBloc.errorText,
       );
     }
@@ -94,10 +94,10 @@ class LoginSendPasswordState extends LoginState {
       await UserRepository.sendPasswordResetEmail(
         email: emailBloc.state.text!,
       );
-      Messaging.show(message: 'Email sent!');
+      Navigation.pushMessage(message: 'Email sent!');
       if (context.mounted) context.read<LoginBloc>().add(LoginSignInEvent());
     } catch (e) {
-      Messaging.show(message: e.toString());
+      Navigation.pushMessage(message: e.toString());
       return;
     }
   }

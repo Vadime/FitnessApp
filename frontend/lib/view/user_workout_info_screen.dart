@@ -1,14 +1,15 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/models/src/schedule.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/exercise_image.dart';
+import 'package:fitness_app/view/home_screen.dart';
 import 'package:fitness_app/view/user_workout_add_screen.dart';
 import 'package:fitness_app/view/user_workout_in_progress_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class UserWorkoutInfoScreen extends StatefulWidget {
   final Workout workout;
@@ -25,8 +26,7 @@ class UserWorkoutInfoScreen extends StatefulWidget {
 
 class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
   bool copied = false;
-  List<Exercise> exercises = [];
-  List<File?> images = [];
+  Map<Tupel<Exercise, WorkoutExercise>, File?>? exercises;
 
   @override
   void initState() {
@@ -34,23 +34,55 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
     loadExercises();
   }
 
-  loadExercises() async {
-    for (WorkoutExercise w in widget.workout.workoutExercises) {
-      var doc = await FirebaseFirestore.instance
-          .collection('exercises')
-          .doc(w.exerciseUID)
-          .get();
-      if (doc.data() == null) return;
-      Exercise exercise = Exercise.fromJson(
-        doc.id,
-        doc.data()!,
-      );
-      exercises.add(exercise);
-      setState(() {});
-      var image = await ExerciseRepository.getExerciseImage(exercise);
-      images.add(image);
-      setState(() {});
-    }
+  Widget editWorkoutButton() {
+    return IconButton(
+      onPressed: () async {
+        Navigation.push(
+          widget: UserWorkoutAddScreen(
+            workout: widget.workout,
+          ),
+        );
+      },
+      icon: const Icon(Icons.edit_rounded),
+    );
+  }
+
+  Widget copyWorkoutButton() {
+    return IconButton(
+      onPressed: () async {
+        // copy workout to users workouts
+        setState(() {
+          copied = true;
+        });
+        await UserRepository.copyToPersonalWorkouts(widget.workout);
+
+        Navigation.flush(widget: const HomeScreen(initialIndex: 1));
+      },
+      icon: !copied
+          ? const Icon(Icons.copy_rounded)
+          : const Icon(Icons.check_rounded, color: Colors.green),
+    );
+  }
+
+  Widget startWorkoutButton() {
+    return SafeArea(
+      top: false,
+      child: MyElevatedButton(
+        margin: const EdgeInsets.fromLTRB(30, 0, 30, 10),
+        onPressed: () {
+          if (exercises == null) {
+            return;
+          }
+          Navigation.push(
+            widget: UserWorkoutInProgressScreen(
+              workout: widget.workout,
+              exercises: exercises!,
+            ),
+          );
+        },
+        text: 'Start Workout',
+      ),
+    );
   }
 
   @override
@@ -58,203 +90,130 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: Text(widget.workout.name),
+      appBar: MyAppBar(
+        title: widget.workout.name,
         actions: [
           if (widget.isAlreadyCopied)
-            IconButton(
-              onPressed: () async {
-                Navigation.push(
-                  widget: UserWorkoutAddScreen(
-                    workout: widget.workout,
-                  ),
-                );
-              },
-              icon: const Icon(Icons.edit_rounded),
-            )
+            editWorkoutButton()
           else
-            IconButton(
-              onPressed: () async {
-                // copy workout to users workouts
-                setState(() {
-                  copied = true;
-                });
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(UserRepository.currentUserUID)
-                    .collection('workouts')
-                    .add(widget.workout.toJson());
-
-                Navigation.pop();
-              },
-              icon: !copied
-                  ? const Icon(Icons.copy_rounded)
-                  : const Icon(Icons.check_rounded, color: Colors.green),
-            )
+            copyWorkoutButton()
         ],
       ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigation.push(
-                widget: UserWorkoutInProgressScreen(
-                  workout: widget.workout,
-                ),
-              );
-            },
-            child: const Text('Start Workout'),
-          ),
-        ),
-      ),
+      bottomNavigationBar: startWorkoutButton(),
       body: ListView(
-        physics: const ScrollPhysics(),
+        padding: const EdgeInsets.all(20),
         children: [
           const SafeArea(
             bottom: false,
-            child: SizedBox.shrink(),
+            child: SizedBox(),
           ),
           // workout description
-          Table(
+          MyTable(
             columnWidths: const {
               0: FlexColumnWidth(1),
               1: FlexColumnWidth(2),
             },
-            children: [
-              TableRow(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text('Description'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(widget.workout.description),
-                  ),
+            rows: [
+              MyTableRow(
+                cells: [
+                  'Description',
+                  widget.workout.description,
                 ],
               ),
-              TableRow(
-                decoration: BoxDecoration(
-                  color: context.theme.cardColor.withOpacity(0.5),
-                ),
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text('Schedule'),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(widget.workout.schedule.strName),
-                  ),
-                ],
+              MyTableRow(
+                cells: ['Schedule', widget.workout.schedule.strName],
               ),
             ],
           ),
+          const SizedBox(height: 20),
+          const Text('Exercises'),
+          const SizedBox(height: 10),
 
-          const Padding(
-            padding: EdgeInsets.all(20),
-            child: Text('Exercises'),
-          ),
           // workout exercises
-
-          if (exercises.isEmpty)
-            const Center(child: CircularProgressIndicator.adaptive())
+          if (exercises == null)
+            const SizedBox(
+              height: 100,
+              child: MyErrorWidget(error: "Couldn't load exercises"),
+            )
+          else if (exercises!.isEmpty)
+            const SizedBox(
+              height: 100,
+              child: MyLoadingWidget(),
+            )
           else
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: exercises.length,
-              padding: const EdgeInsets.fromLTRB(
-                10,
-                0,
-                10,
-                0,
-              ),
-              itemBuilder: (context, index) {
-                return Card(
-                  margin: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                        title: Text(exercises[index].name),
-                        subtitle: Text(exercises[index].description),
-                        tileColor: context.theme.highlightColor,
-                        trailing: ExerciseImage(
-                          imageFiles: images,
-                          index: index,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: Table(
-                          columnWidths: const {
-                            0: FlexColumnWidth(6),
-                          },
-                          children: [
-                            TableRow(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: Text('Sets'),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                    widget.workout.workoutExercises[index]
-                                        .recommendedSets
-                                        .toString(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            TableRow(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: Text('Reps'),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                    widget.workout.workoutExercises[index]
-                                        .recommendedReps
-                                        .toString(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            TableRow(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(10),
-                                  child: Text('Weights'),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(
-                                    widget
-                                        .workout.workoutExercises[index].weight
-                                        .toString(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+            for (MapEntry<Tupel<Exercise, WorkoutExercise>, File?> e
+                in exercises!.entries)
+              exerciseListTile(e),
+          const SafeArea(
+            top: false,
+            child: SizedBox(),
+          ),
         ],
       ),
     );
   }
 
-  //  FirebaseFirestore.instance.collection('exercises').snapshots();
+  loadExercises() async {
+    for (WorkoutExercise w in widget.workout.workoutExercises) {
+      var exercise = await ExerciseRepository.getExercise(w.exerciseUID);
+      var image = await ExerciseRepository.getExerciseImage(exercise);
+      (exercises ??= {}).putIfAbsent(Tupel(exercise, w), () => image);
+      setState(() {});
+    }
+  }
+
+  Widget exerciseListTile(e) => Column(
+        children: [
+          const SizedBox(height: 10),
+          MyListTile(
+            padding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
+            title: e.key.t1.name,
+            trailing: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                0,
+                10,
+                0,
+                10,
+              ),
+              child: ExerciseImage(
+                image: e.value,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          MyTable(
+            columnWidths: const {
+              0: FlexColumnWidth(1),
+              1: FlexColumnWidth(2),
+            },
+            rows: [
+              MyTableRow(
+                cells: [
+                  'Description',
+                  e.key.t1.description,
+                ],
+              ),
+              MyTableRow(
+                cells: [
+                  'Sets',
+                  e.key.t2.recommendedSets.toString(),
+                ],
+              ),
+              MyTableRow(
+                cells: [
+                  'Reps',
+                  e.key.t2.recommendedReps.toString(),
+                ],
+              ),
+              MyTableRow(
+                cells: [
+                  'Weights',
+                  e.key.t2.weight.toString(),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+        ],
+      );
 }

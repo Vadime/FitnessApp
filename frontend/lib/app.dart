@@ -1,13 +1,11 @@
 import 'package:fitness_app/bloc/authentication/authentication_bloc.dart';
 import 'package:fitness_app/bloc/theme/theme_bloc.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/app_splash_error_screen.dart';
+import 'package:fitness_app/view/app_onboarding_screen.dart';
 import 'package:fitness_app/view/home_screen.dart';
-import 'package:fitness_app/view/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:onboarding/onboarding.dart';
 
 ThemeData genTheme(
   String primaryStr,
@@ -29,9 +27,12 @@ ThemeData genTheme(
   return ThemeData(
     primaryColor: primary,
     brightness: brightness,
+    canvasColor: Colors.transparent,
+    shadowColor: Colors.transparent,
     iconTheme: IconThemeData(
       color: primary.withOpacity(opacity),
     ),
+    
     snackBarTheme: SnackBarThemeData(
       elevation: elevation,
       backgroundColor: background.withOpacity(opacity),
@@ -50,6 +51,7 @@ ThemeData genTheme(
       minLeadingWidth: 0,
       horizontalTitleGap: 0,
       minVerticalPadding: 0,
+      tileColor: card,
       iconColor: primary.withOpacity(opacity),
     ),
     segmentedButtonTheme: SegmentedButtonThemeData(
@@ -61,7 +63,7 @@ ThemeData genTheme(
           BorderSide(
             color: background,
             width: 4,
-            strokeAlign: BorderSide.strokeAlignInside,
+            strokeAlign: BorderSide.strokeAlignOutside,
           ),
         ),
         minimumSize: MaterialStateProperty.all(
@@ -220,37 +222,10 @@ class App extends StatelessWidget {
   static GlobalKey<ScaffoldMessengerState> messengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
-  final String? initialisationError;
-
-  const App({this.initialisationError, super.key});
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (initialisationError != null) {
-      return MaterialApp(
-        navigatorKey: navigatorKey,
-        scaffoldMessengerKey: messengerKey,
-        title: const String.fromEnvironment('title'),
-        themeMode: ThemeMode.dark,
-        theme: genTheme(
-          const String.fromEnvironment('primary'),
-          const String.fromEnvironment('backgroundLight'),
-          const String.fromEnvironment('cardLight'),
-          const String.fromEnvironment('neutralLight'),
-          const String.fromEnvironment('backgroundDark'),
-          Brightness.light,
-        ),
-        darkTheme: genTheme(
-          const String.fromEnvironment('primary'),
-          const String.fromEnvironment('backgroundDark'),
-          const String.fromEnvironment('cardDark'),
-          const String.fromEnvironment('neutralDark'),
-          const String.fromEnvironment('backgroundLight'),
-          Brightness.dark,
-        ),
-        home: SplashErrorScreen(initialisationError: initialisationError),
-      );
-    }
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -267,35 +242,7 @@ class App extends StatelessWidget {
             return;
           } else if (state is UserUnauthenticatedState) {
             Navigation.flush(
-              widget: OnboardingScreen(
-                data: const [
-                  OnboardingPageData(
-                    title: 'OB FETT',
-                    description: 'Pläne für jeden Fitnesslevel',
-                    image: 'res/logo/foreground.png',
-                    color: Colors.red,
-                  ),
-                  OnboardingPageData(
-                    title: 'DÜNN',
-                    description: 'Pläne für jeden Fitnesslevel',
-                    image: 'res/logo/foreground.png',
-                    color: Colors.blue,
-                  ),
-                  OnboardingPageData(
-                    title: 'ODER DOOF',
-                    description: 'Pläne für jeden Fitnesslevel',
-                    image: 'res/logo/foreground.png',
-                    color: Colors.green,
-                  ),
-                  OnboardingPageData(
-                    title: 'DU BIST HIER RICHTIG',
-                    description: 'Pläne für jeden Fitnesslevel',
-                    image: 'res/logo/foreground.png',
-                    color: Colors.amber,
-                  ),
-                ],
-                onDone: () => Navigation.replace(widget: const LoginScreen()),
-              ),
+              widget: const AppOnboardingScreen(),
             );
             return;
           }
@@ -304,6 +251,7 @@ class App extends StatelessWidget {
         child: BlocBuilder<ThemeBloc, ThemeMode>(
           builder: (context, state) {
             return MaterialApp(
+              
               navigatorKey: navigatorKey,
               scaffoldMessengerKey: messengerKey,
               title: const String.fromEnvironment('title'),
@@ -324,10 +272,9 @@ class App extends StatelessWidget {
                 const String.fromEnvironment('backgroundLight'),
                 Brightness.dark,
               ),
-              home: const Scaffold(),
-              // home: OnboardingScreen(
-              //   onDone: () => Navigation.replace(widget: const LoginScreen()),
-              // ),
+              home: Container(
+                color: context.theme.scaffoldBackgroundColor,
+              ),
             );
           },
         ),

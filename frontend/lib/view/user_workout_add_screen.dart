@@ -1,12 +1,13 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/models/src/schedule.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/exercise_image.dart';
 import 'package:fitness_app/view/home_screen.dart';
+import 'package:fitness_app/view/user_workout_delete_popup.dart';
+import 'package:fitness_app/view/workout_exercise_not_selected_widget.dart';
+import 'package:fitness_app/view/workout_exercise_selected_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -23,13 +24,10 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
   late NameBloc nameBloc;
   late TextBloc descriptionBloc;
 
-  Map<String, File?> imageFiles = {};
+  List<Tripple<Exercise, WorkoutExercise, File?>> exercisesSel = [];
+  List<Tupel<Exercise, File?>> exercisesOth = [];
 
-  List<Exercise> exercisesSel = [];
-  List<Exercise> exercisesOth = [];
-
-  List<WorkoutExercise> selectedExercises = [];
-  late Set<Schedule> selectedSchedule;
+  late Schedule selectedSchedule;
 
   @override
   void initState() {
@@ -42,41 +40,32 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
       hint: 'Description',
     );
     selectedSchedule = widget.workout?.schedule != null
-        ? {widget.workout!.schedule}
-        : {Schedule.daily};
+        ? widget.workout!.schedule
+        : Schedule.daily;
     ExerciseRepository.getExercises().then(
-      (exercises) {
-        selectedExercises = widget.workout?.workoutExercises ?? [];
+      (exercises) async {
+        var selectedExercises = (widget.workout?.workoutExercises
+              ?..sort((a, b) => a.index.compareTo(b.index))) ??
+            [];
 
         // Get exercises for workout
         for (int i = 0; i < exercises.length; i++) {
           Exercise exercise = exercises[i];
-          if (selectedExercises
-              .where((e) => e.exerciseUID == exercise.uid)
-              .isNotEmpty) {
-            exercisesSel.add(exercise);
-          } else {
-            exercisesOth.add(exercise);
-          }
-        }
-        // sort selectedExercises and exerciseSel to be in same order
-        selectedExercises.sort((a, b) => a.index.compareTo(b.index));
-        exercisesSel.sort((a, b) {
-          // Get index of exercise in selectedExercises
-          int indexA =
-              selectedExercises.indexWhere((e) => e.exerciseUID == a.uid);
-          int indexB =
-              selectedExercises.indexWhere((e) => e.exerciseUID == b.uid);
-          return indexA.compareTo(indexB);
-        });
-
-        // Get images for exercises
-        for (int i = 0; i < exercises.length; i++) {
-          ExerciseRepository.getExerciseImage(exercises[i]).then(
-            (value) => setState(
-              () => imageFiles.putIfAbsent(exercises[i].uid, () => value),
-            ),
+          var image = await ExerciseRepository.getExerciseImage(exercise);
+          var workoutExercise = selectedExercises.firstWhere(
+            (e) => e.exerciseUID == exercise.uid,
+            orElse: () => WorkoutExercise.empty(),
           );
+          if (workoutExercise.exerciseUID.isNotEmpty) {
+            exercisesSel.add(
+              Tripple(exercise, workoutExercise, image),
+            );
+          } else {
+            exercisesOth.add(Tupel(exercise, image));
+          }
+          exercisesSel.sort((a, b) => a.b.index.compareTo(b.b.index));
+          exercisesOth.sort((a, b) => a.t1.name.compareTo(b.t1.name));
+          setState(() {});
         }
       },
     );
@@ -87,51 +76,51 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: const Text('Add Workout'),
-        actions: [
-          if (widget.workout != null) deleteButton(),
-          addUpdateButton(),
-        ],
+      appBar: const MyAppBar(
+        title: 'Add Workout',
+      ),
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            const SizedBox(width: 30),
+            if (widget.workout != null) deleteButton(),
+            addUpdateButton(),
+            const SizedBox(width: 30),
+          ],
+        ),
       ),
       body: ListView(
         physics: const ScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
         children: [
           const SafeArea(
             bottom: false,
             child: SizedBox(),
           ),
           // name and description
-          Card(
-            margin: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  MyTextField(
-                    bloc: nameBloc,
-                  ),
-                  const SizedBox(height: 10),
-                  MyTextField(
-                    bloc: descriptionBloc,
-                  ),
-                ],
+          MyCard(
+            padding: const EdgeInsets.all(20),
+            children: [
+              MyTextField(
+                bloc: nameBloc,
               ),
-            ),
+              const SizedBox(height: 10),
+              MyTextField(
+                bloc: descriptionBloc,
+              ),
+            ],
           ),
-          // schedule
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: Text(
-              'Schedule',
-              style: context.textTheme.bodyMedium,
-            ),
+          const SizedBox(height: 20),
+          Text(
+            'Schedule',
+            style: context.textTheme.bodyMedium,
           ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+          const SizedBox(height: 20),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               child: SegmentedButton<Schedule>(
                 emptySelectionAllowed: false,
                 segments: [
@@ -141,20 +130,19 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
                       value: type,
                     ),
                 ],
-                selected: selectedSchedule,
+                selected: {selectedSchedule},
                 onSelectionChanged: (p0) =>
-                    setState(() => selectedSchedule = p0),
+                    setState(() => selectedSchedule = p0.first),
               ),
             ),
           ),
-          // exercises in workout
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-            child: Text(
-              'Exercises',
-              style: context.textTheme.bodyMedium,
-            ),
+          const SizedBox(height: 20),
+          Text(
+            'Exercises',
+            style: context.textTheme.bodyMedium,
           ),
+          const SizedBox(height: 10),
+
           if (exercisesSel.isEmpty)
             SizedBox(
               height: 100,
@@ -165,50 +153,33 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
                 ),
               ),
             ),
-          Theme(
-            data: Theme.of(context).copyWith(
-              canvasColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-            ),
-            child: ReorderableListView.builder(
-              shrinkWrap: true,
-              physics: const ScrollPhysics(),
-              itemCount: exercisesSel.length,
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-              onReorder: (oldIndex, newIndex) {
-                setState(() {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  final Exercise item = exercisesSel.removeAt(oldIndex);
-                  exercisesSel.insert(newIndex, item);
-
-                  final WorkoutExercise item2 =
-                      selectedExercises.removeAt(oldIndex);
-                  selectedExercises.insert(newIndex, item2);
-
-                  selectedExercises.asMap().forEach((index, element) {
-                    element.index = index;
-                  });
-                });
-              },
-              itemBuilder: (context, index) {
-                return selectedExerciseWidget(
-                  imageFiles[selectedExercises[index].exerciseUID],
-                  exercisesSel[index],
-                  selectedExercises[index],
-                );
-              },
+          ReorderableListView.builder(
+            shrinkWrap: true,
+            physics: const ScrollPhysics(),
+            itemCount: exercisesSel.length,
+            onReorder: (oldIndex, newIndex) {
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              exercisesSel.elementAt(oldIndex).b.index = newIndex;
+              exercisesSel.elementAt(newIndex).b.index = oldIndex;
+              exercisesSel.sort((a, b) => a.b.index.compareTo(b.b.index));
+              setState(() {});
+            },
+            itemBuilder: (context, index) => WorkoutExerciseSelectedWidget(
+              key: Key(exercisesSel.elementAt(index).a.uid),
+              entry: exercisesSel.elementAt(index),
+              exercisesSel: exercisesSel,
+              exercisesOth: exercisesOth,
+              setState: setState,
             ),
           ),
-          // exercises not in workout
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-            child: Text(
-              'Other exercises',
-              style: context.textTheme.bodyMedium,
-            ),
+          const SizedBox(height: 10),
+          Text(
+            'Other exercises',
+            style: context.textTheme.bodyMedium,
           ),
+          const SizedBox(height: 10),
           if (exercisesOth.isEmpty)
             SizedBox(
               height: 100,
@@ -219,271 +190,73 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
                 ),
               ),
             ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const ScrollPhysics(),
-            itemCount: exercisesOth.length,
-            padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
-            itemBuilder: (context, index) {
-              return otherExerciseWidget(
-                imageFiles[exercisesOth[index].uid],
-                exercisesOth[index],
-              );
-            },
+          for (var e in exercisesOth)
+            WorkoutExerciseNotSelectedWidget(
+              entry: e,
+              exercisesSel: exercisesSel,
+              exercisesOth: exercisesOth,
+              setState: setState,
+            ),
+          const SafeArea(
+            top: false,
+            child: SizedBox(height: 0),
           ),
         ],
       ),
     );
   }
 
-  Card selectedExerciseWidget(
-    File? image,
-    Exercise exercise,
-    WorkoutExercise? currentExercise,
-  ) {
-    return Card(
-      key: Key(exercise.uid),
-      margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-      child: Column(
-        children: [
-          ListTile(
-            contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-            title: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(exercise.name),
-            ),
-            leading: ExerciseImage(
-              imageFiles: [image],
-              index: 0,
-            ),
-            subtitle: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: Text(exercise.description),
-            ),
-            trailing: const Icon(Icons.drag_handle),
-            onTap: () {
-              selectedExercises.removeWhere(
-                (e) => e.exerciseUID == exercise.uid,
+  Widget addUpdateButton() => Expanded(
+        child: ElevatedButton(
+          onPressed: () async {
+            if (!nameBloc.isValid()) {
+              return Navigation.pushMessage(
+                message: nameBloc.state.errorText ?? 'Invalid name',
               );
-              exercisesSel.removeWhere(
-                (e) => e.uid == exercise.uid,
+            }
+            if (!descriptionBloc.isValid()) {
+              return Navigation.pushMessage(
+                message:
+                    descriptionBloc.state.errorText ?? 'Invalid description',
               );
-              exercisesOth.add(exercise);
-              setState(() {});
-            },
-            selected: true,
-            selectedTileColor: context.theme.highlightColor,
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: TextEditingController(
-                      text: currentExercise?.recommendedSets.toString(),
-                    ),
-                    onChanged: (c) =>
-                        currentExercise?.recommendedSets = int.tryParse(
-                              c.toString(),
-                            ) ??
-                            0,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      labelText: 'Sets',
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: TextField(
-                    controller: TextEditingController(
-                      text: currentExercise?.recommendedReps.toString(),
-                    ),
-                    onChanged: (c) =>
-                        currentExercise?.recommendedReps = int.tryParse(
-                              c.toString(),
-                            ) ??
-                            0,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      labelText: 'Reps',
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: TextField(
-                    controller: TextEditingController(
-                      text: currentExercise?.weight.toString(),
-                    ),
-                    onChanged: (c) => currentExercise?.weight = int.tryParse(
-                          c.toString(),
-                        ) ??
-                        0,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      labelText: 'Weights',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+            }
+            try {
+              exercisesSel.sort((a, b) => a.b.index.compareTo(b.b.index));
 
-  Card otherExerciseWidget(File? image, Exercise exercise) {
-    return Card(
-      margin: const EdgeInsets.all(5),
-      child: ListTile(
-        contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-        title: Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: Text(exercise.name),
-        ),
-        leading: ExerciseImage(
-          imageFiles: [image],
-          index: 0,
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: Text(exercise.description),
-        ),
-        onTap: () {
-          selectedExercises.add(
-            WorkoutExercise(
-              exerciseUID: exercise.uid,
-              index: selectedExercises.length,
-              recommendedSets: 0,
-              recommendedReps: 0,
-              weight: 0,
-            ),
-          );
-          exercisesSel.add(exercise);
-          exercisesOth.removeWhere((e) => e.uid == exercise.uid);
-          setState(() {});
-        },
-      ),
-    );
-  }
-
-  IconButton addUpdateButton() {
-    return IconButton(
-      onPressed: () async {
-        if (!nameBloc.isValid()) {
-          return Messaging.show(
-            message: nameBloc.state.errorText ?? 'Invalid name',
-          );
-        }
-        if (!descriptionBloc.isValid()) {
-          return Messaging.show(
-            message: descriptionBloc.state.errorText ?? 'Invalid description',
-          );
-        }
-        try {
-          // sort exercises by index
-          selectedExercises.sort((a, b) => a.index.compareTo(b.index));
-
-          Workout workout = Workout(
-            uid: widget.workout?.uid ??
-                WorkoutRepository.collectionReference.doc().id,
-            name: nameBloc.state.text ?? '-',
-            description: descriptionBloc.state.text ?? '-',
-            schedule: selectedSchedule.first,
-            workoutExercises: selectedExercises,
-          );
-          if (widget.workout != null) {
-            await FirebaseFirestore.instance
-                .collection('users')
-                .doc(UserRepository.currentUserUID)
-                .collection('workouts')
-                .doc(widget.workout!.uid)
-                .update(workout.toJson());
-          } else {
-            await FirebaseFirestore.instance
-                .collection('users')
-                .doc(UserRepository.currentUserUID)
-                .collection('workouts')
-                .add(workout.toJson());
-          }
-          Messaging.show(
-            message: 'Exercise ${widget.workout == null ? 'added' : 'updated'}',
-          );
-
-          Navigation.flush(widget: const HomeScreen());
-        } catch (e) {
-          Messaging.show(
-            message:
-                'Error ${widget.workout == null ? 'adding' : 'updating'} workout: $e',
-          );
-        }
-      },
-      icon: Icon(
-        widget.workout != null ? Icons.save_rounded : Icons.add_rounded,
-        color: context.theme.colorScheme.primary,
-      ),
-    );
-  }
-
-  IconButton deleteButton() {
-    return IconButton(
-      onPressed: () => Navigation.pushPopup(
-        widget: DeleteWorkoutPopup(widget: widget),
-      ),
-      icon: Icon(Icons.delete_rounded, color: context.theme.colorScheme.error),
-    );
-  }
-}
-
-class DeleteWorkoutPopup extends StatelessWidget {
-  const DeleteWorkoutPopup({
-    super.key,
-    required this.widget,
-  });
-
-  final UserWorkoutAddScreen widget;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Delete Workout',
-            style: context.textTheme.titleLarge,
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'Are you sure you want to delete this workout?',
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            onPressed: () async {
+              Workout workout = Workout(
+                uid: widget.workout?.uid ??
+                    WorkoutRepository.collectionReference.doc().id,
+                name: nameBloc.state.text ?? '-',
+                description: descriptionBloc.state.text ?? '-',
+                schedule: selectedSchedule,
+                workoutExercises: exercisesSel.map((e) => e.b).toList(),
+              );
               if (widget.workout != null) {
-                // delete exercise from database
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(UserRepository.currentUserUID)
-                    .collection('workouts')
-                    .doc(widget.workout!.uid)
-                    .delete();
+                UserRepository.updateUsersWorkout(workout);
+              } else {
+                UserRepository.addUsersWorkout(workout);
               }
 
               Navigation.flush(widget: const HomeScreen());
-            },
-            child: const Text('Delete'),
+            } catch (e) {
+              Navigation.pushMessage(
+                message: 'Error saving workout: $e',
+              );
+            }
+          },
+          child: Text(
+            widget.workout != null ? 'Save Workout' : 'Add Workout',
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      );
+
+  Widget deleteButton() => Padding(
+        padding: const EdgeInsets.only(right: 20),
+        child: IconButton(
+          onPressed: () => Navigation.pushPopup(
+            widget: UserWorkoutDeletePopup(widget: widget),
+          ),
+          icon: const Icon(Icons.delete_rounded),
+        ),
+      );
 }

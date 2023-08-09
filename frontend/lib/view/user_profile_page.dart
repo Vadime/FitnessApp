@@ -1,22 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitness_app/bloc/theme/theme_bloc.dart';
 import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/profile_password_change_screen.dart';
+import 'package:fitness_app/view/profile_edit_screen.dart';
+import 'package:fitness_app/view/profile_header_widget.dart';
+import 'package:fitness_app/view/profile_password_change_popup.dart';
 import 'package:fitness_app/view/profile_theme_change_popup.dart';
+import 'package:fitness_app/view/profile_user_stats_graph.dart';
 import 'package:fitness_app/view/user_accunt_delete_popup.dart';
 import 'package:fitness_app/view/user_feedback_screen.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:fitness_app/view/user_profile_friend_add_popup.dart';
+import 'package:fitness_app/view/user_profile_friends_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-extension on String {
-  DateTime toDateTime() {
-    var arr = split('.');
-    return DateTime(int.parse(arr[2]), int.parse(arr[1]), int.parse(arr[0]));
-  }
-}
+import 'package:widgets/widgets.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
@@ -28,242 +25,106 @@ class UserProfilePage extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(20).addSafeArea(context),
       children: [
+        ProfileHeaderWidget(currentUser: currentUser),
+        const SizedBox(height: 40),
         Row(
           children: [
-            CircleAvatar(
-              radius: context.shortestSide / 7,
-              backgroundColor: context.theme.cardColor,
-              foregroundImage: currentUser?.imageURL == null
-                  ? null
-                  : NetworkImage(
-                      currentUser!.imageURL!,
-                    ),
-              child: Icon(
-                Icons.person_4_rounded,
-                size: context.shortestSide / (5),
-                color: context.theme.scaffoldBackgroundColor,
+            Text('Freunde', style: context.textTheme.bodyMedium),
+            const Spacer(),
+            TextButton(
+              onPressed: () => Navigation.pushPopup(
+                widget: const UserProfileFriendAddPopup(),
               ),
-            ),
-            Expanded(
-              child: Card(
-                margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ListTile(
-                      title: const Text('Name'),
-                      subtitle: Text(currentUser?.displayName ?? '-'),
-                    ),
-                    ListTile(
-                      title: const Text('Email'),
-                      subtitle: Text(currentUser?.email ?? '-'),
-                      isThreeLine: true,
-                    ),
-                  ],
+              child: Text(
+                'Hinzufügen',
+                style: context.textTheme.labelSmall?.copyWith(
+                  color: context.theme.primaryColor,
                 ),
               ),
+            )
+          ],
+        ),
+        const SizedBox(height: 10),
+        const UserProfileFriendsWidget(),
+        const SizedBox(height: 40),
+        Text('Statistics', style: context.textTheme.bodyMedium),
+        const SizedBox(height: 40),
+        ProfileUserStatsGraph(
+          loader: UserRepository.getWorkoutDatesStatistics(),
+        ),
+        const SizedBox(height: 40),
+        Text('Settings', style: context.textTheme.bodyMedium),
+        const SizedBox(height: 20),
+        MyCard(
+          children: [
+            MyListTile(
+              title: 'User Feedback',
+              trailing: Icon(
+                Icons.feedback_rounded,
+                color: Colors.accents[1],
+              ),
+              onTap: () => Navigation.pushPopup(
+                widget: const UserFeedbackPopup(),
+              ),
+            ),
+            MyListTile(
+              title: 'Change Theme',
+              trailing: Icon(
+                {
+                  ThemeMode.system: Icons.settings_rounded,
+                  ThemeMode.light: Icons.light_mode_rounded,
+                  ThemeMode.dark: Icons.dark_mode_rounded,
+                }[context.read<ThemeBloc>().state],
+                color: Colors.accents[2],
+              ),
+              onTap: () =>
+                  Navigation.pushPopup(widget: const ProfileThemeChangePopup()),
             ),
           ],
         ),
         const SizedBox(height: 20),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
-            child: SizedBox(
-              height: 200,
-              child: FutureBuilder<List<dynamic>>(
-                future: FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(currentUser!.uid)
-                    .collection('workoutStatistics')
-                    .get()
-                    .then((value) {
-                  return (value.docs
-                      .map(
-                        (e) => e.data()['date'] ?? DateTime.now().formattedDate,
-                      )
-                      .toList());
-                }),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  List<String> dates = snapshot.data!.cast<String>()
-                    ..sort(
-                      (a, b) => a.toDateTime().compareTo(b.toDateTime()),
-                    );
-                  Map<String, int> workoutCount = {};
-                  // count number of workouts done in one day
-                  for (var date in dates) {
-                    if (workoutCount.containsKey(date)) {
-                      workoutCount[date] = workoutCount[date]! + 1;
-                    } else {
-                      workoutCount.putIfAbsent(date, () => 1);
-                    }
-                  }
-
-                  if (workoutCount.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'No workouts done yet',
-                        style: context.textTheme.labelSmall,
-                      ),
-                    );
-                  }
-
-                  return BarChart(
-                    BarChartData(
-                      alignment: BarChartAlignment.spaceAround,
-                      barTouchData: BarTouchData(
-                        enabled: true,
-                        touchTooltipData: BarTouchTooltipData(
-                          tooltipBgColor: Colors.grey.shade900,
-                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                            return BarTooltipItem(
-                              '${rod.toY.round()}',
-                              const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      titlesData: FlTitlesData(
-                        show: true,
-                        bottomTitles: AxisTitles(
-                          //axisNameWidget: const Text('Dates'),
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: (index, meta) {
-                              return Text(
-                                (workoutCount.keys
-                                        .elementAt(index.toInt())
-                                        .split('.')
-                                      ..removeLast())
-                                    .join('.')
-                                    .toString(),
-                              );
-                            },
-                          ),
-                        ),
-                        topTitles: const AxisTitles(),
-                        leftTitles: AxisTitles(
-                          axisNameWidget: const Text('Anzahl der Workouts'),
-                          sideTitles: SideTitles(
-                            showTitles: false,
-                            interval: 1,
-                            getTitlesWidget: (index, meta) {
-                              return Text(index.toInt().toString());
-                            },
-                          ),
-                        ),
-                        rightTitles: const AxisTitles(),
-                      ),
-                      borderData: FlBorderData(
-                        show: false,
-                      ),
-                      gridData: const FlGridData(
-                        show: false,
-                      ),
-                      barGroups: [
-                        for (int i = 0; i < workoutCount.length; i++)
-                          BarChartGroupData(
-                            x: i,
-                            barRods: [
-                              BarChartRodData(
-                                fromY: 0.1,
-                                toY: workoutCount.values.toList()[i].toDouble(),
-                                color: Colors.purple,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                  );
-                },
+        MyCard(
+          children: [
+            MyListTile(
+              title: 'Edit Profile',
+              trailing: Icon(
+                Icons.edit_rounded,
+                color: Colors.accents[5],
+              ),
+              onTap: () =>
+                  Navigation.pushPopup(widget: const ProfileEditPopup()),
+            ),
+            MyListTile(
+              title: 'Change Password',
+              trailing: Icon(
+                Icons.password_rounded,
+                color: Colors.accents[3],
+              ),
+              onTap: () => Navigation.pushPopup(
+                widget: const ProfilePasswordChangePopup(),
               ),
             ),
-          ),
+            MyListTile(
+              title: 'Sign Out',
+              trailing: Icon(
+                Icons.logout_rounded,
+                color: Colors.accents[4],
+              ),
+              onTap: () => UserRepository.signOutCurrentUser(),
+            ),
+          ],
         ),
         const SizedBox(height: 20),
-        Text('Settings', style: context.textTheme.bodyMedium),
-        const SizedBox(height: 20),
-        Card(
-          child: Column(
-            children: [
-              // navigate to UserfeedbackScreen
-              ListTile(
-                title: const Text('User Feedback'),
-                trailing: Icon(
-                  Icons.feedback_rounded,
-                  color: Colors.accents[1],
-                ),
-                onTap: () => Navigation.push(
-                  widget: const UserFeedbackScreen(),
-                ),
-              ),
-
-              // toggle theme mode
-              ListTile(
-                title: const Text('Change Theme'),
-                trailing: Icon(
-                  {
-                    ThemeMode.system: Icons.settings_rounded,
-                    ThemeMode.light: Icons.light_mode_rounded,
-                    ThemeMode.dark: Icons.dark_mode_rounded,
-                  }[context.read<ThemeBloc>().state],
-                  color: Colors.accents[2],
-                ),
-                onTap: () =>
-                    Navigation.pushPopup(widget: const ThemeChangePopup()),
-              ),
-            ],
+        MyListTile(
+          title: 'Delete Account',
+          trailing: Icon(
+            Icons.delete_rounded,
+            color: Colors.accents[0],
           ),
-        ),
-        const SizedBox(height: 20),
-        Card(
-          child: Column(
-            children: [
-              // change password
-              ListTile(
-                title: const Text('Change Password'),
-                trailing: Icon(
-                  Icons.password_rounded,
-                  color: Colors.accents[3],
-                ),
-                // sign out user from firebase auth
-                onTap: () =>
-                    Navigation.push(widget: const PasswordChangeScreen()),
-              ),
-              // sign out
-              ListTile(
-                title: const Text('Sign Out'),
-                trailing: Icon(
-                  Icons.logout_rounded,
-                  color: Colors.accents[4],
-                ),
-                // sign out user from firebase auth
-                onTap: () => UserRepository.signOutCurrentUser(),
-              ),
-              // delete account
-              ListTile(
-                title: const Text('Delete Account'),
-                trailing: Icon(
-                  Icons.delete_rounded,
-                  color: Colors.accents[0],
-                ),
-                onTap: () {
-                  // delete user from firebase auth
-                  Navigation.pushPopup(widget: const UserAccountDeletePopup());
-                },
-              ),
-            ],
-          ),
+          onTap: () {
+            // delete user from firebase auth
+            Navigation.pushPopup(widget: const UserAccountDeletePopup());
+          },
         ),
       ],
     );

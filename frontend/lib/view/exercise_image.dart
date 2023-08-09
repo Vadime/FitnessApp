@@ -5,15 +5,14 @@ import 'package:flutter/material.dart';
 
 class ExerciseImage extends StatelessWidget {
   final double topPadding;
+  final File? image;
+
   const ExerciseImage({
     super.key,
-    required this.imageFiles,
-    required this.index,
+    this.image,
     this.topPadding = 0,
   });
 
-  final List<File?> imageFiles;
-  final int index;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -21,9 +20,7 @@ class ExerciseImage extends StatelessWidget {
       child: CircleAvatar(
         backgroundColor: context.theme.highlightColor,
         radius: 30,
-        foregroundImage: imageFiles.elementAtOrNull(index) == null
-            ? null
-            : FileImage(imageFiles.elementAtOrNull(index)!),
+        foregroundImage: image == null ? null : FileImage(image!),
       ),
     );
   }

@@ -1,21 +1,20 @@
-import 'package:equatable/equatable.dart';
 import 'package:fitness_app/models/models.dart';
 
-class Exercise extends Equatable {
+class Exercise {
   final String uid;
   final String name;
   final String description;
-  String? imageURL;
+  final String? imageURL;
   final List<ExerciseMuscles> muscles;
 
-  static Exercise emptyExercise = Exercise(
+  static Exercise emptyExercise = const Exercise(
     uid: '-',
     name: '-',
     description: '-',
-    muscles: const [ExerciseMuscles.other],
+    muscles: [ExerciseMuscles.other],
   );
 
-  Exercise({
+  const Exercise({
     required this.uid,
     required this.name,
     required this.description,
@@ -39,13 +38,4 @@ class Exercise extends Equatable {
             .map((e) => ExerciseMuscles.values[e])
             .toList(),
       );
-
-  @override
-  List<Object?> get props => [
-        uid,
-        name,
-        description,
-        imageURL,
-        muscles,
-      ];
 }

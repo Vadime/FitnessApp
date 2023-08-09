@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fitness_app/database/course_repository.dart';
+import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/src/course.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/admin_course_add_screen.dart';
 import 'package:fitness_app/view/exercise_image.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class AdminCourseListPage extends StatefulWidget {
   const AdminCourseListPage({super.key});
@@ -16,76 +16,64 @@ class AdminCourseListPage extends StatefulWidget {
 }
 
 class _AdminCourseListPageState extends State<AdminCourseListPage> {
-  List<Course>? courses;
-  List<File?> imageFiles = [];
+  Map<Course, File?>? courses;
 
   @override
   void initState() {
     super.initState();
-    FirebaseFirestore.instance.collection('courses').get().then(
-      (value) {
-        courses =
-            value.docs.map((e) => Course.fromJson(e.id, e.data())).toList();
-        setState(() {});
-        for (int i = 0; i < courses!.length; i++) {
-          CourseRepository.getCourseImage(courses![i]).then(
-            (value) => setState(() => imageFiles.insert(i, value)),
-          );
-        }
-      },
-    );
+    loadCourses();
+  }
+
+  loadCourses() async {
+    var courseList = await CourseRepository.coursesAsFuture;
+    for (var course in courseList) {
+      if (!mounted) return;
+      var image = await CourseRepository.getCourseImage(course);
+      (courses ??= {}).putIfAbsent(course, () => image);
+      if (mounted) setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (courses == null) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const MyLoadingWidget();
     }
 
     if (courses!.isEmpty) {
-      return Center(
-        child: Text(
-          'No courses found',
-          style: context.textTheme.labelSmall,
-        ),
+      return const MyErrorWidget(
+        error: 'No courses found',
       );
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(10).addSafeArea(context),
+      padding: const EdgeInsets.all(20).addSafeArea(context),
       itemCount: courses!.length,
       itemBuilder: (context, index) {
-        final e = courses![index];
-        return Card(
-          margin: const EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              ListTile(
-                contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                title: Text(e.name),
-                subtitle: Text(e.description),
-                trailing: ExerciseImage(imageFiles: imageFiles, index: index),
-                onTap: () {
-                  Navigation.push(
-                    widget: AdminCourseAddScreen(
-                      course: e,
-                      imageFile: imageFiles.elementAtOrNull(index),
-                    ),
-                  );
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
-                child: Text(
-                  e.date,
-                  style: context.textTheme.labelSmall,
-                ),
-              ),
-            ],
-          ),
+        final entry = courses!.entries.elementAt(index);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              entry.key.date,
+              style: context.textTheme.labelSmall,
+            ),
+            const SizedBox(height: 10),
+            MyListTile(
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              title: entry.key.name,
+              subtitle: entry.key.description,
+              trailing: ExerciseImage(image: entry.value),
+              onTap: () {
+                Navigation.push(
+                  widget: AdminCourseAddScreen(
+                    entry: entry,
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+          ],
         );
       },
     );

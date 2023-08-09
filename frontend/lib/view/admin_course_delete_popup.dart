@@ -1,5 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/utils/src/logging.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/admin_course_add_screen.dart';
@@ -36,23 +35,14 @@ class AdminCourseDeletePopup extends StatelessWidget {
               backgroundColor: Colors.red,
             ),
             onPressed: () async {
-              if (widget.course != null) {
+              if (widget.entry != null) {
                 // delete image from storage
                 try {
-                  await FirebaseStorage.instance
-                      .refFromURL(
-                        widget.course!.imageURL ?? '',
-                      )
-                      .delete()
-                      .catchError((_) {});
-                  // delete exercise from database
-                  await FirebaseFirestore.instance
-                      .collection('courses')
-                      .doc(widget.course!.uid)
-                      .delete();
+                  await CourseRepository.deleteCourseImage(widget.entry!.key);
+                  await CourseRepository.deleteCourse(widget.entry!.key);
                 } catch (e, s) {
                   Logging.error(e, s);
-                  Messaging.show(
+                  Navigation.pushMessage(
                     message: 'Error deleting course: $e',
                   );
                   Navigation.pop();
