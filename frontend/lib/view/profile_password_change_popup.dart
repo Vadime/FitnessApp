@@ -1,7 +1,7 @@
 import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 
 class ProfilePasswordChangePopup extends StatefulWidget {
   const ProfilePasswordChangePopup({super.key});
@@ -72,7 +72,8 @@ class _ProfilePasswordChangePopupState
               // check if there is an error in rPassword
               if (repeatNewPasswordBloc.state.text !=
                   newPasswordBloc.state.text) {
-                return Navigation.pushMessage(message: "Passwords don't match!");
+                return Navigation.pushMessage(
+                    message: "Passwords don't match!");
               }
               // check if all fields are filled
               try {

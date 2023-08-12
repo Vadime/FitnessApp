@@ -7,7 +7,7 @@ import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/admin_exercise_delete_popup.dart';
 import 'package:fitness_app/view/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 
 class AdminExerciseAddScreen extends StatefulWidget {
   final Exercise? exercise;

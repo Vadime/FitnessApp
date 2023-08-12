@@ -1,5 +1,6 @@
 library widgets;
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'text_field_event.dart';
@@ -12,6 +13,7 @@ abstract class TextFieldBloc extends Bloc<TextFieldEvent, TextFieldState> {
   final String? hintText;
   final String? initialValue;
   final bool obscure;
+  final TextEditingController controller = TextEditingController();
 
   TextFieldBloc({
     this.initialValue,
@@ -30,6 +32,7 @@ abstract class TextFieldBloc extends Bloc<TextFieldEvent, TextFieldState> {
             visible: false,
           ),
         ) {
+    controller.text = initialValue ?? '';
     on<TextFieldEvent>((event, emit) {
       emit(
         TextFieldState(

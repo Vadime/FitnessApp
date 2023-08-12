@@ -1,9 +1,6 @@
+import 'package:fitness_app/widgets/src/my_footer_button.dart';
+import 'package:fitness_app/widgets/src/my_footer_social_button.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/src/my_footer_button.dart';
-import 'package:widgets/src/my_footer_social_button.dart';
-
-export 'package:widgets/src/my_footer_button.dart';
-export 'package:widgets/src/my_footer_social_button.dart';
 
 class MyFooter extends StatelessWidget {
   final List<MyFooterButton> buttons;

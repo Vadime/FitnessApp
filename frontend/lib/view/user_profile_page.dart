@@ -11,9 +11,9 @@ import 'package:fitness_app/view/user_accunt_delete_popup.dart';
 import 'package:fitness_app/view/user_feedback_screen.dart';
 import 'package:fitness_app/view/user_profile_friend_add_popup.dart';
 import 'package:fitness_app/view/user_profile_friends_widget.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:widgets/widgets.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});

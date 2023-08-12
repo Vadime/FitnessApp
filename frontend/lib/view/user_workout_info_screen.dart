@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:fitness_app/database/database.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/models/src/schedule.dart';
+import 'package:fitness_app/models/src/workout_exercise_type.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/exercise_image.dart';
 import 'package:fitness_app/view/home_screen.dart';
 import 'package:fitness_app/view/user_workout_add_screen.dart';
 import 'package:fitness_app/view/user_workout_in_progress_screen.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
 
 class UserWorkoutInfoScreen extends StatefulWidget {
   final Workout workout;
@@ -162,7 +163,10 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
     }
   }
 
-  Widget exerciseListTile(e) => Column(
+  Widget exerciseListTile(
+    MapEntry<Tupel<Exercise, WorkoutExercise>, File?> e,
+  ) =>
+      Column(
         children: [
           const SizedBox(height: 10),
           MyListTile(
@@ -193,24 +197,57 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
                   e.key.t1.description,
                 ],
               ),
-              MyTableRow(
-                cells: [
-                  'Sets',
-                  e.key.t2.recommendedSets.toString(),
-                ],
-              ),
-              MyTableRow(
-                cells: [
-                  'Reps',
-                  e.key.t2.recommendedReps.toString(),
-                ],
-              ),
-              MyTableRow(
-                cells: [
-                  'Weights',
-                  e.key.t2.weight.toString(),
-                ],
-              ),
+              if (e.key.t2.type is WorkoutExerciseTypeDuration) ...[
+                MyTableRow(
+                  cells: [
+                    'Minuten',
+                    (e.key.t2.type as WorkoutExerciseTypeDuration)
+                        .min
+                        .toString()
+                  ],
+                ),
+                MyTableRow(
+                  cells: [
+                    'Sekunden',
+                    (e.key.t2.type as WorkoutExerciseTypeDuration)
+                        .sec
+                        .toString()
+                  ],
+                ),
+                MyTableRow(
+                  cells: [
+                    'Weights',
+                    (e.key.t2.type as WorkoutExerciseTypeDuration)
+                        .weights
+                        .toString()
+                  ],
+                ),
+              ] else if (e.key.t2.type is WorkoutExerciseTypeRepetition) ...[
+                MyTableRow(
+                  cells: [
+                    'Sets',
+                    (e.key.t2.type as WorkoutExerciseTypeRepetition)
+                        .sets
+                        .toString()
+                  ],
+                ),
+                MyTableRow(
+                  cells: [
+                    'Reps',
+                    (e.key.t2.type as WorkoutExerciseTypeRepetition)
+                        .reps
+                        .toString()
+                  ],
+                ),
+                MyTableRow(
+                  cells: [
+                    'Weights',
+                    (e.key.t2.type as WorkoutExerciseTypeRepetition)
+                        .weights
+                        .toString()
+                  ],
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 10),

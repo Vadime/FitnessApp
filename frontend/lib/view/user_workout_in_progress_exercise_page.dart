@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/models/src/workout_exercise_type.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
 
 class UserWorkoutInProgressExercisePage extends StatelessWidget {
   final MapEntry<Tupel<Exercise, WorkoutExercise>, File?> exercise;

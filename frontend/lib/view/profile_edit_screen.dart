@@ -4,7 +4,7 @@ import 'package:fitness_app/utils/src/file_picking.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 
 class ProfileEditPopup extends StatefulWidget {
   const ProfileEditPopup({super.key});

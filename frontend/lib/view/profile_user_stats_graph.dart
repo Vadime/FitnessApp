@@ -1,7 +1,7 @@
 import 'package:fitness_app/utils/utils.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
 
 class ProfileUserStatsGraph extends StatelessWidget {
   final Future<List<DateTime>> loader;
@@ -23,6 +23,11 @@ class ProfileUserStatsGraph extends StatelessWidget {
             return const MyLoadingWidget();
           }
           var dates = snapshot.data!;
+
+          if (dates.isEmpty) {
+            return const MyErrorWidget(error: 'No workouts done yet');
+          }
+
           Map<DateTime, int> workoutCount = {};
           // count number of workouts done in one day
           for (var date in dates) {
@@ -97,7 +102,7 @@ class ProfileUserStatsGraph extends StatelessWidget {
                     },
                   ),
                 ),
-                rightTitles: const AxisTitles(),
+                rightTitles: const AxisTitles(axisNameWidget: Text('')),
               ),
               borderData: FlBorderData(
                 show: false,

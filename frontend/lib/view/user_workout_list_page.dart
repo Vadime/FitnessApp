@@ -4,7 +4,7 @@ import 'package:fitness_app/models/src/schedule.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/user_workout_info_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 
 class UserWorkoutListPage extends StatefulWidget {
   const UserWorkoutListPage({super.key});

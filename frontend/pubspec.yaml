@@ -26,15 +26,16 @@ dependencies:
   firebase_crashlytics: ^3.3.4
 
   onboarding: 
-    path: packages/onboarding
-  widgets: 
-    path: packages/widgets
+    git: 
+      url: https://github.com/Vadime/flutter_onboarding.git
+      ref: development
 
   firebase_analytics: ^10.4.4
   fl_chart: ^0.63.0
   
   json_annotation: ^4.8.1
   freezed_annotation: ^2.4.1
+  confetti: ^0.7.0
 
 dev_dependencies:
   flutter_test:
@@ -47,7 +48,9 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
 
   flutter_rename_app:
-    path: packages/flutter_rename_app
+    git:
+      url: https://github.com/Vadime/flutter_rename_app.git
+      ref: master
   build_runner: ^2.4.6
   json_serializable: ^6.7.1
 

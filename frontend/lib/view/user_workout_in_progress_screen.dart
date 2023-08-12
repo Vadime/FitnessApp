@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:confetti/confetti.dart';
 import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/user_workout_in_progress_exercise_page.dart';
 import 'package:fitness_app/view/user_workout_in_progress_finished_popup.dart';
+import 'package:fitness_app/widgets/src/my_confetti_widget.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
 
 class UserWorkoutInProgressScreen extends StatefulWidget {
   final Workout workout;
@@ -30,46 +32,59 @@ class _UserWorkoutInProgressScreenState
 
   double get stepValue => 1 / widget.exercises.length;
 
+  ConfettiController confettiController =
+      ConfettiController(duration: const Duration(seconds: 2));
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
         title: widget.workout.name,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: MyLinearProgressIndicator(
-              progress: stepValue * currentPageIndex + stepValue,
-            ),
-          ),
-          Expanded(
-            child: PageView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: pageController,
-              children: widget.exercises.entries
-                  .map(
-                    (e) => UserWorkoutInProgressExercisePage(
-                      exercise: e,
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-          Row(
+          Column(
             children: [
-              const SizedBox(width: 30),
-              previousButton(),
-              const SizedBox(width: 20),
-              nextButton(),
-              const SizedBox(width: 30),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: MyLinearProgressIndicator(
+                  progress: stepValue * currentPageIndex + stepValue,
+                ),
+              ),
+              Expanded(
+                child: PageView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: pageController,
+                  children: widget.exercises.entries
+                      .map(
+                        (e) => UserWorkoutInProgressExercisePage(
+                          exercise: e,
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+              Row(
+                children: [
+                  const SizedBox(width: 30),
+                  previousButton(),
+                  const SizedBox(width: 20),
+                  nextButton(),
+                  const SizedBox(width: 30),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const SafeArea(
+                top: false,
+                child: SizedBox(),
+              ),
             ],
           ),
-          const SizedBox(height: 10),
-          const SafeArea(
-            top: false,
-            child: SizedBox(),
+          Align(
+            alignment: Alignment.center,
+            child: MyConfettiWidget(
+              controller: confettiController,
+            ),
           ),
         ],
       ),
@@ -92,6 +107,7 @@ class _UserWorkoutInProgressScreenState
           onPressed: () async {
             if (currentPageIndex ==
                 widget.workout.workoutExercises.length - 1) {
+              confettiController.play();
               Navigation.pushPopup(
                 widget: UserWorkoutInProgressFinishedPopup(
                   workout: widget.workout,

@@ -249,6 +249,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.17.1"
+  confetti:
+    dependency: "direct main"
+    description:
+      name: confetti
+      sha256: "979aafde2428c53947892c95eb244466c109c129b7eee9011f0a66caaca52267"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   convert:
     dependency: transitive
     description:
@@ -518,9 +526,11 @@ packages:
   flutter_rename_app:
     dependency: "direct dev"
     description:
-      path: "packages/flutter_rename_app"
-      relative: true
-    source: path
+      path: "."
+      ref: master
+      resolved-ref: "8a2a395c9b004e9e746c14c567d8cdc53aa1e7c6"
+      url: "https://github.com/Vadime/flutter_rename_app.git"
+    source: git
     version: "1.0.0+1"
   flutter_test:
     dependency: "direct dev"
@@ -737,9 +747,11 @@ packages:
   onboarding:
     dependency: "direct main"
     description:
-      path: "packages/onboarding"
-      relative: true
-    source: path
+      path: "."
+      ref: development
+      resolved-ref: "847d0463b2adcbbc056726223e7be4caaa349f47"
+      url: "https://github.com/Vadime/flutter_onboarding.git"
+    source: git
     version: "1.0.0+1"
   package_config:
     dependency: transitive
@@ -1210,13 +1222,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  widgets:
-    dependency: "direct main"
-    description:
-      path: "packages/widgets"
-      relative: true
-    source: path
-    version: "1.0.0+1"
   win32:
     dependency: transitive
     description:

@@ -2,7 +2,8 @@ library widgets;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:widgets/src/text_field/text_field.dart';
+
+import '../text_field.dart';
 
 class MyTextField extends StatelessWidget {
   const MyTextField({
@@ -22,9 +23,7 @@ class MyTextField extends StatelessWidget {
     return BlocBuilder<TextFieldBloc, TextFieldState>(
       bloc: bloc,
       builder: (_, state) => TextField(
-        controller: TextEditingController(text: state.text)
-          ..selection =
-              TextSelection.collapsed(offset: state.text?.length ?? 0),
+        controller: bloc.controller,
         autocorrect: autocorrect,
         keyboardType: keyboardType,
         obscureText: state.obscure && !state.visible,

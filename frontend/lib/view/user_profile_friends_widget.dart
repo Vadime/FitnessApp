@@ -3,8 +3,8 @@ import 'package:fitness_app/models/src/friend.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/home_screen.dart';
 import 'package:fitness_app/view/profile_user_stats_graph.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
 
 class UserProfileFriendsWidget extends StatelessWidget {
   const UserProfileFriendsWidget({super.key});
@@ -37,33 +37,8 @@ class UserProfileFriendsWidget extends StatelessWidget {
                 title: friend.displayName,
                 subtitle: friend.email,
                 onTap: () => Navigation.pushPopup(
-                  widget: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        ProfileUserStatsGraph(
-                          interpretation:
-                              '${friend.displayName}\'s workout statistics',
-                          loader: UserRepository.getWorkoutDatesStatistics(
-                            friend.uid,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () async {
-                            await UserRepository.removeFriend(friend.uid);
-                            Navigation.flush(
-                              widget: const HomeScreen(
-                                initialIndex: 3,
-                              ),
-                            );
-                          },
-                          child: const Text('Remove Friend'),
-                        )
-                      ],
-                    ),
+                  widget: UserProfileFriendsGraphPopup(
+                    friend: friend,
                   ),
                 ),
                 trailing: CircleAvatar(
@@ -75,6 +50,48 @@ class UserProfileFriendsWidget extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class UserProfileFriendsGraphPopup extends StatelessWidget {
+  final Friend friend;
+  const UserProfileFriendsGraphPopup({
+    required this.friend,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ProfileUserStatsGraph(
+            interpretation: '${friend.displayName}\'s workout statistics',
+            loader: UserRepository.getWorkoutDatesStatistics(
+              friend.uid,
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () async {
+              await UserRepository.removeFriend(friend.uid);
+              Navigation.flush(
+                widget: const HomeScreen(
+                  initialIndex: 3,
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            child: const Text('Remove Friend'),
+          )
+        ],
+      ),
     );
   }
 }

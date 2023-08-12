@@ -8,9 +8,9 @@ import 'package:fitness_app/view/profile_header_widget.dart';
 import 'package:fitness_app/view/profile_password_change_popup.dart';
 import 'package:fitness_app/view/profile_theme_change_popup.dart';
 import 'package:fitness_app/view/profile_user_stats_graph.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:widgets/widgets.dart';
 
 class AdminProfilePage extends StatelessWidget {
   const AdminProfilePage({super.key});

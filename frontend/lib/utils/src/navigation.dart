@@ -3,7 +3,7 @@ library utils;
 import 'package:fitness_app/app.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 
 class Navigation {
   static Future<void> push({required Widget widget}) async =>

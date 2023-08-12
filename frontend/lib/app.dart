@@ -32,7 +32,6 @@ ThemeData genTheme(
     iconTheme: IconThemeData(
       color: primary.withOpacity(opacity),
     ),
-    
     snackBarTheme: SnackBarThemeData(
       elevation: elevation,
       backgroundColor: background.withOpacity(opacity),
@@ -251,7 +250,6 @@ class App extends StatelessWidget {
         child: BlocBuilder<ThemeBloc, ThemeMode>(
           builder: (context, state) {
             return MaterialApp(
-              
               navigatorKey: navigatorKey,
               scaffoldMessengerKey: messengerKey,
               title: const String.fromEnvironment('title'),
@@ -272,9 +270,7 @@ class App extends StatelessWidget {
                 const String.fromEnvironment('backgroundLight'),
                 Brightness.dark,
               ),
-              home: Container(
-                color: context.theme.scaffoldBackgroundColor,
-              ),
+              home: const Scaffold(),
             );
           },
         ),

@@ -15,8 +15,8 @@ import 'package:fitness_app/view/user_exercise_list_page.dart';
 import 'package:fitness_app/view/user_profile_page.dart';
 import 'package:fitness_app/view/user_workout_add_screen.dart';
 import 'package:fitness_app/view/user_workout_list_page.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
 
 Map<UserRole, List<HomeItem>> homeItems = {
   UserRole.admin: [

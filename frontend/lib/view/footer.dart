@@ -2,19 +2,21 @@ import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/footer_about_screen.dart';
 import 'package:fitness_app/view/footer_privacy_screen.dart';
 import 'package:fitness_app/view/footer_terms_screen.dart';
+import 'package:fitness_app/widgets/src/my_footer_button.dart';
+import 'package:fitness_app/widgets/src/my_footer_social_button.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:widgets/widgets.dart' as widgets;
 
 class Footer extends StatelessWidget {
   const Footer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return widgets.MyFooter(
+    return MyFooter(
       commercialText: '© 2023 Traumteam',
       socials: [
-        widgets.MyFutterSocialButton(
+        MyFutterSocialButton(
           text: 'Instagram',
           onPressed: () async => await UriLaunching.launch(
             Uri.parse('https://instagram.com'),
@@ -24,7 +26,7 @@ class Footer extends StatelessWidget {
             color: Colors.pink,
           ),
         ),
-        widgets.MyFutterSocialButton(
+        MyFutterSocialButton(
           text: 'Twitter',
           onPressed: () async => await UriLaunching.launch(
             Uri.parse('https://twitter.com'),
@@ -33,11 +35,11 @@ class Footer extends StatelessWidget {
         )
       ],
       buttons: [
-        widgets.MyFooterButton(
+        MyFooterButton(
           text: 'About',
           onPressed: () => Navigation.push(widget: const FooterAboutScreen()),
         ),
-        widgets.MyFooterButton(
+        MyFooterButton(
           text: 'Contact',
           onPressed: () async {
             await UriLaunching.launch(
@@ -53,11 +55,11 @@ class Footer extends StatelessWidget {
             });
           },
         ),
-        widgets.MyFooterButton(
+        MyFooterButton(
           text: 'Privacy',
           onPressed: () => Navigation.push(widget: const FooterPrivacyScreen()),
         ),
-        widgets.MyFooterButton(
+        MyFooterButton(
           text: 'Terms',
           onPressed: () => Navigation.push(widget: const FooterTermsScreen()),
         ),

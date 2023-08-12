@@ -4,7 +4,7 @@ import 'package:fitness_app/models/models.dart';
 import 'package:fitness_app/models/src/workout_exercise_type.dart';
 import 'package:fitness_app/view/exercise_image.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 
 class WorkoutExerciseNotSelectedWidget extends StatelessWidget {
   final Tupel<Exercise, File?> entry;

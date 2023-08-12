@@ -9,7 +9,7 @@ import 'package:fitness_app/view/home_screen.dart';
 import 'package:fitness_app/view/workout_exercise_not_selected_widget.dart';
 import 'package:fitness_app/view/workout_exercise_selected_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 
 class AdminWorkoutAddScreen extends StatefulWidget {
   final Workout? workout;

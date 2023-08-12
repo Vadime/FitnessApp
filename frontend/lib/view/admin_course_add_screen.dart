@@ -6,8 +6,8 @@ import 'package:fitness_app/utils/src/file_picking.dart';
 import 'package:fitness_app/utils/utils.dart';
 import 'package:fitness_app/view/admin_course_delete_popup.dart';
 import 'package:fitness_app/view/home_screen.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
 
 class AdminCourseAddScreen extends StatefulWidget {
   final MapEntry<Course, File?>? entry;
@@ -91,7 +91,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
               );
               await CourseRepository.uploadCourse(course);
 
-              Navigation.flush(widget: const HomeScreen());
+              Navigation.flush(widget: const HomeScreen(initialIndex: 0));
             } catch (e) {
               Navigation.pushMessage(
                 message: 'Error saving course: $e',

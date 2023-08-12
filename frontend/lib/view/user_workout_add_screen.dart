@@ -8,8 +8,8 @@ import 'package:fitness_app/view/home_screen.dart';
 import 'package:fitness_app/view/user_workout_delete_popup.dart';
 import 'package:fitness_app/view/workout_exercise_not_selected_widget.dart';
 import 'package:fitness_app/view/workout_exercise_selected_widget.dart';
+import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/widgets.dart';
 
 class UserWorkoutAddScreen extends StatefulWidget {
   final Workout? workout;
@@ -237,7 +237,7 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
                 UserRepository.addUsersWorkout(workout);
               }
 
-              Navigation.flush(widget: const HomeScreen());
+              Navigation.flush(widget: const HomeScreen(initialIndex: 1));
             } catch (e) {
               Navigation.pushMessage(
                 message: 'Error saving workout: $e',
