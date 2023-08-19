@@ -1,13 +1,11 @@
 import 'dart:io';
 
-import 'package:confetti/confetti.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/user_workout_in_progress_exercise_page.dart';
-import 'package:fitness_app/view/user_workout_in_progress_finished_popup.dart';
-import 'package:fitness_app/widgets/src/my_confetti_widget.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/user_workout_in_progress_exercise_page.dart';
+import 'package:fitnessapp/view/user_workout_in_progress_finished_popup.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class UserWorkoutInProgressScreen extends StatefulWidget {
   final Workout workout;
@@ -32,14 +30,14 @@ class _UserWorkoutInProgressScreenState
 
   double get stepValue => 1 / widget.exercises.length;
 
-  ConfettiController confettiController =
-      ConfettiController(duration: const Duration(seconds: 2));
+  PartyController confettiController =
+      PartyController(duration: const Duration(seconds: 2));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(
-        title: widget.workout.name,
+      appBar: AppBarWidget(
+        widget.workout.name,
       ),
       body: Stack(
         children: [
@@ -47,8 +45,8 @@ class _UserWorkoutInProgressScreenState
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: MyLinearProgressIndicator(
-                  progress: stepValue * currentPageIndex + stepValue,
+                child: LinearProgressWidget(
+                  stepValue * currentPageIndex + stepValue,
                 ),
               ),
               Expanded(
@@ -82,7 +80,7 @@ class _UserWorkoutInProgressScreenState
           ),
           Align(
             alignment: Alignment.center,
-            child: MyConfettiWidget(
+            child: PartyWidget(
               controller: confettiController,
             ),
           ),

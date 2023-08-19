@@ -1,4 +1,4 @@
-import 'package:fitness_app/models/models.dart';
+import 'package:fitnessapp/models/models.dart';
 
 class Exercise {
   final String uid;

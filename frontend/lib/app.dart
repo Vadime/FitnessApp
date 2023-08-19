@@ -1,8 +1,8 @@
-import 'package:fitness_app/bloc/authentication/authentication_bloc.dart';
-import 'package:fitness_app/bloc/theme/theme_bloc.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/app_onboarding_screen.dart';
-import 'package:fitness_app/view/home_screen.dart';
+import 'package:fitnessapp/bloc/authentication/authentication_bloc.dart';
+import 'package:fitnessapp/bloc/theme/theme_bloc.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/app_onboarding_screen.dart';
+import 'package:fitnessapp/view/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -252,7 +252,7 @@ class App extends StatelessWidget {
             return MaterialApp(
               navigatorKey: navigatorKey,
               scaffoldMessengerKey: messengerKey,
-              title: const String.fromEnvironment('title'),
+              title: const String.fromEnvironment('application_name'),
               themeMode: state,
               theme: genTheme(
                 const String.fromEnvironment('primary'),

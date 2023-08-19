@@ -1,6 +1,6 @@
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/src/logging.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/utils/src/logging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'authentication_event.dart';

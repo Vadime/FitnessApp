@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/models/src/workout_exercise_type.dart';
-import 'package:fitness_app/view/exercise_image.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/models/src/workout_exercise_type.dart';
+import 'package:fitnessapp/view/exercise_image.dart';
 import 'package:flutter/material.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class WorkoutExerciseNotSelectedWidget extends StatelessWidget {
   final Tupel<Exercise, File?> entry;
@@ -21,7 +21,7 @@ class WorkoutExerciseNotSelectedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MyListTile(
+    return ListTileWidget(
       margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
       padding: const EdgeInsets.fromLTRB(10, 10, 20, 10),
       title: entry.t1.name,

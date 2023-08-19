@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:534633074686:android:c9212ede59410db3317aaf",
+        "mobilesdk_app_id": "1:534633074686:android:de07d1fedd973d6e317aaf",
         "android_client_info": {
-          "package_name": "com.example.frontend"
+          "package_name": "de.ases.fitnessapp"
         }
       },
       "oauth_client": [
@@ -35,7 +35,7 @@
               "client_id": "534633074686-74kdm7jf0gujl4u04vassm56na18ujtm.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.frontend.RunnerTests"
+                "bundle_id": "de.ass.fitnessapp.RunnerTests"
               }
             }
           ]

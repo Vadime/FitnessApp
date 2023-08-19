@@ -1,16 +1,16 @@
 import 'dart:io';
 
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/models/src/schedule.dart';
-import 'package:fitness_app/models/src/workout_exercise_type.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/exercise_image.dart';
-import 'package:fitness_app/view/home_screen.dart';
-import 'package:fitness_app/view/user_workout_add_screen.dart';
-import 'package:fitness_app/view/user_workout_in_progress_screen.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/models/src/schedule.dart';
+import 'package:fitnessapp/models/src/workout_exercise_type.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/exercise_image.dart';
+import 'package:fitnessapp/view/home_screen.dart';
+import 'package:fitnessapp/view/user_workout_add_screen.dart';
+import 'package:fitnessapp/view/user_workout_in_progress_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class UserWorkoutInfoScreen extends StatefulWidget {
   final Workout workout;
@@ -68,7 +68,8 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
   Widget startWorkoutButton() {
     return SafeArea(
       top: false,
-      child: MyElevatedButton(
+      child: ElevatedButtonWidget(
+        'Start Workout',
         margin: const EdgeInsets.fromLTRB(30, 0, 30, 10),
         onPressed: () {
           if (exercises == null) {
@@ -81,7 +82,6 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
             ),
           );
         },
-        text: 'Start Workout',
       ),
     );
   }
@@ -91,8 +91,8 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar: MyAppBar(
-        title: widget.workout.name,
+      appBar: AppBarWidget(
+        widget.workout.name,
         actions: [
           if (widget.isAlreadyCopied)
             editWorkoutButton()
@@ -109,19 +109,19 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
             child: SizedBox(),
           ),
           // workout description
-          MyTable(
+          TableWidget(
             columnWidths: const {
               0: FlexColumnWidth(1),
               1: FlexColumnWidth(2),
             },
             rows: [
-              MyTableRow(
+              TableRowWidget(
                 cells: [
                   'Description',
                   widget.workout.description,
                 ],
               ),
-              MyTableRow(
+              TableRowWidget(
                 cells: ['Schedule', widget.workout.schedule.strName],
               ),
             ],
@@ -134,12 +134,12 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
           if (exercises == null)
             const SizedBox(
               height: 100,
-              child: MyErrorWidget(error: "Couldn't load exercises"),
+              child: FailWidget("Couldn't load exercises"),
             )
           else if (exercises!.isEmpty)
             const SizedBox(
               height: 100,
-              child: MyLoadingWidget(),
+              child: LoadingWidget(),
             )
           else
             for (MapEntry<Tupel<Exercise, WorkoutExercise>, File?> e
@@ -169,7 +169,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
       Column(
         children: [
           const SizedBox(height: 10),
-          MyListTile(
+          ListTileWidget(
             padding: const EdgeInsets.fromLTRB(20, 0, 10, 0),
             title: e.key.t1.name,
             trailing: Padding(
@@ -185,20 +185,20 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          MyTable(
+          TableWidget(
             columnWidths: const {
               0: FlexColumnWidth(1),
               1: FlexColumnWidth(2),
             },
             rows: [
-              MyTableRow(
+              TableRowWidget(
                 cells: [
                   'Description',
                   e.key.t1.description,
                 ],
               ),
               if (e.key.t2.type is WorkoutExerciseTypeDuration) ...[
-                MyTableRow(
+                TableRowWidget(
                   cells: [
                     'Minuten',
                     (e.key.t2.type as WorkoutExerciseTypeDuration)
@@ -206,7 +206,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
                         .toString()
                   ],
                 ),
-                MyTableRow(
+                TableRowWidget(
                   cells: [
                     'Sekunden',
                     (e.key.t2.type as WorkoutExerciseTypeDuration)
@@ -214,7 +214,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
                         .toString()
                   ],
                 ),
-                MyTableRow(
+                TableRowWidget(
                   cells: [
                     'Weights',
                     (e.key.t2.type as WorkoutExerciseTypeDuration)
@@ -223,7 +223,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
                   ],
                 ),
               ] else if (e.key.t2.type is WorkoutExerciseTypeRepetition) ...[
-                MyTableRow(
+                TableRowWidget(
                   cells: [
                     'Sets',
                     (e.key.t2.type as WorkoutExerciseTypeRepetition)
@@ -231,7 +231,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
                         .toString()
                   ],
                 ),
-                MyTableRow(
+                TableRowWidget(
                   cells: [
                     'Reps',
                     (e.key.t2.type as WorkoutExerciseTypeRepetition)
@@ -239,7 +239,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
                         .toString()
                   ],
                 ),
-                MyTableRow(
+                TableRowWidget(
                   cells: [
                     'Weights',
                     (e.key.t2.type as WorkoutExerciseTypeRepetition)

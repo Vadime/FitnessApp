@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:fitness_app/utils/utils.dart';
+import 'package:fitnessapp/utils/utils.dart';
 
 class FilePicking {
   // pick image

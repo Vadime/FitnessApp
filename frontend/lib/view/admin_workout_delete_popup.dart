@@ -1,8 +1,9 @@
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/admin_workout_add_screen.dart';
-import 'package:fitness_app/view/home_screen.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/admin_workout_add_screen.dart';
+import 'package:fitnessapp/view/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class AdminWorkoutDeletePopup extends StatelessWidget {
   const AdminWorkoutDeletePopup({

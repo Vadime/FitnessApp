@@ -25,14 +25,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.13.0"
-  ansicolor:
-    dependency: transitive
-    description:
-      name: ansicolor
-      sha256: "607f8fa9786f392043f169898923e6c59b4518242b68b8862eb8a8b7d9c30b4a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
   archive:
     dependency: transitive
     description:
@@ -153,14 +145,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
-  charcode:
-    dependency: transitive
-    description:
-      name: charcode
-      sha256: fb98c0f6d12c920a02ee2d998da788bca066ca5f148492b7085ee23372b12306
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.1"
   checked_yaml:
     dependency: transitive
     description:
@@ -289,6 +273,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  cupertino_icons:
+    dependency: transitive
+    description:
+      name: cupertino_icons
+      sha256: e35129dc44c9118cee2a5603506d823bab99c68393879edb440e0090d07586be
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   dart_style:
     dependency: transitive
     description:
@@ -433,6 +425,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.6.4"
+  firebase_performance:
+    dependency: "direct main"
+    description:
+      name: firebase_performance
+      sha256: "86272e47beded7128bc2b8285670e78387728b20bd668a3c433bcb682e963e8f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.2+4"
+  firebase_performance_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_performance_platform_interface
+      sha256: a296dba20e508ab8b8d1f424015a361e2129228e0335d67230c8fdb446637d19
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4+4"
+  firebase_performance_web:
+    dependency: transitive
+    description:
+      name: firebase_performance_web
+      sha256: "8eae9e19fd067ca30b66ebf8ea0b47bd70a9fce66cbb288620418fe01d58e1af"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4+4"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -523,15 +539,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.15"
-  flutter_rename_app:
-    dependency: "direct dev"
-    description:
-      path: "."
-      ref: master
-      resolved-ref: "8a2a395c9b004e9e746c14c567d8cdc53aa1e7c6"
-      url: "https://github.com/Vadime/flutter_rename_app.git"
-    source: git
-    version: "1.0.0+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -747,12 +754,12 @@ packages:
   onboarding:
     dependency: "direct main"
     description:
-      path: "."
+      path: onboarding
       ref: development
-      resolved-ref: "847d0463b2adcbbc056726223e7be4caaa349f47"
-      url: "https://github.com/Vadime/flutter_onboarding.git"
+      resolved-ref: "95462f9c9337f98ab9ccfc84cb17c598244f9c0e"
+      url: "https://github.com/Vadime/FlutterPackages.git"
     source: git
-    version: "1.0.0+1"
+    version: "1.0.1+1"
   package_config:
     dependency: transitive
     description:
@@ -769,30 +776,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.3"
-  path_provider_linux:
-    dependency: transitive
-    description:
-      name: path_provider_linux
-      sha256: ba2b77f0c52a33db09fc8caf85b12df691bf28d983e84cf87ff6d693cfa007b3
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
-  path_provider_platform_interface:
-    dependency: transitive
-    description:
-      name: path_provider_platform_interface
-      sha256: bced5679c7df11190e1ddc35f3222c858f328fff85c3942e46e7f5589bf9eb84
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
-  path_provider_windows:
-    dependency: transitive
-    description:
-      name: path_provider_windows
-      sha256: ee0e0d164516b90ae1f970bdf29f726f1aa730d7cfc449ecc74c495378b705da
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
   petitparser:
     dependency: transitive
     description:
@@ -841,14 +824,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.4"
-  process_run:
-    dependency: transitive
-    description:
-      name: process_run
-      sha256: ceacfac6d566a36c895d64edc7e429efb2d6b6303b5e28d5c13bc59fe6e8974e
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.13.1"
   provider:
     dependency: transitive
     description:
@@ -873,62 +848,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
-  shared_preferences:
+  scroll_date_picker:
     dependency: "direct main"
     description:
-      name: shared_preferences
-      sha256: "0344316c947ffeb3a529eac929e1978fcd37c26be4e8468628bac399365a3ca1"
+      name: scroll_date_picker
+      sha256: "99f8caf3f1b6a77ba60a2973c2f9061bcf3b3c4c5049f19ec7271ee5d34387c7"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
-  shared_preferences_android:
-    dependency: transitive
-    description:
-      name: shared_preferences_android
-      sha256: fe8401ec5b6dcd739a0fe9588802069e608c3fdbfd3c3c93e546cf2f90438076
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
-  shared_preferences_foundation:
-    dependency: transitive
-    description:
-      name: shared_preferences_foundation
-      sha256: f39696b83e844923b642ce9dd4bd31736c17e697f6731a5adf445b1274cf3cd4
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.2"
-  shared_preferences_linux:
-    dependency: transitive
-    description:
-      name: shared_preferences_linux
-      sha256: "71d6806d1449b0a9d4e85e0c7a917771e672a3d5dc61149cc9fac871115018e1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.0"
-  shared_preferences_platform_interface:
-    dependency: transitive
-    description:
-      name: shared_preferences_platform_interface
-      sha256: "23b052f17a25b90ff2b61aad4cc962154da76fb62848a9ce088efe30d7c50ab1"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.0"
-  shared_preferences_web:
-    dependency: transitive
-    description:
-      name: shared_preferences_web
-      sha256: "7347b194fb0bbeb4058e6a4e87ee70350b6b2b90f8ac5f8bd5b3a01548f6d33a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
-  shared_preferences_windows:
-    dependency: transitive
-    description:
-      name: shared_preferences_windows
-      sha256: f95e6a43162bce43c9c3405f3eb6f39e5b5d11f65fab19196cf8225e2777624d
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.0"
+    version: "3.7.3"
   shelf:
     dependency: transitive
     description:
@@ -1046,14 +973,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.1"
-  synchronized:
-    dependency: transitive
-    description:
-      name: synchronized
-      sha256: "5fcbd27688af6082f5abd611af56ee575342c30e87541d0245f7ff99faa02c60"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0"
   term_glyph:
     dependency: transitive
     description:
@@ -1111,7 +1030,7 @@ packages:
     source: hosted
     version: "2.2.2"
   url_launcher:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: url_launcher
       sha256: "781bd58a1eb16069412365c98597726cd8810ae27435f04b3b4d3a470bacd61e"
@@ -1174,6 +1093,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.7"
+  url_x_launcher:
+    dependency: "direct main"
+    description:
+      path: url_x_launcher
+      ref: development
+      resolved-ref: e719582e2eaa6bf3be8facd957ae11652bc42284
+      url: "https://github.com/Vadime/FlutterPackages.git"
+    source: git
+    version: "1.0.0+1"
   vector_math:
     dependency: transitive
     description:
@@ -1222,6 +1150,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  widgets:
+    dependency: "direct main"
+    description:
+      path: widgets
+      ref: development
+      resolved-ref: "17196127739e4350009a41ec1af08ab8c6089def"
+      url: "https://github.com/Vadime/FlutterPackages.git"
+    source: git
+    version: "1.0.0+1"
   win32:
     dependency: transitive
     description:
@@ -1230,14 +1167,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.6"
-  xdg_directories:
-    dependency: transitive
-    description:
-      name: xdg_directories
-      sha256: f0c26453a2d47aa4c2570c6a033246a3fc62da2fe23c7ffdd0a7495086dc0247
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
   xml:
     dependency: transitive
     description:

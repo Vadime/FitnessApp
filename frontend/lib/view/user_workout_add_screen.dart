@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/models/src/schedule.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/home_screen.dart';
-import 'package:fitness_app/view/user_workout_delete_popup.dart';
-import 'package:fitness_app/view/workout_exercise_not_selected_widget.dart';
-import 'package:fitness_app/view/workout_exercise_selected_widget.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/models/src/schedule.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/home_screen.dart';
+import 'package:fitnessapp/view/user_workout_delete_popup.dart';
+import 'package:fitnessapp/view/workout_exercise_not_selected_widget.dart';
+import 'package:fitnessapp/view/workout_exercise_selected_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class UserWorkoutAddScreen extends StatefulWidget {
   final Workout? workout;
@@ -21,8 +21,8 @@ class UserWorkoutAddScreen extends StatefulWidget {
 }
 
 class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
-  late NameBloc nameBloc;
-  late TextBloc descriptionBloc;
+  late TextFieldController nameBloc;
+  late TextFieldController descriptionBloc;
 
   List<Tripple<Exercise, WorkoutExercise, File?>> exercisesSel = [];
   List<Tupel<Exercise, File?>> exercisesOth = [];
@@ -32,12 +32,12 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
   @override
   void initState() {
     super.initState();
-    nameBloc = NameBloc(
-      initialValue: widget.workout?.name,
+    nameBloc = TextFieldController.name(
+      text: widget.workout?.name,
     );
-    descriptionBloc = TextBloc(
-      initialValue: widget.workout?.description,
-      hint: 'Description',
+    descriptionBloc = TextFieldController(
+      'Description',
+      text: widget.workout?.description,
     );
     selectedSchedule = widget.workout?.schedule != null
         ? widget.workout!.schedule
@@ -76,8 +76,8 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar: const MyAppBar(
-        title: 'Add Workout',
+      appBar: const AppBarWidget(
+        'Add Workout',
       ),
       bottomNavigationBar: SafeArea(
         top: false,
@@ -99,15 +99,13 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
             child: SizedBox(),
           ),
           // name and description
-          MyCard(
-            padding: const EdgeInsets.all(20),
+          CardWidget(
             children: [
-              MyTextField(
-                bloc: nameBloc,
+              TextFieldWidget(
+                nameBloc,
               ),
-              const SizedBox(height: 10),
-              MyTextField(
-                bloc: descriptionBloc,
+              TextFieldWidget(
+                descriptionBloc,
               ),
             ],
           ),
@@ -211,13 +209,12 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
           onPressed: () async {
             if (!nameBloc.isValid()) {
               return Navigation.pushMessage(
-                message: nameBloc.state.errorText ?? 'Invalid name',
+                message: nameBloc.errorText ?? 'Invalid name',
               );
             }
             if (!descriptionBloc.isValid()) {
               return Navigation.pushMessage(
-                message:
-                    descriptionBloc.state.errorText ?? 'Invalid description',
+                message: descriptionBloc.errorText ?? 'Invalid description',
               );
             }
             try {
@@ -226,8 +223,8 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
               Workout workout = Workout(
                 uid: widget.workout?.uid ??
                     WorkoutRepository.collectionReference.doc().id,
-                name: nameBloc.state.text ?? '-',
-                description: descriptionBloc.state.text ?? '-',
+                name: nameBloc.text,
+                description: descriptionBloc.text,
                 schedule: selectedSchedule,
                 workoutExercises: exercisesSel.map((e) => e.b).toList(),
               );

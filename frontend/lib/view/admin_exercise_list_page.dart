@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/admin_exercise_add_screen.dart';
-import 'package:fitness_app/view/exercise_image.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/admin_exercise_add_screen.dart';
+import 'package:fitnessapp/view/exercise_image.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class AdminExerciseListPage extends StatefulWidget {
   const AdminExerciseListPage({super.key});
@@ -37,23 +37,23 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
   @override
   Widget build(BuildContext context) {
     if (exercises == null) {
-      return const MyLoadingWidget();
+      return const LoadingWidget();
     }
 
     if (exercises!.isEmpty) {
-      return const MyErrorWidget(
-        error: 'No exercises found',
+      return const FailWidget(
+        'No exercises found',
       );
     }
     return ListView.builder(
       itemCount: exercises!.length,
-      padding: const EdgeInsets.all(20).addSafeArea(context),
+      padding: const EdgeInsets.all(20).add(context.safeArea),
       itemBuilder: (context, index) {
         Tupel<Exercise, File?> exercise = exercises![index];
 
-        return MyListTile(
+        return ListTileWidget(
           margin: const EdgeInsets.only(bottom: 20),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           title: exercise.t1.name,
           trailing: ExerciseImage(image: exercise.t2),
           subtitle: exercise.t1.description,

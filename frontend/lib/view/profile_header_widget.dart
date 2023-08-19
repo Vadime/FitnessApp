@@ -1,6 +1,6 @@
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/utils.dart';
+import 'package:fitnessapp/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class ProfileHeaderWidget extends StatelessWidget {
   final User? currentUser;
@@ -14,7 +14,7 @@ class ProfileHeaderWidget extends StatelessWidget {
     return Row(
       children: [
         CircleAvatar(
-          radius: context.shortestSide / 8,
+          radius: MediaQuery.of(context).size.shortestSide / 8,
           backgroundColor: context.theme.cardColor,
           foregroundImage: currentUser?.imageURL == null
               ? null
@@ -23,7 +23,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                 ),
           child: Icon(
             Icons.person_4_rounded,
-            size: context.shortestSide / (5),
+            size: MediaQuery.of(context).size.shortestSide / (5),
             color: context.theme.scaffoldBackgroundColor,
           ),
         ),

@@ -1,5 +1,5 @@
-import 'package:fitness_app/app.dart';
-import 'package:fitness_app/database/database.dart';
+import 'package:fitnessapp/app.dart';
+import 'package:fitnessapp/database/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';

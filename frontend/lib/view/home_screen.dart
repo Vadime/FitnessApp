@@ -1,22 +1,22 @@
-import 'package:fitness_app/bloc/home/home_item.dart';
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/admin_course_add_screen.dart';
-import 'package:fitness_app/view/admin_course_list_page.dart';
-import 'package:fitness_app/view/admin_exercise_add_screen.dart';
-import 'package:fitness_app/view/admin_exercise_list_page.dart';
-import 'package:fitness_app/view/admin_profile_page.dart';
-import 'package:fitness_app/view/admin_workout_add_screen.dart';
-import 'package:fitness_app/view/admin_workout_list_page.dart';
-import 'package:fitness_app/view/footer.dart';
-import 'package:fitness_app/view/user_course_list_page.dart';
-import 'package:fitness_app/view/user_exercise_list_page.dart';
-import 'package:fitness_app/view/user_profile_page.dart';
-import 'package:fitness_app/view/user_workout_add_screen.dart';
-import 'package:fitness_app/view/user_workout_list_page.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/bloc/home/home_item.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/admin_course_add_screen.dart';
+import 'package:fitnessapp/view/admin_course_list_page.dart';
+import 'package:fitnessapp/view/admin_exercise_add_screen.dart';
+import 'package:fitnessapp/view/admin_exercise_list_page.dart';
+import 'package:fitnessapp/view/admin_profile_page.dart';
+import 'package:fitnessapp/view/admin_workout_add_screen.dart';
+import 'package:fitnessapp/view/admin_workout_list_page.dart';
+import 'package:fitnessapp/view/footer.dart';
+import 'package:fitnessapp/view/user_course_list_page.dart';
+import 'package:fitnessapp/view/user_exercise_list_page.dart';
+import 'package:fitnessapp/view/user_profile_page.dart';
+import 'package:fitnessapp/view/user_workout_add_screen.dart';
+import 'package:fitnessapp/view/user_workout_list_page.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 Map<UserRole, List<HomeItem>> homeItems = {
   UserRole.admin: [
@@ -126,14 +126,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar: MyAppBar(
+      appBar: AppBarWidget(
+        homePages[currentIndex].title,
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () => Navigation.pushPopup(
             widget: const Footer(),
           ),
         ),
-        title: homePages[currentIndex].title,
         actions: homePages[currentIndex].actions,
       ),
       body: PageView(
@@ -141,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
         controller: pageController,
         children: homePages.map((e) => e.page).toList(),
       ),
-      bottomNavigationBar: MyBottomNavigationBar(
+      bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: currentIndex,
         onTap: (value) async {
           await pageController.animateToPage(

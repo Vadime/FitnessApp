@@ -1,10 +1,9 @@
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/src/file_picking.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/home_screen.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class ProfileEditPopup extends StatefulWidget {
   const ProfileEditPopup({super.key});
@@ -14,16 +13,16 @@ class ProfileEditPopup extends StatefulWidget {
 }
 
 class _ProfileEditPopupState extends State<ProfileEditPopup> {
-  late NameBloc nameBloc;
-  late EmailBloc emailBloc;
+  late TextFieldController nameBloc;
+  late TextFieldController emailBloc;
   late User? currentUser;
 
   @override
   void initState() {
     super.initState();
     currentUser = UserRepository.currentUser;
-    nameBloc = NameBloc(initialValue: currentUser?.displayName);
-    emailBloc = EmailBloc(initialValue: currentUser?.email);
+    nameBloc = TextFieldController.name(text: currentUser?.displayName);
+    emailBloc = TextFieldController.email(text: currentUser?.email);
   }
 
   @override
@@ -55,7 +54,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                   }
                 },
                 child: CircleAvatar(
-                  radius: context.shortestSide / 8,
+                  radius: MediaQuery.of(context).size.shortestSide / 8,
                   backgroundColor: context.theme.cardColor,
                   foregroundImage: currentUser?.imageURL == null
                       ? null
@@ -64,7 +63,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                         ),
                   child: Icon(
                     Icons.person_4_rounded,
-                    size: context.shortestSide / (5),
+                    size: MediaQuery.of(context).size.shortestSide / (5),
                     color: context.theme.scaffoldBackgroundColor,
                   ),
                 ),
@@ -77,12 +76,12 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        MyTextField(
-                          bloc: nameBloc,
+                        TextFieldWidget(
+                          nameBloc,
                         ),
                         const SizedBox(height: 10),
-                        MyTextField(
-                          bloc: emailBloc,
+                        TextFieldWidget(
+                          emailBloc,
                         ),
                       ],
                     ),
@@ -95,23 +94,23 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
           ElevatedButton(
             onPressed: () async {
               // check if there is an error in email
-              if (emailBloc.state.errorText != null) {
+              if (emailBloc.errorText != null) {
                 return Navigation.pushMessage(
-                  message: emailBloc.state.errorText!,
+                  message: emailBloc.errorText!,
                 );
               }
               // check if there is an error in name
-              if (nameBloc.state.errorText != null) {
+              if (nameBloc.errorText != null) {
                 return Navigation.pushMessage(
-                  message: nameBloc.state.errorText!,
+                  message: nameBloc.errorText!,
                 );
               }
 
               // update user profile
               try {
                 await UserRepository.updateCurrentUserProfile(
-                  displayName: nameBloc.state.text,
-                  email: emailBloc.state.text!,
+                  displayName: nameBloc.text,
+                  email: emailBloc.text,
                 );
               } catch (e) {
                 return Navigation.pushMessage(

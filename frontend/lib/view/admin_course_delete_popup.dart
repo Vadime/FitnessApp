@@ -1,9 +1,10 @@
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/utils/src/logging.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/admin_course_add_screen.dart';
-import 'package:fitness_app/view/home_screen.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/utils/src/logging.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/admin_course_add_screen.dart';
+import 'package:fitnessapp/view/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class AdminCourseDeletePopup extends StatelessWidget {
   const AdminCourseDeletePopup({
@@ -38,14 +39,18 @@ class AdminCourseDeletePopup extends StatelessWidget {
               if (widget.entry != null) {
                 // delete image from storage
                 try {
+                  Navigation.disableInput();
                   await CourseRepository.deleteCourseImage(widget.entry!.key);
                   await CourseRepository.deleteCourse(widget.entry!.key);
+                  Navigation.enableInput();
                 } catch (e, s) {
+                  Navigation.enableInput();
                   Logging.error(e, s);
+
                   Navigation.pushMessage(
                     message: 'Error deleting course: $e',
                   );
-                  Navigation.pop();
+
                   return;
                 }
               }

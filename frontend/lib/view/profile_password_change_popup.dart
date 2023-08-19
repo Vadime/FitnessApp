@@ -1,7 +1,7 @@
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/utils/utils.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class ProfilePasswordChangePopup extends StatefulWidget {
   const ProfilePasswordChangePopup({super.key});
@@ -13,14 +13,14 @@ class ProfilePasswordChangePopup extends StatefulWidget {
 
 class _ProfilePasswordChangePopupState
     extends State<ProfilePasswordChangePopup> {
-  PasswordBloc oldPasswordBloc = PasswordBloc(
-    hintText: 'Old Password',
+  TextFieldController oldPasswordBloc = TextFieldController.password(
+    labelText: 'Old Password',
   );
-  PasswordBloc newPasswordBloc = PasswordBloc(
-    hintText: 'New Password',
+  TextFieldController newPasswordBloc = TextFieldController.password(
+    labelText: 'New Password',
   );
-  PasswordBloc repeatNewPasswordBloc = PasswordBloc(
-    hintText: 'Repeat New Password',
+  TextFieldController repeatNewPasswordBloc = TextFieldController.password(
+    labelText: 'Repeat New Password',
   );
 
   @override
@@ -38,16 +38,16 @@ class _ProfilePasswordChangePopupState
               padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
               child: Column(
                 children: [
-                  MyTextField(
-                    bloc: oldPasswordBloc,
+                  TextFieldWidget(
+                    oldPasswordBloc,
                   ),
                   const SizedBox(height: 10),
-                  MyTextField(
-                    bloc: newPasswordBloc,
+                  TextFieldWidget(
+                    newPasswordBloc,
                   ),
                   const SizedBox(height: 10),
-                  MyTextField(
-                    bloc: repeatNewPasswordBloc,
+                  TextFieldWidget(
+                    repeatNewPasswordBloc,
                   ),
                 ],
               ),
@@ -70,16 +70,16 @@ class _ProfilePasswordChangePopupState
                 );
               }
               // check if there is an error in rPassword
-              if (repeatNewPasswordBloc.state.text !=
-                  newPasswordBloc.state.text) {
+              if (repeatNewPasswordBloc.text != newPasswordBloc.text) {
                 return Navigation.pushMessage(
-                    message: "Passwords don't match!");
+                  message: "Passwords don't match!",
+                );
               }
               // check if all fields are filled
               try {
                 await UserRepository.updateCurrentUserPassword(
-                  oldPasswordBloc.state.text ?? '',
-                  newPasswordBloc.state.text ?? '',
+                  oldPasswordBloc.text,
+                  newPasswordBloc.text,
                 );
                 Navigation.pop();
               } catch (e) {

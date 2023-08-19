@@ -1,6 +1,6 @@
 // wird nur in verbindung mit workout verwendet
 
-import 'package:fitness_app/models/src/workout_exercise_type.dart';
+import 'package:fitnessapp/models/src/workout_exercise_type.dart';
 
 class WorkoutExercise {
   int index;

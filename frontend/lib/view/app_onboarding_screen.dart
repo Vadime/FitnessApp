@@ -1,5 +1,5 @@
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/login_screen.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:onboarding/models/onboarding_page_data.dart';
 import 'package:onboarding/view/onboarding_screen.dart';

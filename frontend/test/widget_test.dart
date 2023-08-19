@@ -5,12 +5,12 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'package:fitness_app/widgets/src/my_error_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:widgets/widgets.dart';
 
 void main() {
-  testWidgets('Find text in MyErrorWidget', (WidgetTester tester) async {
+  testWidgets('Find text in FailWidget', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: MyErrorTestWidget(),
@@ -26,6 +26,6 @@ class MyErrorTestWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MyErrorWidget(error: 'Error');
+    return const FailWidget('Error');
   }
 }

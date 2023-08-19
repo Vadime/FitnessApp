@@ -1,19 +1,19 @@
-import 'package:fitness_app/bloc/theme/theme_bloc.dart';
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/profile_edit_screen.dart';
-import 'package:fitness_app/view/profile_header_widget.dart';
-import 'package:fitness_app/view/profile_password_change_popup.dart';
-import 'package:fitness_app/view/profile_theme_change_popup.dart';
-import 'package:fitness_app/view/profile_user_stats_graph.dart';
-import 'package:fitness_app/view/user_accunt_delete_popup.dart';
-import 'package:fitness_app/view/user_feedback_screen.dart';
-import 'package:fitness_app/view/user_profile_friend_add_popup.dart';
-import 'package:fitness_app/view/user_profile_friends_widget.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/bloc/theme/theme_bloc.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/profile_edit_screen.dart';
+import 'package:fitnessapp/view/profile_header_widget.dart';
+import 'package:fitnessapp/view/profile_password_change_popup.dart';
+import 'package:fitnessapp/view/profile_theme_change_popup.dart';
+import 'package:fitnessapp/view/profile_user_stats_graph.dart';
+import 'package:fitnessapp/view/user_accunt_delete_popup.dart';
+import 'package:fitnessapp/view/user_feedback_screen.dart';
+import 'package:fitnessapp/view/user_profile_friend_add_popup.dart';
+import 'package:fitnessapp/view/user_profile_friends_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:widgets/widgets.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
@@ -23,7 +23,7 @@ class UserProfilePage extends StatelessWidget {
     User? currentUser = UserRepository.currentUser;
 
     return ListView(
-      padding: const EdgeInsets.all(20).addSafeArea(context),
+      padding: const EdgeInsets.all(20).add(context.safeArea),
       children: [
         ProfileHeaderWidget(currentUser: currentUser),
         const SizedBox(height: 40),
@@ -55,9 +55,9 @@ class UserProfilePage extends StatelessWidget {
         const SizedBox(height: 40),
         Text('Settings', style: context.textTheme.bodyMedium),
         const SizedBox(height: 20),
-        MyCard(
+        CardWidget(
           children: [
-            MyListTile(
+            ListTileWidget(
               title: 'User Feedback',
               trailing: Icon(
                 Icons.feedback_rounded,
@@ -67,7 +67,7 @@ class UserProfilePage extends StatelessWidget {
                 widget: const UserFeedbackPopup(),
               ),
             ),
-            MyListTile(
+            ListTileWidget(
               title: 'Change Theme',
               trailing: Icon(
                 {
@@ -83,9 +83,9 @@ class UserProfilePage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 20),
-        MyCard(
+        CardWidget(
           children: [
-            MyListTile(
+            ListTileWidget(
               title: 'Edit Profile',
               trailing: Icon(
                 Icons.edit_rounded,
@@ -94,7 +94,7 @@ class UserProfilePage extends StatelessWidget {
               onTap: () =>
                   Navigation.pushPopup(widget: const ProfileEditPopup()),
             ),
-            MyListTile(
+            ListTileWidget(
               title: 'Change Password',
               trailing: Icon(
                 Icons.password_rounded,
@@ -104,7 +104,7 @@ class UserProfilePage extends StatelessWidget {
                 widget: const ProfilePasswordChangePopup(),
               ),
             ),
-            MyListTile(
+            ListTileWidget(
               title: 'Sign Out',
               trailing: Icon(
                 Icons.logout_rounded,
@@ -115,7 +115,7 @@ class UserProfilePage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 20),
-        MyListTile(
+        ListTileWidget(
           title: 'Delete Account',
           trailing: Icon(
             Icons.delete_rounded,

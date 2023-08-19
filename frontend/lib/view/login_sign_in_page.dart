@@ -1,10 +1,9 @@
 library login_flow;
 
-import 'package:fitness_app/bloc/login/login_bloc.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/bloc/login/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:widgets/widgets.dart';
 
 class LoginSignInPage extends StatelessWidget {
   const LoginSignInPage({super.key});
@@ -50,23 +49,17 @@ class SignInForm extends StatelessWidget {
         ),
         const Spacer(),
         Card(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Column(
-              children: [
-                MyTextField(
-                  bloc: (BlocProvider.of<LoginBloc>(context).state
-                          as LoginSignInState)
-                      .emailBloc,
-                ),
-                const SizedBox(height: 10),
-                MyTextField(
-                  bloc: (BlocProvider.of<LoginBloc>(context).state
-                          as LoginSignInState)
-                      .passwordBloc,
-                )
-              ],
-            ),
+          child: Column(
+            children: [
+              TextFieldWidget(
+                (BlocProvider.of<LoginBloc>(context).state as LoginSignInState)
+                    .emailBloc,
+              ),
+              TextFieldWidget(
+                (BlocProvider.of<LoginBloc>(context).state as LoginSignInState)
+                    .passwordBloc,
+              )
+            ],
           ),
         ),
         const SizedBox(height: 10),

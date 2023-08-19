@@ -179,16 +179,6 @@ class UserRepository {
           .toList() ??
       [];
 
-  static Stream<List<Workout>> get currentUserCustomWorkouts => firestore
-      .FirebaseFirestore.instance
-      .collection('users')
-      .doc(UserRepository.currentUserUID)
-      .collection('workouts')
-      .snapshots()
-      .map(
-        (event) =>
-            event.docs.map((e) => Workout.fromJson(e.id, e.data())).toList(),
-      );
   static Future<List<Workout>> get currentUserCustomWorkoutsAsFuture async =>
       (await firestore.FirebaseFirestore.instance
               .collection('users')
@@ -384,5 +374,22 @@ class UserRepository {
     }
 
     return friends;
+  }
+
+  static Future<ThemeMode> getThemeMode() async {
+    var snap = await firestore.FirebaseFirestore.instance
+        .collection('users')
+        .doc(UserRepository.currentUserUID)
+        .get();
+    return ThemeMode.values[snap.data()?['themeMode'] ?? 0];
+  }
+
+  static Future<void> updateThemeMode(ThemeMode mode) async {
+    await firestore.FirebaseFirestore.instance
+        .collection('users')
+        .doc(UserRepository.currentUserUID)
+        .update({
+      'themeMode': mode.index,
+    });
   }
 }

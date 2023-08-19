@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/exercise_image.dart';
-import 'package:fitness_app/view/user_exercise_info_screen.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/exercise_image.dart';
+import 'package:fitnessapp/view/user_exercise_info_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class UserExerciseListPage extends StatefulWidget {
   const UserExerciseListPage({super.key});
@@ -27,21 +27,21 @@ class _UserExerciseListPageState extends State<UserExerciseListPage> {
   @override
   Widget build(BuildContext context) {
     if (exercises == null) {
-      return const MyLoadingWidget();
+      return const LoadingWidget();
     }
     if (exercises!.isEmpty) {
-      return const MyErrorWidget(
-        error: 'No exercises found',
+      return const FailWidget(
+        'No exercises found',
       );
     }
     return ListView(
-      padding: const EdgeInsets.all(20).addSafeArea(context),
+      padding: const EdgeInsets.all(20).add(context.safeArea),
       children: [
         const Text('Favorites'),
         if (exercises!.entries.where((element) => element.value).isEmpty)
           const SizedBox(
             height: 100,
-            child: MyErrorWidget(error: 'You have no favorite exercises'),
+            child: FailWidget('You have no favorite exercises'),
           ),
         const SizedBox(height: 10),
         for (var entry in exercises!.entries.where((element) => element.value))
@@ -51,7 +51,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage> {
         if (exercises!.entries.where((element) => !element.value).isEmpty)
           const SizedBox(
             height: 100,
-            child: MyErrorWidget(error: 'No other exercises found'),
+            child: FailWidget('No other exercises found'),
           ),
         const SizedBox(height: 10),
         for (var entry in exercises!.entries.where((element) => !element.value))
@@ -88,7 +88,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage> {
   }
 
   Widget exerciseListTile(MapEntry<Tupel<Exercise, File?>, bool> entry) =>
-      MyListTile(
+      ListTileWidget(
         margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
         title: entry.key.t1.name,

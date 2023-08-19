@@ -37,7 +37,7 @@ The Fitness App is designed to provide users with an intuitive interface for man
 The project is structured in the following way:
 
 ```
-fitness_app/
+fitnessapp/
 |-- backend/
 |   |--firestore/
 |   |--functions/
@@ -83,13 +83,13 @@ Follow these steps to get the Fitness App up and running on your local machine.
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/fitness_app.git
+   git clone https://github.com/yourusername/fitnessapp.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd fitness_app
+   cd fitnessapp
    ```
 
 3. Install dependencies:

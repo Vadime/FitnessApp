@@ -1,5 +1,5 @@
-import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class FooterTermsScreen extends StatelessWidget {
   const FooterTermsScreen({super.key});
@@ -9,8 +9,8 @@ class FooterTermsScreen extends StatelessWidget {
     return const Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar: MyAppBar(
-        title: 'Terms',
+      appBar: AppBarWidget(
+        'Terms',
       ),
       body: SingleChildScrollView(
         child: SafeArea(

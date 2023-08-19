@@ -9,9 +9,10 @@ abstract class LoginState {
 }
 
 class LoginSignUpState extends LoginState {
-  EmailBloc emailBloc = EmailBloc();
-  PasswordBloc passwordBloc = PasswordBloc();
-  PasswordBloc rPasswordBloc = PasswordBloc(hintText: 'Repeat Password');
+  TextFieldController emailBloc = TextFieldController.email();
+  TextFieldController passwordBloc = TextFieldController.password();
+  TextFieldController rPasswordBloc =
+      TextFieldController.password(labelText: 'Repeat Password');
 
   LoginSignUpState() : super(page: 0, name: 'Sign Up');
 
@@ -31,13 +32,13 @@ class LoginSignUpState extends LoginState {
     }
 
     // check if there is an error in rPassword
-    if (rPasswordBloc.state.text != passwordBloc.state.text) {
+    if (rPasswordBloc.text != passwordBloc.text) {
       return Navigation.pushMessage(message: "Passwords don't match!");
     }
     try {
       await UserRepository.createUserWithEmailAndPassword(
-        email: emailBloc.state.text!,
-        password: passwordBloc.state.text!,
+        email: emailBloc.text,
+        password: passwordBloc.text,
       );
     } catch (e) {
       Navigation.pushMessage(message: e.toString());
@@ -47,8 +48,8 @@ class LoginSignUpState extends LoginState {
 }
 
 class LoginSignInState extends LoginState {
-  EmailBloc emailBloc = EmailBloc();
-  PasswordBloc passwordBloc = PasswordBloc();
+  TextFieldController emailBloc = TextFieldController.email();
+  TextFieldController passwordBloc = TextFieldController.password();
 
   LoginSignInState() : super(page: 1, name: 'Sign In');
 
@@ -68,8 +69,8 @@ class LoginSignInState extends LoginState {
     }
     try {
       await UserRepository.signInWithEmailAndPassword(
-        email: emailBloc.state.text!,
-        password: passwordBloc.state.text!,
+        email: emailBloc.text,
+        password: passwordBloc.text,
       );
     } catch (e) {
       Navigation.pushMessage(message: e.toString());
@@ -79,7 +80,7 @@ class LoginSignInState extends LoginState {
 }
 
 class LoginSendPasswordState extends LoginState {
-  EmailBloc emailBloc = EmailBloc();
+  TextFieldController emailBloc = TextFieldController.email();
   LoginSendPasswordState() : super(page: 2, name: 'Send Password');
 
   @override
@@ -92,7 +93,7 @@ class LoginSendPasswordState extends LoginState {
     }
     try {
       await UserRepository.sendPasswordResetEmail(
-        email: emailBloc.state.text!,
+        email: emailBloc.text,
       );
       Navigation.pushMessage(message: 'Email sent!');
       if (context.mounted) context.read<LoginBloc>().add(LoginSignInEvent());

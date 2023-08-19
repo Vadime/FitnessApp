@@ -1,8 +1,7 @@
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/utils.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
 import 'package:flutter/material.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class AdminUserFeedbackScreen extends StatefulWidget {
   const AdminUserFeedbackScreen({super.key});
@@ -30,8 +29,8 @@ class _AdminUserFeedbackScreenState extends State<AdminUserFeedbackScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: const MyAppBar(
-        title: 'User Feedback',
+      appBar: const AppBarWidget(
+        'User Feedback',
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),

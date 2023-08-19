@@ -1,7 +1,7 @@
-import 'package:fitness_app/bloc/theme/theme_bloc.dart';
-import 'package:fitness_app/utils/utils.dart';
+import 'package:fitnessapp/bloc/theme/theme_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:widgets/widgets.dart';
 
 class ProfileThemeChangePopup extends StatelessWidget {
   const ProfileThemeChangePopup({super.key});
@@ -31,21 +31,9 @@ class ProfileThemeChangePopup extends StatelessWidget {
                   ButtonSegment(value: ThemeMode.dark, label: Text('Dark')),
                 ],
                 selected: {state},
-                onSelectionChanged: (selected) {
-                  switch (selected.first) {
-                    case ThemeMode.system:
-                      context.read<ThemeBloc>().add(ThemeSystemEvent());
-                      break;
-                    case ThemeMode.light:
-                      context.read<ThemeBloc>().add(ThemeLightEvent());
-                      break;
-                    case ThemeMode.dark:
-                      context.read<ThemeBloc>().add(ThemeDarkEvent());
-                      break;
-                    default:
-                      break;
-                  }
-                },
+                onSelectionChanged: (selected) => context
+                    .read<ThemeBloc>()
+                    .add(ThemeEvent(mode: selected.first)),
               );
             },
           )

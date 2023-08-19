@@ -1,7 +1,7 @@
 // Import the functions from individual population scripts
-const populateUsers = require('./src/populate_users');
-const populateExercises = require('./src/populate_exercises');
-const populateWorkouts = require('./src/populate_workouts');
+const populateUsers = require('./populate_users');
+const populateExercises = require('./populate_exercises');
+const populateWorkouts = require('./populate_workouts');
 
 // Function to populate all data
 async function populateAllData() {

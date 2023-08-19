@@ -1,10 +1,10 @@
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/src/friend.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/home_screen.dart';
-import 'package:fitness_app/view/profile_user_stats_graph.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/src/friend.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/home_screen.dart';
+import 'package:fitnessapp/view/profile_user_stats_graph.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class UserProfileFriendsWidget extends StatelessWidget {
   const UserProfileFriendsWidget({super.key});
@@ -17,7 +17,7 @@ class UserProfileFriendsWidget extends StatelessWidget {
         if (!snapshot.hasData) {
           return const SizedBox(
             height: 100,
-            child: MyLoadingWidget(),
+            child: LoadingWidget(),
           );
         }
         if (snapshot.hasError ||
@@ -25,14 +25,14 @@ class UserProfileFriendsWidget extends StatelessWidget {
             snapshot.data!.isEmpty) {
           return const SizedBox(
             height: 100,
-            child: MyErrorWidget(error: 'You have no friends'),
+            child: FailWidget('You have no friends'),
           );
         }
 
         return Column(
           children: [
             for (Friend friend in snapshot.data!)
-              MyListTile(
+              ListTileWidget(
                 margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                 title: friend.displayName,
                 subtitle: friend.email,

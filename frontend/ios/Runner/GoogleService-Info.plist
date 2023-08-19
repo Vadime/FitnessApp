@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>534633074686-nhn6puhk8o3aa9t5fv6ucpq946q7hhc6.apps.googleusercontent.com</string>
+	<string>534633074686-t6eupvdqbpru0d8i63edqn8jvonkrnnb.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.534633074686-nhn6puhk8o3aa9t5fv6ucpq946q7hhc6</string>
+	<string>com.googleusercontent.apps.534633074686-t6eupvdqbpru0d8i63edqn8jvonkrnnb</string>
 	<key>API_KEY</key>
 	<string>AIzaSyC2ABCt_uX1w_RjDwgkkAMB8K6Lny_sY-E</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.frontend</string>
+	<string>de.ases.fitnessApp</string>
 	<key>PROJECT_ID</key>
 	<string>fitnessapp-9dd39</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:534633074686:ios:2d4fa87c191c6908317aaf</string>
+	<string>1:534633074686:ios:c381d0e456202bdc317aaf</string>
 	<key>DATABASE_URL</key>
 	<string>https://fitnessapp-9dd39-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>

@@ -1,51 +1,48 @@
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/footer_about_screen.dart';
-import 'package:fitness_app/view/footer_privacy_screen.dart';
-import 'package:fitness_app/view/footer_terms_screen.dart';
-import 'package:fitness_app/widgets/src/my_footer_button.dart';
-import 'package:fitness_app/widgets/src/my_footer_social_button.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/footer_about_screen.dart';
+import 'package:fitnessapp/view/footer_privacy_screen.dart';
+import 'package:fitnessapp/view/footer_terms_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart'
+    show FontAwesomeIcons, FaIcon;
+import 'package:url_x_launcher/url_x_launcher.dart';
+import 'package:widgets/widgets.dart';
 
 class Footer extends StatelessWidget {
   const Footer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MyFooter(
+    return FooterWidget(
       commercialText: '© 2023 Traumteam',
       socials: [
-        MyFutterSocialButton(
+        FooterSocialButtonWidget(
           text: 'Instagram',
-          onPressed: () async => await UriLaunching.launch(
-            Uri.parse('https://instagram.com'),
-          ),
+          onPressed: () async =>
+              await UrlXLauncher.launchBrowser('instagram.com'),
           icon: const FaIcon(
             FontAwesomeIcons.instagram,
             color: Colors.pink,
           ),
         ),
-        MyFutterSocialButton(
+        FooterSocialButtonWidget(
           text: 'Twitter',
-          onPressed: () async => await UriLaunching.launch(
-            Uri.parse('https://twitter.com'),
-          ),
+          onPressed: () async =>
+              await UrlXLauncher.launchBrowser('https://twitter.com'),
           icon: const FaIcon(FontAwesomeIcons.twitter, color: Colors.blue),
         )
       ],
       buttons: [
-        MyFooterButton(
+        FooterButtonWidget(
           text: 'About',
           onPressed: () => Navigation.push(widget: const FooterAboutScreen()),
         ),
-        MyFooterButton(
+        FooterButtonWidget(
           text: 'Contact',
           onPressed: () async {
-            await UriLaunching.launch(
-              Uri.parse(
-                'mailto:traumteam@email.de?subject=Angelegenheit',
-              ),
+            await UrlXLauncher.launchEmail(
+              'traumteam@email.de',
+              'Angelegenheit',
             ).then((value) {
               if (!value) {
                 Navigation.pop();
@@ -55,11 +52,11 @@ class Footer extends StatelessWidget {
             });
           },
         ),
-        MyFooterButton(
+        FooterButtonWidget(
           text: 'Privacy',
           onPressed: () => Navigation.push(widget: const FooterPrivacyScreen()),
         ),
-        MyFooterButton(
+        FooterButtonWidget(
           text: 'Terms',
           onPressed: () => Navigation.push(widget: const FooterTermsScreen()),
         ),

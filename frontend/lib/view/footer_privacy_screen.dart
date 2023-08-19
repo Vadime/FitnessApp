@@ -1,5 +1,5 @@
-import 'package:fitness_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class FooterPrivacyScreen extends StatelessWidget {
   const FooterPrivacyScreen({super.key});
@@ -9,8 +9,8 @@ class FooterPrivacyScreen extends StatelessWidget {
     return const Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar: MyAppBar(
-        title: 'Privacy',
+      appBar: AppBarWidget(
+        'Privacy',
       ),
       body: SingleChildScrollView(
         child: SafeArea(

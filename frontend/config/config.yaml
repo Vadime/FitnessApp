@@ -2,10 +2,10 @@
 
 flutter_rename_app:
   application_name: Fitness App
-  dart_package_name: fitness_app
-  # application_id: com.android.bank
-  # bundle_id: com.ios.bank
-  # android_package_name: com.bank.app
+  dart_package_name: fitnessapp
+  application_id: de.ases.fitnessapp
+  bundle_id: de.ases.fitnessapp
+  android_package_name: de.ases.app
 
 # dart run flutter_launcher_icons -f <your config file name here>
 # update colors according to res/config/colors.xml
@@ -16,8 +16,8 @@ flutter_launcher_icons:
 
   android: true
   adaptive_icon_background: "#2196F3"
-  adaptive_icon_foreground: "res/logo/foreground.png"
-  min_sdk_android: 21
+  adaptive_icon_foreground: "res/logo/logo.png"
+  min_sdk_android: 23
 
   ios: true
   image_path_ios: "res/logo/logo.png"

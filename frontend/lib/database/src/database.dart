@@ -7,12 +7,14 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storage;
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/models/src/course.dart';
-import 'package:fitness_app/models/src/friend.dart';
-import 'package:fitness_app/utils/src/logging.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/models/src/course.dart';
+import 'package:fitnessapp/models/src/friend.dart';
+import 'package:fitnessapp/utils/src/logging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 part 'course_repository.dart';
 part 'exercise_repository.dart';
@@ -21,10 +23,16 @@ part 'user_repository.dart';
 part 'workout_repository.dart';
 part 'workout_statistics_repository.dart';
 
-extension on String {
+extension DateTimeExtension on String {
   DateTime toDateTime() {
     var arr = split('.');
     return DateTime(int.parse(arr[2]), int.parse(arr[1]), int.parse(arr[0]));
+  }
+}
+
+extension StringExtension on DateTime {
+  String toDate() {
+    return '${day.toString().padLeft(2, '0')}.${month.toString().padLeft(2, '0')}.${year.toString().padLeft(4, '0')}';
   }
 }
 
@@ -92,6 +100,7 @@ class Database {
         await storage.FirebaseStorage.instance
             .useStorageEmulator('localhost', 9199);
       }
+      await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
       await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
       // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics

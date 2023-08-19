@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/models/src/course.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/exercise_image.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/models/src/course.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/exercise_image.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class UserCourseListPage extends StatefulWidget {
   const UserCourseListPage({super.key});
@@ -27,24 +27,24 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
   @override
   Widget build(BuildContext context) {
     if (courses == null) {
-      return const MyLoadingWidget();
+      return const LoadingWidget();
     }
 
     if (courses!.isEmpty) {
-      return const MyErrorWidget(
-        error: 'No courses found',
+      return const FailWidget(
+        'No courses found',
       );
     }
 
     return ListView(
-      padding: const EdgeInsets.all(20).addSafeArea(context),
+      padding: const EdgeInsets.all(20).add(context.safeArea),
       children: [
         const Text('Deine Kurse'),
         const SizedBox(height: 10),
         if (courses!.entries.where((element) => element.value).isEmpty)
           const SizedBox(
             height: 100,
-            child: MyErrorWidget(error: 'Du nimmst an keinen Kursen teil'),
+            child: FailWidget('Du nimmst an keinen Kursen teil'),
           )
         else
           for (var entry in courses!.entries.where((element) => element.value))
@@ -55,7 +55,7 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
         if (courses!.entries.where((element) => !element.value).isEmpty)
           const SizedBox(
             height: 100,
-            child: MyErrorWidget(error: 'Keine weiteren Kurse gefunden'),
+            child: FailWidget('Keine weiteren Kurse gefunden'),
           )
         else
           for (var entry in courses!.entries.where((element) => !element.value))
@@ -86,7 +86,7 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
             style: context.textTheme.labelSmall,
           ),
           const SizedBox(height: 10),
-          MyListTile(
+          ListTileWidget(
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
             title: entry.key.t1.name,
             subtitle: entry.key.t1.description,

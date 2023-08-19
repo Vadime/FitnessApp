@@ -1,5 +1,5 @@
-import 'package:fitness_app/models/src/schedule.dart';
-import 'package:fitness_app/models/src/workout_exercise.dart';
+import 'package:fitnessapp/models/src/schedule.dart';
+import 'package:fitnessapp/models/src/workout_exercise.dart';
 
 class Workout {
   final String uid;

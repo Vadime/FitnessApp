@@ -1,13 +1,12 @@
 import 'dart:io';
 
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/src/file_picking.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/admin_exercise_delete_popup.dart';
-import 'package:fitness_app/view/home_screen.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/admin_exercise_delete_popup.dart';
+import 'package:fitnessapp/view/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class AdminExerciseAddScreen extends StatefulWidget {
   final Exercise? exercise;
@@ -19,8 +18,8 @@ class AdminExerciseAddScreen extends StatefulWidget {
 }
 
 class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
-  late NameBloc nameBloc;
-  late TextBloc descriptionBloc;
+  late TextFieldController nameBloc;
+  late TextFieldController descriptionBloc;
 
   late Set<ExerciseMuscles> selectedMuscles;
   File? imageFile;
@@ -29,12 +28,12 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
   void initState() {
     super.initState();
     imageFile = widget.imageFile;
-    nameBloc = NameBloc(
-      initialValue: widget.exercise?.name,
+    nameBloc = TextFieldController.name(
+      text: widget.exercise?.name,
     );
-    descriptionBloc = TextBloc(
-      initialValue: widget.exercise?.description,
-      hint: 'Description',
+    descriptionBloc = TextFieldController(
+      'Description',
+      text: widget.exercise?.description,
     );
 
     selectedMuscles = widget.exercise?.muscles.toSet() ?? {};
@@ -45,8 +44,8 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-      appBar: MyAppBar(
-        title: '${widget.exercise != null ? 'Update' : 'Add'} Exercise',
+      appBar: AppBarWidget(
+        '${widget.exercise != null ? 'Update' : 'Add'} Exercise',
       ),
       bottomNavigationBar: SafeArea(
         top: false,
@@ -77,12 +76,12 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                 onPressed: () async {
                   if (!nameBloc.isValid()) {
                     return Navigation.pushMessage(
-                      message: nameBloc.state.errorText!,
+                      message: nameBloc.errorText!,
                     );
                   }
                   if (!descriptionBloc.isValid()) {
                     return Navigation.pushMessage(
-                      message: descriptionBloc.state.errorText!,
+                      message: descriptionBloc.errorText!,
                     );
                   }
 
@@ -108,8 +107,8 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                   // create exercise
                   var exercise = Exercise(
                     uid: id,
-                    name: nameBloc.state.text!,
-                    description: descriptionBloc.state.text!,
+                    name: nameBloc.text,
+                    description: descriptionBloc.text,
                     muscles: selectedMuscles.toList(),
                     imageURL: await ExerciseRepository.uploadExerciseImage(
                       id,
@@ -180,16 +179,14 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
               ),
             ),
           ),
-          MyCard(
+          CardWidget(
             margin: const EdgeInsets.all(20),
-            padding: const EdgeInsets.all(20),
             children: [
-              MyTextField(
-                bloc: nameBloc,
+              TextFieldWidget(
+                nameBloc,
               ),
-              const SizedBox(height: 10),
-              MyTextField(
-                bloc: descriptionBloc,
+              TextFieldWidget(
+                descriptionBloc,
               ),
             ],
           ),

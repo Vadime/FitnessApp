@@ -1,11 +1,10 @@
 import 'dart:io';
 
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/models/src/workout_exercise_type.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/exercise_image.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/models/src/workout_exercise_type.dart';
+import 'package:fitnessapp/view/exercise_image.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class WorkoutExerciseSelectedWidget extends StatelessWidget {
   final Tripple<Exercise, WorkoutExercise, File?> entry;
@@ -25,7 +24,7 @@ class WorkoutExerciseSelectedWidget extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 10),
-        MyListTile(
+        ListTileWidget(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
           title: entry.a.name,
           leading: Padding(

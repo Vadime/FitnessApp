@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/home_screen.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class UserExerciseInfoScreen extends StatefulWidget {
   final Exercise exercise;
@@ -35,8 +35,8 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: MyAppBar(
-        title: widget.exercise.name,
+      appBar: AppBarWidget(
+        widget.exercise.name,
         actions: [
           // add to favorites
           IconButton(
@@ -70,7 +70,7 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.all(20).addSafeArea(context),
+        padding: const EdgeInsets.all(20).add(context.safeArea),
         children: [
           SizedBox(height: context.topInset),
           Container(

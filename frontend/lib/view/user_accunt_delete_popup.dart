@@ -1,7 +1,6 @@
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/utils/utils.dart';
+import 'package:fitnessapp/database/database.dart';
 import 'package:flutter/material.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class UserAccountDeletePopup extends StatefulWidget {
   const UserAccountDeletePopup({super.key});
@@ -11,7 +10,7 @@ class UserAccountDeletePopup extends StatefulWidget {
 }
 
 class _UserAccountDeletePopupState extends State<UserAccountDeletePopup> {
-  PasswordBloc passwordBloc = PasswordBloc();
+  TextFieldController passwordBloc = TextFieldController.password();
 
   String error = '';
   @override
@@ -29,8 +28,8 @@ class _UserAccountDeletePopupState extends State<UserAccountDeletePopup> {
           Card(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
-              child: MyTextField(
-                bloc: passwordBloc,
+              child: TextFieldWidget(
+                passwordBloc,
               ),
             ),
           ),
@@ -49,7 +48,7 @@ class _UserAccountDeletePopupState extends State<UserAccountDeletePopup> {
             ),
             onPressed: () async {
               try {
-                await UserRepository.deleteUser(passwordBloc.state.text ?? '');
+                await UserRepository.deleteUser(passwordBloc.text);
               } catch (e) {
                 error = e.toString().split('] ').last;
                 setState(() {});

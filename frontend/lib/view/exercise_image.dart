@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:fitness_app/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 class ExerciseImage extends StatelessWidget {
   final double topPadding;

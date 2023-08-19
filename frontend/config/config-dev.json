@@ -1,7 +1,7 @@
 {
     "env": "dev",
     "application_name": "Fitness App",
-    "package_name": "fitness_app",
+    "package_name": "fitnessapp",
     "primary": "0xFF2196F3",
     "backgroundLight": "0xFFF5F5F5",
     "cardLight": "0xFFFFFFFF",
@@ -10,17 +10,17 @@
     "cardDark": "0xFF424242",
     "neutralDark": "0xFF616161",
     "apiKeyAndroid": "AIzaSyBmU426TVziB9QrtOqwQxcjZEDuH63bfFo",
-    "appIdAndroid": "1:534633074686:android:c9212ede59410db3317aaf",
+    "appIdAndroid": "1:534633074686:android:de07d1fedd973d6e317aaf",
     "messagingSenderIdAndroid": "534633074686",
     "projectIdAndroid": "fitnessapp-9dd39",
     "databaseURLAndroid": "https://fitnessapp-9dd39-default-rtdb.europe-west1.firebasedatabase.app",
     "storageBucketAndroid": "fitnessapp-9dd39.appspot.com",
     "apiKeyIOS": "AIzaSyC2ABCt_uX1w_RjDwgkkAMB8K6Lny_sY-E",
-    "appIdIOS": "1:534633074686:ios:2d4fa87c191c6908317aaf",
+    "appIdIOS": "1:534633074686:ios:c381d0e456202bdc317aaf",
     "messagingSenderIdIOS": "534633074686",
     "projectIdIOS": "fitnessapp-9dd39",
     "databaseURLIOS": "https://fitnessapp-9dd39-default-rtdb.europe-west1.firebasedatabase.app",
     "storageBucketIOS": "fitnessapp-9dd39.appspot.com",
-    "iosClientIdIOS": "534633074686-nhn6puhk8o3aa9t5fv6ucpq946q7hhc6.apps.googleusercontent.com",
-    "iosBundleIdIOS": "com.example.fitness_app"
+    "iosClientIdIOS": "534633074686-t6eupvdqbpru0d8i63edqn8jvonkrnnb.apps.googleusercontent.com",
+    "iosBundleIdIOS": "de.ases.fitnessapp"
 }

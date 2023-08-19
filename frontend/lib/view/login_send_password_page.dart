@@ -1,10 +1,9 @@
 library login_flow;
 
-import 'package:fitness_app/bloc/login/login_bloc.dart';
-import 'package:fitness_app/utils/src/context_extension.dart';
+import 'package:fitnessapp/bloc/login/login_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class LoginSendPasswordPage extends StatelessWidget {
   const LoginSendPasswordPage({super.key});
@@ -36,19 +35,10 @@ class LoginSendPasswordPage extends StatelessWidget {
             ],
           ),
           const Spacer(),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Column(
-                children: [
-                  MyTextField(
-                    bloc: (BlocProvider.of<LoginBloc>(context).state
-                            as LoginSendPasswordState)
-                        .emailBloc,
-                  ),
-                ],
-              ),
-            ),
+          TextFieldWidget(
+            (BlocProvider.of<LoginBloc>(context).state
+                    as LoginSendPasswordState)
+                .emailBloc,
           ),
           const Spacer(),
         ],

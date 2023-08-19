@@ -1,16 +1,16 @@
-import 'package:fitness_app/bloc/theme/theme_bloc.dart';
-import 'package:fitness_app/database/database.dart';
-import 'package:fitness_app/models/models.dart';
-import 'package:fitness_app/utils/utils.dart';
-import 'package:fitness_app/view/admin_user_feedback_screen.dart';
-import 'package:fitness_app/view/profile_edit_screen.dart';
-import 'package:fitness_app/view/profile_header_widget.dart';
-import 'package:fitness_app/view/profile_password_change_popup.dart';
-import 'package:fitness_app/view/profile_theme_change_popup.dart';
-import 'package:fitness_app/view/profile_user_stats_graph.dart';
-import 'package:fitness_app/widgets/widgets.dart';
+import 'package:fitnessapp/bloc/theme/theme_bloc.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/utils/utils.dart';
+import 'package:fitnessapp/view/admin_user_feedback_screen.dart';
+import 'package:fitnessapp/view/profile_edit_screen.dart';
+import 'package:fitnessapp/view/profile_header_widget.dart';
+import 'package:fitnessapp/view/profile_password_change_popup.dart';
+import 'package:fitnessapp/view/profile_theme_change_popup.dart';
+import 'package:fitnessapp/view/profile_user_stats_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:widgets/widgets.dart';
 
 class AdminProfilePage extends StatelessWidget {
   const AdminProfilePage({super.key});
@@ -47,7 +47,7 @@ class AdminProfilePage extends StatelessWidget {
         Card(
           child: Column(
             children: [
-              MyListTile(
+              ListTileWidget(
                 title: 'Edit Profile',
                 trailing: Icon(
                   Icons.edit_rounded,
@@ -56,7 +56,7 @@ class AdminProfilePage extends StatelessWidget {
                 onTap: () =>
                     Navigation.pushPopup(widget: const ProfileEditPopup()),
               ),
-              MyListTile(
+              ListTileWidget(
                 title: 'Change Theme',
                 trailing: Icon(
                   {
@@ -70,7 +70,7 @@ class AdminProfilePage extends StatelessWidget {
                   widget: const ProfileThemeChangePopup(),
                 ),
               ),
-              MyListTile(
+              ListTileWidget(
                 title: 'Change Password',
                 trailing: Icon(
                   Icons.password_rounded,
