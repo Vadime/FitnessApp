@@ -22,7 +22,7 @@ class UserRepository {
         email: email,
         password: password,
       );
-      Logging.log('Versucht Sign In');
+      DatabaseLogging.log('Versucht Sign In');
     } catch (e) {
       throw e.toString().split('] ').last;
     }
@@ -46,7 +46,7 @@ class UserRepository {
       });
       // auf fehler von firebase function prüfen
       if (value.data['error'] != null) throw Exception(value.data['error']);
-      Logging.log('Versucht Sign Up');
+      DatabaseLogging.log('Versucht Sign Up');
     } catch (e) {
       throw e.toString().split('] ').last;
     }
@@ -67,7 +67,7 @@ class UserRepository {
   // gibt die aktuelle Authentifizierung zurück
   static Stream<User?> get authStateChanges =>
       auth.FirebaseAuth.instance.authStateChanges().map((user) {
-        Logging.setUserId(user?.uid);
+        DatabaseLogging.setUserId(user?.uid);
         return UserRepository.fromFirebaseAuth(user);
       });
 

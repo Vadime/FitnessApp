@@ -12,13 +12,13 @@ import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/course.dart';
 import 'package:fitnessapp/models/src/friend.dart';
-import 'package:fitnessapp/utils/src/logging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 part 'course_repository.dart';
 part 'exercise_repository.dart';
 part 'feedback_repository.dart';
+part 'logging.dart';
 part 'user_repository.dart';
 part 'workout_repository.dart';
 part 'workout_statistics_repository.dart';
@@ -126,7 +126,7 @@ class Database {
     } on auth.FirebaseAuthException {
       UserRepository.signOutCurrentUser();
     } catch (e, s) {
-      Logging.crash(e.toString().split('] ').last, s);
+      DatabaseLogging.crash(e.toString().split('] ').last, s);
     }
   }
 }

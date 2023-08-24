@@ -13,7 +13,7 @@ class CourseRepository {
       )..writeAsBytesSync(data.toList());
       return image;
     } catch (e, s) {
-      Logging.error(e.toString(), s);
+      DatabaseLogging.error(e.toString(), s);
       return null;
     }
   }
