@@ -17,28 +17,23 @@ class ProfileHeaderWidget extends StatelessWidget {
           NetworkImage(currentUser!.imageURL!),
           width: 100,
           height: 100,
-          radius: 50,
         ),
         const SizedBox(width: 20),
         Expanded(
-          child: Card(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  title: const Text('Name'),
-                  subtitle: Text(currentUser?.displayName ?? '-'),
-                ),
-                ListTile(
-                  contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  title: const Text('Email'),
-                  subtitle: (currentUser?.email ?? '-').length > 20
-                      ? FittedBox(child: Text(currentUser?.email ?? '-'))
-                      : Text(currentUser?.email ?? '-'),
-                ),
-              ],
-            ),
+          child: CardWidget(
+            padding: const EdgeInsets.all(20),
+            children: [
+              ListTileWidget(
+                title: 'Name',
+                subtitle: currentUser?.displayName ?? '-',
+              ),
+              const SizedBox(height: 10),
+              ListTileWidget(
+                title: 'Email',
+                subtitle: currentUser?.email ?? '-',
+                subtitleOverflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
       ],

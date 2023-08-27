@@ -1,9 +1,9 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/pages/profile_edit_screen.dart';
+import 'package:fitnessapp/pages/profile_edit_popup.dart';
 import 'package:fitnessapp/pages/profile_password_change_popup.dart';
 import 'package:fitnessapp/pages/user_accunt_delete_popup.dart';
-import 'package:fitnessapp/pages/user_feedback_screen.dart';
+import 'package:fitnessapp/pages/user_feedback_popup.dart';
 import 'package:fitnessapp/pages/user_profile_friend_add_popup.dart';
 import 'package:fitnessapp/widgets/profile_header_widget.dart';
 import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
@@ -52,18 +52,15 @@ class UserProfilePage extends StatelessWidget {
         const SizedBox(height: 40),
         Text('Settings', style: context.textTheme.bodyMedium),
         const SizedBox(height: 20),
-        CardWidget(
-          children: [
-            ListTileWidget(
-              title: 'User Feedback',
-              trailing: const Icon(
-                Icons.feedback_rounded,
-              ),
-              onTap: () => Navigation.pushPopup(
-                widget: const UserFeedbackPopup(),
-              ),
-            ),
-          ],
+        ListTileWidget(
+          padding: const EdgeInsets.all(20),
+          title: 'User Feedback',
+          trailing: const Icon(
+            Icons.feedback_rounded,
+          ),
+          onTap: () => Navigation.pushPopup(
+            widget: const UserFeedbackPopup(),
+          ),
         ),
         const SizedBox(height: 20),
         BlocBuilder<ThemeController, ThemeMode>(
@@ -77,6 +74,7 @@ class UserProfilePage extends StatelessWidget {
         CardWidget(
           children: [
             ListTileWidget(
+              padding: const EdgeInsets.all(20),
               title: 'Edit Profile',
               trailing: const Icon(
                 Icons.edit_rounded,
@@ -85,6 +83,7 @@ class UserProfilePage extends StatelessWidget {
                   Navigation.pushPopup(widget: const ProfileEditPopup()),
             ),
             ListTileWidget(
+              padding: const EdgeInsets.all(20),
               title: 'Change Password',
               trailing: const Icon(
                 Icons.password_rounded,
@@ -94,6 +93,7 @@ class UserProfilePage extends StatelessWidget {
               ),
             ),
             ListTileWidget(
+              padding: const EdgeInsets.all(20),
               title: 'Sign Out',
               trailing: const Icon(
                 Icons.logout_rounded,
@@ -105,6 +105,7 @@ class UserProfilePage extends StatelessWidget {
         const SizedBox(height: 20),
         ListTileWidget(
           title: 'Delete Account',
+          padding: const EdgeInsets.all(20),
           trailing: Icon(
             Icons.delete_rounded,
             color: context.theme.colorScheme.error,

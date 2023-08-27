@@ -73,7 +73,8 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
               ),
             // add and update button
             Expanded(
-              child: ElevatedButton(
+              child: ElevatedButtonWidget(
+                'Save Exercise',
                 onPressed: () async {
                   if (!nameBloc.isValid()) {
                     return Navigation.pushMessage(
@@ -131,9 +132,6 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                     },
                   );
                 },
-                child: const Text(
-                  'Save Exercise',
-                ),
               ),
             ),
             const SizedBox(width: 30),

@@ -26,14 +26,14 @@ extension ExerciseMusclesExtension on ExerciseMuscles {
 }
 
 enum ExerciseMuscles {
-  chest,
-  back,
   shoulders,
-  biceps,
+  fullBody,
   triceps,
+  cardio,
+  biceps,
+  chest,
+  other,
+  back,
   legs,
   abs,
-  cardio,
-  fullBody,
-  other
 }

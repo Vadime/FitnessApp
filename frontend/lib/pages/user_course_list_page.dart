@@ -85,7 +85,7 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
           ),
           const SizedBox(height: 10),
           ListTileWidget(
-            padding: const EdgeInsets.fromLTRB(20, 0, 8, 0),
+            padding: const EdgeInsets.all(20),
             title: entry.key.t1.name,
             subtitle: entry.key.t1.description,
             trailing: entry.key.t2 == null
@@ -106,7 +106,8 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
                         : 'Möchtest du den Kurs ${entry.key.t1.name} wirklich verlassen?',
                   ),
                   const SizedBox(height: 10),
-                  ElevatedButton(
+                  ElevatedButtonWidget(
+                    !entry.value ? 'Beitreten' : 'Verlassen',
                     onPressed: () async {
                       if (entry.value) {
                         await CourseRepository.leaveCourse(
@@ -128,14 +129,9 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
                       setState(() {});
                       Navigation.pop();
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: !entry.value
-                          ? context.theme.primaryColor
-                          : context.colorScheme.error,
-                    ),
-                    child: Text(
-                      !entry.value ? 'Beitreten' : 'Verlassen',
-                    ),
+                    backgroundColor: !entry.value
+                        ? context.theme.primaryColor
+                        : context.colorScheme.error,
                   ),
                 ],
               ),

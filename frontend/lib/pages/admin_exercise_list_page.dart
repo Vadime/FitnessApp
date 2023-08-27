@@ -51,7 +51,7 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
 
         return ListTileWidget(
           margin: const EdgeInsets.only(bottom: 20),
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          padding: const EdgeInsets.all(20),
           title: exercise.t1.name,
           trailing: exercise.t2 == null
               ? null

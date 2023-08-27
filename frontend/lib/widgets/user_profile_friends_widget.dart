@@ -33,6 +33,7 @@ class UserProfileFriendsWidget extends StatelessWidget {
             for (Friend friend in snapshot.data!)
               ListTileWidget(
                 margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                padding: const EdgeInsets.all(20),
                 title: friend.displayName,
                 subtitle: friend.email,
                 onTap: () => Navigation.pushPopup(
@@ -44,7 +45,6 @@ class UserProfileFriendsWidget extends StatelessWidget {
                   NetworkImage(friend.imageURL ?? ''),
                   width: 40,
                   height: 40,
-                  radius: 20,
                 ),
               ),
           ],
@@ -74,7 +74,8 @@ class UserProfileFriendsGraphPopup extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
+        ElevatedButtonWidget(
+          'Remove Friend',
           onPressed: () async {
             await UserRepository.removeFriend(friend.uid);
             Navigation.flush(
@@ -83,10 +84,7 @@ class UserProfileFriendsGraphPopup extends StatelessWidget {
               ),
             );
           },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: context.colorScheme.errorContainer,
-          ),
-          child: const Text('Remove Friend'),
+          backgroundColor: context.colorScheme.error,
         ),
       ],
     );

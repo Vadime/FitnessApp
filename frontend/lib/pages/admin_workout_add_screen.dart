@@ -196,11 +196,12 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
 
   Widget addUpdateButton() {
     return Expanded(
-      child: ElevatedButton(
+      child: ElevatedButtonWidget(
+        widget.workout != null ? 'Save Workout' : 'Add Workout',
         onPressed: () async {
           if (!nameBloc.isValid()) {
             return Navigation.pushMessage(
-              message: nameBloc.errorText ?? 'Invalid name',
+              message: nameBloc.errorText,
             );
           }
           if (!descriptionBloc.isValid()) {
@@ -233,9 +234,6 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
             );
           }
         },
-        child: Text(
-          widget.workout != null ? 'Save Workout' : 'Add Workout',
-        ),
       ),
     );
   }

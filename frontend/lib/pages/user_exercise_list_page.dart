@@ -88,7 +88,8 @@ class _UserExerciseListPageState extends State<UserExerciseListPage> {
   Widget exerciseListTile(MapEntry<Tupel<Exercise, File?>, bool> entry) =>
       ListTileWidget(
         margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-        padding: const EdgeInsets.fromLTRB(20, 0, 8, 0),
+        padding: const EdgeInsets.all(20),
+        subtitleOverflow: TextOverflow.ellipsis,
         title: entry.key.t1.name,
         trailing: entry.key.t2 == null
             ? null

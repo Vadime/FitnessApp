@@ -40,7 +40,8 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
   }
 
   Widget saveCourseButton() => Expanded(
-        child: ElevatedButton(
+        child: ElevatedButtonWidget(
+          'Save Course',
           onPressed: () async {
             if (!nameBloc.isValid()) {
               return Navigation.pushMessage(
@@ -65,7 +66,6 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
             } else {
               id = widget.entry!.key.uid;
             }
-            Navigation.pushLoading();
 
             try {
               var course = Course(
@@ -87,13 +87,8 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
               return Navigation.pushMessage(
                 message: 'Error saving course: $e',
               );
-            } finally {
-              Navigation.pop();
             }
           },
-          child: const Text(
-            'Save Course',
-          ),
         ),
       );
 

@@ -46,7 +46,7 @@ class _AdminUserFeedbackScreenState extends State<AdminUserFeedbackScreen> {
                 ),
                 const SizedBox(height: 10),
                 ListTileWidget(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  padding: const EdgeInsets.all(20),
                   title: feedbacks[index].name,
                   subtitle: feedbacks[index].feedback,
                 ),

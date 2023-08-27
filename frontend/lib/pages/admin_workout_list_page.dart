@@ -45,6 +45,7 @@ class _AdminWorkoutListPageState extends State<AdminWorkoutListPage> {
           title: workouts![index].name,
           subtitle: workouts![index].description,
           margin: const EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.all(20),
           onTap: () => Navigation.push(
             widget: AdminWorkoutAddScreen(
               workout: workouts![index],

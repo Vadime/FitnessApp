@@ -23,11 +23,11 @@ extension SchdeuleExtension on Schedule {
 }
 
 enum Schedule {
-  daily,
-  twoDaysAWeek,
   threeDaysAWeek,
   fourDaysAWeek,
-  weekly,
+  twoDaysAWeek,
   monthly,
+  weekly,
+  daily,
   none,
 }

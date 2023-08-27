@@ -11,7 +11,8 @@ class UserFeedbackPopup extends StatefulWidget {
 }
 
 class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
-  final TextEditingController _feedbackController = TextEditingController();
+  final TextFieldController _feedbackController =
+      TextFieldController('Feedback');
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,19 +21,13 @@ class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
       children: [
         Text('User Feedback', style: context.textTheme.titleLarge),
         const SizedBox(height: 20),
-        CardWidget.single(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: TextField(
-            maxLines: null,
-            controller: _feedbackController,
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              labelText: 'Feedback',
-            ),
-          ),
+        TextFieldWidget(
+          controller: _feedbackController,
+          maxLines: null,
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
+        ElevatedButtonWidget(
+          'Send',
           onPressed: () async {
             // check if feedback is empty
             if (_feedbackController.text.isEmpty) {
@@ -53,9 +48,6 @@ class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
             // pop screen
             Navigation.pop();
           },
-          child: const Text(
-            'Send',
-          ),
         ),
       ],
     );

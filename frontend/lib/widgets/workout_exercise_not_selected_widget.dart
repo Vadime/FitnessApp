@@ -22,13 +22,13 @@ class WorkoutExerciseNotSelectedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTileWidget(
       margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-      padding: const EdgeInsets.fromLTRB(10, 10, 20, 10),
+      padding: const EdgeInsets.all(20),
+      contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       title: entry.t1.name,
       leading: entry.t2 == null
           ? null
           : ImageWidget(
               FileImage(entry.t2!),
-              margin: const EdgeInsets.only(right: 10),
               height: 40,
               width: 40,
             ),

@@ -1,7 +1,7 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/admin_user_feedback_screen.dart';
-import 'package:fitnessapp/pages/profile_edit_screen.dart';
+import 'package:fitnessapp/pages/profile_edit_popup.dart';
 import 'package:fitnessapp/pages/profile_password_change_popup.dart';
 import 'package:fitnessapp/widgets/profile_header_widget.dart';
 import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
@@ -28,8 +28,9 @@ class AdminProfilePage extends StatelessWidget {
           loader: WorkoutStatisticsRepository.getWorkoutDatesStatistics(),
         ),
         const SizedBox(height: 20),
-        ListTile(
-          title: const Text('User Feedback'),
+        ListTileWidget(
+          title: 'User Feedback',
+          padding: const EdgeInsets.all(20),
           trailing: const Icon(
             Icons.feedback_rounded,
           ),
@@ -45,6 +46,7 @@ class AdminProfilePage extends StatelessWidget {
             children: [
               ListTileWidget(
                 title: 'Edit Profile',
+                padding: const EdgeInsets.all(20),
                 trailing: const Icon(
                   Icons.edit_rounded,
                 ),
@@ -53,6 +55,8 @@ class AdminProfilePage extends StatelessWidget {
               ),
               ListTileWidget(
                 title: 'Change Password',
+                padding: const EdgeInsets.all(20),
+
                 trailing: const Icon(
                   Icons.password_rounded,
                 ),
@@ -73,8 +77,9 @@ class AdminProfilePage extends StatelessWidget {
           },
         ),
         const SizedBox(height: 20),
-        ListTile(
-          title: const Text('Sign Out'),
+        ListTileWidget(
+          title: 'Sign Out',
+          padding: const EdgeInsets.all(20),
           trailing: Icon(
             Icons.logout_rounded,
             color: context.theme.colorScheme.error,

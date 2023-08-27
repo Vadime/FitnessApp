@@ -34,7 +34,10 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
         const SizedBox(height: 20),
         Row(
           children: [
-            GestureDetector(
+            ImageWidget(
+              NetworkImage(currentUser!.imageURL!),
+              width: 100,
+              height: 100,
               onTap: () async {
                 var image = await FilePicking.pickImage();
                 if (image != null) {
@@ -50,12 +53,6 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                   Navigation.pushMessage(message: 'No image selected');
                 }
               },
-              child: ImageWidget(
-                NetworkImage(currentUser!.imageURL!),
-                width: 100,
-                height: 100,
-                radius: 50,
-              ),
             ),
             const SizedBox(width: 20),
             Expanded(
@@ -63,9 +60,11 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                 children: [
                   TextFieldWidget(
                     controller: nameBloc,
+                    autofocus: true,
                   ),
                   TextFieldWidget(
                     controller: emailBloc,
+                    autofocus: true,
                   ),
                 ],
               ),
@@ -73,7 +72,8 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
           ],
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
+        ElevatedButtonWidget(
+          'Save Changes',
           onPressed: () async {
             // check if there is an error in email
             if (!emailBloc.isValid()) {
@@ -100,13 +100,12 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
               );
             }
 
-            Navigation.replace(
+            Navigation.flush(
               widget: const HomeScreen(
                 initialIndex: 3,
               ),
             );
           },
-          child: const Text('Save Changes'),
         ),
       ],
     );

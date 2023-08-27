@@ -27,10 +27,9 @@ class UserWorkoutDeletePopup extends StatelessWidget {
           'Are you sure you want to delete this workout?',
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: context.colorScheme.errorContainer,
-          ),
+        ElevatedButtonWidget(
+          'Delete',
+          backgroundColor: context.colorScheme.error,
           onPressed: () async {
             if (widget.workout != null) {
               UserRepository.deleteUserWorkout(widget.workout!);
@@ -38,7 +37,6 @@ class UserWorkoutDeletePopup extends StatelessWidget {
 
             Navigation.flush(widget: const HomeScreen(initialIndex: 1));
           },
-          child: const Text('Delete'),
         ),
       ],
     );

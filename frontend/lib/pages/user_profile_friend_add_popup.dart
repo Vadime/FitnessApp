@@ -25,10 +25,12 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
         CardWidget.single(
           child: TextFieldWidget(
             controller: emailBloc,
+            autofocus: true,
           ),
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
+        ElevatedButtonWidget(
+          'Add Friend',
           onPressed: () async {
             // check if there is an error in email
             if (emailBloc.isValid()) {
@@ -46,7 +48,6 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
               }
             }
           },
-          child: const Text('Add Friend'),
         ),
       ],
     );

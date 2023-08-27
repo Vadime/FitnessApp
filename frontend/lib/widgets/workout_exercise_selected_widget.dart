@@ -24,18 +24,16 @@ class WorkoutExerciseSelectedWidget extends StatelessWidget {
       children: [
         const SizedBox(height: 10),
         ListTileWidget(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
+          contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
           title: entry.a.name,
-          leading: Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: entry.c == null
-                ? null
-                : ImageWidget(
-                    FileImage(entry.c!),
-                    height: 40,
-                    width: 40,
-                  ),
-          ),
+          leading: entry.c == null
+              ? null
+              : ImageWidget(
+                  FileImage(entry.c!),
+                  height: 40,
+                  width: 40,
+                ),
           subtitle: entry.a.description,
           trailing: IconButton(
             icon: Icon(

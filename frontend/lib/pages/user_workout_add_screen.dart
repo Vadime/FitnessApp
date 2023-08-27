@@ -65,7 +65,7 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
           }
           exercisesSel.sort((a, b) => a.b.index.compareTo(b.b.index));
           exercisesOth.sort((a, b) => a.t1.name.compareTo(b.t1.name));
-          setState(() {});
+          if (context.mounted) setState(() {});
         }
       },
     );
@@ -196,11 +196,12 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
   }
 
   Widget addUpdateButton() => Expanded(
-        child: ElevatedButton(
+        child: ElevatedButtonWidget(
+          widget.workout != null ? 'Save Workout' : 'Add Workout',
           onPressed: () async {
             if (!nameBloc.isValid()) {
               return Navigation.pushMessage(
-                message: nameBloc.errorText ?? 'Invalid name',
+                message: nameBloc.errorText,
               );
             }
             if (!descriptionBloc.isValid()) {
@@ -220,11 +221,10 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
                 workoutExercises: exercisesSel.map((e) => e.b).toList(),
               );
               if (widget.workout != null) {
-                UserRepository.updateUsersWorkout(workout);
+                await UserRepository.updateUsersWorkout(workout);
               } else {
-                UserRepository.addUsersWorkout(workout);
+                await UserRepository.addUsersWorkout(workout);
               }
-
               Navigation.flush(widget: const HomeScreen(initialIndex: 1));
             } catch (e) {
               Navigation.pushMessage(
@@ -232,9 +232,6 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
               );
             }
           },
-          child: Text(
-            widget.workout != null ? 'Save Workout' : 'Add Workout',
-          ),
         ),
       );
 

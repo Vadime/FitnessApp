@@ -27,14 +27,12 @@ class AdminCourseDeletePopup extends StatelessWidget {
           'Are you sure you want to delete this course?',
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: context.colorScheme.errorContainer,
-          ),
+        ElevatedButtonWidget(
+          'Delete',
+          backgroundColor: context.colorScheme.error,
           onPressed: () async {
             if (widget.entry != null) {
               // delete image from storage
-              Navigation.pushLoading();
               try {
                 await CourseRepository.deleteCourseImage(widget.entry!.key);
                 await CourseRepository.deleteCourse(widget.entry!.key);
@@ -44,15 +42,12 @@ class AdminCourseDeletePopup extends StatelessWidget {
                   message: 'Error deleting course: $e',
                 );
                 return;
-              } finally {
-                Navigation.pop();
               }
             }
             Navigation.flush(
               widget: const HomeScreen(),
             );
           },
-          child: const Text('Delete'),
         ),
       ],
     );

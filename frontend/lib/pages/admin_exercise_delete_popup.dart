@@ -27,10 +27,9 @@ class AdminExerciseDeletePopup extends StatelessWidget {
           'Are you sure you want to delete this exercise?',
         ),
         const SizedBox(height: 20),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: context.colorScheme.errorContainer,
-          ),
+        ElevatedButtonWidget(
+          'Delete',
+          backgroundColor: context.colorScheme.error,
           onPressed: () async {
             if (widget.exercise != null) {
               try {
@@ -51,7 +50,6 @@ class AdminExerciseDeletePopup extends StatelessWidget {
               widget: const HomeScreen(initialIndex: 2),
             );
           },
-          child: const Text('Delete'),
         ),
       ],
     );

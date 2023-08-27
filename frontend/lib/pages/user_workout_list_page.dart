@@ -79,7 +79,7 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage> {
           ),
           const SizedBox(height: 10),
           ListTileWidget(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
             title: workout.name,
             subtitle: workout.description,
             onTap: () => Navigation.push(

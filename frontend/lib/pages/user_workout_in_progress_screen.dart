@@ -100,7 +100,10 @@ class _UserWorkoutInProgressScreenState
       );
 
   Widget nextButton() => Expanded(
-        child: ElevatedButton(
+        child: ElevatedButtonWidget(
+          (currentPageIndex == widget.workout.workoutExercises.length - 1)
+              ? 'Finish'
+              : 'Next',
           onPressed: () async {
             if (currentPageIndex ==
                 widget.workout.workoutExercises.length - 1) {
@@ -118,11 +121,6 @@ class _UserWorkoutInProgressScreenState
             }
             setState(() {});
           },
-          child: Text(
-            (currentPageIndex == widget.workout.workoutExercises.length - 1)
-                ? 'Finish'
-                : 'Next',
-          ),
         ),
       );
 }

@@ -31,15 +31,18 @@ class _ProfilePasswordChangePopupState
           children: [
             TextFieldWidget(
               controller: oldPasswordBloc,
+              autofocus: true,
             ),
             TextFieldWidget(
               controller: newPasswordBloc,
+              autofocus: true,
             ),
           ],
         ),
         const SizedBox(height: 20),
         // save changes
-        ElevatedButton(
+        ElevatedButtonWidget(
+          'Change Password',
           onPressed: () async {
             // check if there is an error in password
             if (!oldPasswordBloc.isValid()) {
@@ -64,9 +67,6 @@ class _ProfilePasswordChangePopupState
               Navigation.pushMessage(message: e.toString());
             }
           },
-          child: const Text(
-            'Change Password',
-          ),
         ),
       ],
     );
