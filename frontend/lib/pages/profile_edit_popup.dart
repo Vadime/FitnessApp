@@ -49,9 +49,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                   } catch (e) {
                     return Navigation.pushMessage(message: e.toString());
                   }
-                } else {
-                  Navigation.pushMessage(message: 'No image selected');
-                }
+                } else {}
               },
             ),
             const SizedBox(width: 20),

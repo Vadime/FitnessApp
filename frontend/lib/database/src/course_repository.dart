@@ -31,7 +31,7 @@ class CourseRepository {
         .doc(course.uid)
         .update(
       {
-        'userUIDS': firestore.FieldValue.arrayUnion([user.uid])
+        'userUIDS': firestore.FieldValue.arrayUnion([user.uid]),
       },
     );
   }
@@ -43,7 +43,7 @@ class CourseRepository {
         .doc(course.uid)
         .update(
       {
-        'userUIDS': firestore.FieldValue.arrayRemove([user.uid])
+        'userUIDS': firestore.FieldValue.arrayRemove([user.uid]),
       },
     );
   }

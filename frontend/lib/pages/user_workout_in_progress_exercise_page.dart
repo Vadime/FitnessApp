@@ -51,7 +51,7 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                     'Minuten',
                     (exercise.key.t2.type as WorkoutExerciseTypeDuration)
                         .min
-                        .toString()
+                        .toString(),
                   ],
                 ),
                 TableRowWidget(
@@ -59,7 +59,7 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                     'Sekunden',
                     (exercise.key.t2.type as WorkoutExerciseTypeDuration)
                         .sec
-                        .toString()
+                        .toString(),
                   ],
                 ),
                 TableRowWidget(
@@ -67,7 +67,7 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                     'Weights',
                     (exercise.key.t2.type as WorkoutExerciseTypeDuration)
                         .weights
-                        .toString()
+                        .toString(),
                   ],
                 ),
               ] else if (exercise.key.t2.type
@@ -77,7 +77,7 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                     'Sets',
                     (exercise.key.t2.type as WorkoutExerciseTypeRepetition)
                         .sets
-                        .toString()
+                        .toString(),
                   ],
                 ),
                 TableRowWidget(
@@ -85,7 +85,7 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                     'Reps',
                     (exercise.key.t2.type as WorkoutExerciseTypeRepetition)
                         .reps
-                        .toString()
+                        .toString(),
                   ],
                 ),
                 TableRowWidget(
@@ -93,14 +93,14 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                     'Weights',
                     (exercise.key.t2.type as WorkoutExerciseTypeRepetition)
                         .weights
-                        .toString()
+                        .toString(),
                   ],
                 ),
               ],
               TableRowWidget(
                 cells: [
                   'Muscles',
-                  exercise.key.t1.muscles.map((e) => e.strName).join(', ')
+                  exercise.key.t1.muscles.map((e) => e.strName).join(', '),
                 ],
               ),
             ],

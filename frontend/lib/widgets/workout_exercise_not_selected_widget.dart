@@ -41,7 +41,7 @@ class WorkoutExerciseNotSelectedWidget extends StatelessWidget {
             WorkoutExercise(
               exerciseUID: entry.t1.uid,
               index: exercisesSel.length,
-              type: WorkoutExerciseTypeRepetition(0, 0, 0),
+              type: WorkoutExerciseTypeRepetition('0', '0', '0'),
             ),
             entry.t2,
           ),

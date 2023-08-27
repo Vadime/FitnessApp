@@ -4,6 +4,7 @@ import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/admin_exercise_delete_popup.dart';
 import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/widgets/upload_file.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -138,40 +139,14 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
       ),
       body: ListView(
         children: [
-          Container(
-            alignment: Alignment.bottomRight,
-            height: 200,
-            margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: context.theme.cardColor,
-              image: imageFile != null
-                  ? DecorationImage(
-                      image: FileImage(imageFile!),
-                      fit: BoxFit.cover,
-                    )
-                  : null,
-            ),
-            child: TextButtonWidget(
-              'Upload Image',
-              backgroundColor: context.theme.cardColor.withOpacity(0.8),
-              onPressed: () async {
-                var file = await FilePicking.pickImage();
-                if (file == null) {
-                  Navigation.pushMessage(
-                    message: 'Error picking image',
-                  );
-                  return;
-                }
-                setState(() {
-                  imageFile = file;
-                });
-              },
-            ),
+          UploadFile(
+            imageFile: imageFile,
+            onChanged: (file) {
+              imageFile = file;
+            },
           ),
           CardWidget(
-            margin: const EdgeInsets.all(20),
+            margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             children: [
               TextFieldWidget(
                 controller: nameBloc,
@@ -180,13 +155,6 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                 controller: descriptionBloc,
               ),
             ],
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Text(
-              'Muscles Worked',
-              style: context.textTheme.bodyMedium,
-            ),
           ),
           MultiSelectionButton(
             margin: const EdgeInsets.all(20),

@@ -18,9 +18,9 @@ abstract class WorkoutExerciseType {
 
 class WorkoutExerciseTypeDuration extends WorkoutExerciseType {
   static const String name = 'Duration';
-  int min;
-  int sec;
-  int weights;
+  String min;
+  String sec;
+  String weights;
   WorkoutExerciseTypeDuration(
     this.min,
     this.sec,
@@ -36,16 +36,16 @@ class WorkoutExerciseTypeDuration extends WorkoutExerciseType {
       };
 
   WorkoutExerciseTypeDuration.fromJson(Map<String, dynamic> json)
-      : min = json['min'] ?? -1,
-        sec = json['sec'] ?? -1,
-        weights = json['weights'] ?? -1;
+      : min = json['min'].toString(),
+        sec = json['sec'].toString(),
+        weights = json['weights'].toString();
 }
 
 class WorkoutExerciseTypeRepetition extends WorkoutExerciseType {
   static const String name = 'Repetition';
-  int sets;
-  int reps;
-  int weights;
+  String sets;
+  String reps;
+  String weights;
   WorkoutExerciseTypeRepetition(
     this.sets,
     this.reps,
@@ -61,7 +61,7 @@ class WorkoutExerciseTypeRepetition extends WorkoutExerciseType {
       };
 
   WorkoutExerciseTypeRepetition.fromJson(Map<String, dynamic> json)
-      : sets = json['sets'] ?? -1,
-        reps = json['reps'] ?? -1,
-        weights = json['weights'] ?? -1;
+      : sets = json['sets'].toString(),
+        reps = json['reps'].toString(),
+        weights = json['weights'].toString();
 }

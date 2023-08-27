@@ -22,7 +22,7 @@ class UserRepository {
         email: email,
         password: password,
       );
-      DatabaseLogging.log('Versucht Sign In');
+      checkAuthenticationState();
     } catch (e) {
       throw e.toString().split('] ').last;
     }
@@ -46,7 +46,7 @@ class UserRepository {
       });
       // auf fehler von firebase function prüfen
       if (value.data['error'] != null) throw Exception(value.data['error']);
-      DatabaseLogging.log('Versucht Sign Up');
+      checkAuthenticationState();
     } catch (e) {
       throw e.toString().split('] ').last;
     }
@@ -63,13 +63,6 @@ class UserRepository {
       throw e.toString().split('] ').last;
     }
   }
-
-  // gibt die aktuelle Authentifizierung zurück
-  static Stream<User?> get authStateChanges =>
-      auth.FirebaseAuth.instance.authStateChanges().map((user) {
-        DatabaseLogging.setUserId(user?.uid);
-        return UserRepository.fromFirebaseAuth(user);
-      });
 
   // macht die role zum lesbaren String
   static UserRole roleFromString(String? str) {
@@ -160,8 +153,10 @@ class UserRepository {
   }
 
   // loggt den User aus
-  static Future<void> signOutCurrentUser() async =>
-      await _authInstance.signOut();
+  static Future<void> signOutCurrentUser() async {
+    await _authInstance.signOut();
+    checkAuthenticationState();
+  }
 
   static Stream<List<String>> get currentUserFavoriteExercises =>
       _storeInstance.collection('users').doc(currentUserUID).snapshots().map(
@@ -256,6 +251,7 @@ class UserRepository {
       ),
     );
     await auth.FirebaseAuth.instance.currentUser?.delete();
+    checkAuthenticationState();
   }
 
   static Future<void> deleteUserWorkout(Workout workout) async {
@@ -290,7 +286,7 @@ class UserRepository {
         .collection('users')
         .doc(UserRepository.currentUserUID)
         .update({
-      'favoriteExercises': firestore.FieldValue.arrayUnion([exerciseUID])
+      'favoriteExercises': firestore.FieldValue.arrayUnion([exerciseUID]),
     });
   }
 
@@ -299,7 +295,7 @@ class UserRepository {
         .collection('users')
         .doc(UserRepository.currentUserUID)
         .update({
-      'favoriteExercises': firestore.FieldValue.arrayRemove([exerciseUID])
+      'favoriteExercises': firestore.FieldValue.arrayRemove([exerciseUID]),
     });
   }
 
@@ -327,7 +323,7 @@ class UserRepository {
         .collection('users')
         .doc(UserRepository.currentUserUID)
         .set({
-      'friends': firestore.FieldValue.arrayUnion([friend.uid])
+      'friends': firestore.FieldValue.arrayUnion([friend.uid]),
     });
     return friend;
   }
@@ -337,7 +333,7 @@ class UserRepository {
         .collection('users')
         .doc(UserRepository.currentUserUID)
         .update({
-      'friends': firestore.FieldValue.arrayRemove([uid])
+      'friends': firestore.FieldValue.arrayRemove([uid]),
     });
   }
 
@@ -391,5 +387,14 @@ class UserRepository {
         .update({
       'themeMode': mode.index,
     });
+  }
+
+  static Future<void> checkAuthenticationState() async {
+    if (UserRepository.currentUser != null) {
+      await UserRepository.refreshUserRole();
+      AuthenticationController().login();
+    } else {
+      AuthenticationController().logout();
+    }
   }
 }

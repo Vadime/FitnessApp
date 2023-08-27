@@ -10,7 +10,7 @@ class WorkoutExercise {
   WorkoutExercise.empty({
     this.index = -1,
     this.exerciseUID = '',
-  }) : type = WorkoutExerciseTypeRepetition(0, 0, 0);
+  }) : type = WorkoutExerciseTypeRepetition('0', '0', '0');
 
   WorkoutExercise({
     required this.exerciseUID,

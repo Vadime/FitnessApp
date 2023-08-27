@@ -14,17 +14,16 @@ class FooterPopup extends StatelessWidget {
     return FooterWidget(
       commercialText: '© 2023 Traumteam',
       socials: [
-        FooterSocialButtonWidget(
-          text: 'Instagram',
+        IconButtonWidget(
+          FontAwesomeIcons.instagram,
           onPressed: () async =>
               await UrlLauncher.launchBrowser('instagram.com'),
-          icon: FontAwesomeIcons.instagram,
+          foregroundColor: Colors.pink,
         ),
-        FooterSocialButtonWidget(
-          text: 'Twitter',
-          onPressed: () async =>
-              await UrlLauncher.launchBrowser('https://twitter.com'),
-          icon: FontAwesomeIcons.twitter,
+        IconButtonWidget(
+          FontAwesomeIcons.twitter,
+          onPressed: () async => await UrlLauncher.launchBrowser('twitter.com'),
+          foregroundColor: Colors.blue,
         ),
       ],
       buttons: [
@@ -38,13 +37,7 @@ class FooterPopup extends StatelessWidget {
             await UrlLauncher.launchEmail(
               'traumteam@email.de',
               'Angelegenheit',
-            ).then((value) {
-              if (!value) {
-                Navigation.pop();
-              }
-            }).catchError((e) {
-              debugPrint(e.toString());
-            });
+            );
           },
         ),
         FooterButtonWidget(

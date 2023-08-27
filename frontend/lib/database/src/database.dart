@@ -14,6 +14,7 @@ import 'package:fitnessapp/models/src/course.dart';
 import 'package:fitnessapp/models/src/friend.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:widgets/widgets.dart';
 
 part 'course_repository.dart';
 part 'exercise_repository.dart';
@@ -123,6 +124,7 @@ class Database {
       await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
 
       await auth.FirebaseAuth.instance.currentUser?.reload();
+      await UserRepository.checkAuthenticationState();
     } on auth.FirebaseAuthException {
       UserRepository.signOutCurrentUser();
     } catch (e, s) {

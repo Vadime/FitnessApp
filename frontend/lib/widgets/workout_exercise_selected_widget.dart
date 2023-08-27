@@ -23,12 +23,12 @@ class WorkoutExerciseSelectedWidget extends StatefulWidget {
 
 class _WorkoutExerciseSelectedWidgetState
     extends State<WorkoutExerciseSelectedWidget> {
-  late TextFieldController durMintesController;
-  late TextFieldController durSecController;
-  late TextFieldController durWeightController;
-  late TextFieldController repSetsController;
-  late TextFieldController repRepsController;
-  late TextFieldController repWeightController;
+  TextFieldController? durMintesController;
+  TextFieldController? durSecController;
+  TextFieldController? durWeightController;
+  TextFieldController? repSetsController;
+  TextFieldController? repRepsController;
+  TextFieldController? repWeightController;
   @override
   void initState() {
     super.initState();
@@ -37,78 +37,72 @@ class _WorkoutExerciseSelectedWidgetState
 
   void initControllers() {
     if (widget.entry.b.type is WorkoutExerciseTypeDuration) {
-      durMintesController = TextFieldController(
-        'Minutes',
+      durMintesController = TextFieldController.number(
+        labelText: 'Minutes',
         text:
             (widget.entry.b.type as WorkoutExerciseTypeDuration).min.toString(),
-      )..addListener(() {
+      )
+        ..addListener(() {
           (widget.entry.b.type as WorkoutExerciseTypeDuration).min =
-              int.tryParse(
-                    durMintesController.text,
-                  ) ??
-                  0;
-        });
-      durSecController = TextFieldController(
-        'Seconds',
+              durMintesController?.text ?? '';
+        })
+        ..selectionToEnd();
+      durSecController = TextFieldController.number(
+        labelText: 'Seconds',
         text:
             (widget.entry.b.type as WorkoutExerciseTypeDuration).sec.toString(),
-      )..addListener(() {
+      )
+        ..addListener(() {
           (widget.entry.b.type as WorkoutExerciseTypeDuration).sec =
-              int.tryParse(
-                    durSecController.text,
-                  ) ??
-                  0;
-        });
-      durWeightController = TextFieldController(
-        'Weights',
+              durSecController?.text ?? '';
+        })
+        ..selectionToEnd();
+      durWeightController = TextFieldController.number(
+        labelText: 'Weights',
         text: (widget.entry.b.type as WorkoutExerciseTypeDuration)
             .weights
             .toString(),
-      )..addListener(() {
+      )
+        ..addListener(() {
           (widget.entry.b.type as WorkoutExerciseTypeDuration).weights =
-              int.tryParse(
-                    durWeightController.text,
-                  ) ??
-                  0;
-        });
+              durWeightController?.text ?? '';
+        })
+        ..selectionToEnd();
     }
     if (widget.entry.b.type is WorkoutExerciseTypeRepetition) {
-      repSetsController = TextFieldController(
-        'Sets',
+      repSetsController = TextFieldController.number(
+        labelText: 'Sets',
         text: (widget.entry.b.type as WorkoutExerciseTypeRepetition)
             .sets
             .toString(),
-      )..addListener(() {
+      )
+        ..addListener(() {
           (widget.entry.b.type as WorkoutExerciseTypeRepetition).sets =
-              int.tryParse(
-                    repSetsController.text,
-                  ) ??
-                  0;
-        });
-      repRepsController = TextFieldController(
-        'Reps',
+              repSetsController?.text ?? '';
+        })
+        ..selectionToEnd();
+      repRepsController = TextFieldController.number(
+        labelText: 'Reps',
         text: (widget.entry.b.type as WorkoutExerciseTypeRepetition)
             .reps
             .toString(),
-      )..addListener(() {
+      )
+        ..addListener(() {
           (widget.entry.b.type as WorkoutExerciseTypeRepetition).reps =
-              int.tryParse(
-                    repRepsController.text,
-                  ) ??
-                  0;
-        });
-      repWeightController = TextFieldController(
-        'Weights',
+              repRepsController?.text ?? '';
+        })
+        ..selectionToEnd();
+      repWeightController = TextFieldController.number(
+        labelText: 'Weights',
         text: (widget.entry.b.type as WorkoutExerciseTypeRepetition)
             .weights
             .toString(),
-      )..addListener(() {
+      )
+        ..addListener(() {
           (widget.entry.b.type as WorkoutExerciseTypeRepetition).weights =
-              int.tryParse(
-                    repWeightController.text,
-                  ) ??
-                  0;
-        });
+              repWeightController?.text ?? '';
+        })
+        ..selectionToEnd();
     }
   }
 
@@ -130,18 +124,16 @@ class _WorkoutExerciseSelectedWidgetState
                 // change exercise type
                 if (widget.entry.b.type is WorkoutExerciseTypeDuration) {
                   widget.entry.b.type = WorkoutExerciseTypeRepetition(
-                    0,
-                    0,
-                    (widget.entry.b.type as WorkoutExerciseTypeDuration)
-                        .weights,
+                    '0',
+                    '0',
+                    '0',
                   );
                 } else if (widget.entry.b.type
                     is WorkoutExerciseTypeRepetition) {
                   widget.entry.b.type = WorkoutExerciseTypeDuration(
-                    0,
-                    0,
-                    (widget.entry.b.type as WorkoutExerciseTypeRepetition)
-                        .weights,
+                    '0',
+                    '0',
+                    '0',
                   );
                 }
                 initControllers();

@@ -65,7 +65,8 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
           }
           exercisesSel.sort((a, b) => a.b.index.compareTo(b.b.index));
           exercisesOth.sort((a, b) => a.t1.name.compareTo(b.t1.name));
-          setState(() {});
+
+          if (context.mounted) setState(() {});
         }
       },
     );
