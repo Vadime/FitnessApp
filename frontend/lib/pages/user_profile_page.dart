@@ -28,15 +28,10 @@ class UserProfilePage extends StatelessWidget {
           children: [
             Text('Freunde', style: context.textTheme.bodyMedium),
             const Spacer(),
-            TextButton(
+            TextButtonWidget(
+              'Hinzufügen',
               onPressed: () => Navigation.pushPopup(
                 widget: const UserProfileFriendAddPopup(),
-              ),
-              child: Text(
-                'Hinzufügen',
-                style: context.textTheme.labelSmall?.copyWith(
-                  color: context.theme.primaryColor,
-                ),
               ),
             ),
           ],

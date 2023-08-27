@@ -36,7 +36,8 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBarWidget(
         widget.exercise.name,
-        action: IconButton(
+        action: IconButtonWidget(
+          !isFavorite ? Icons.favorite_border_rounded : Icons.favorite_rounded,
           onPressed: () async {
             // add or remove this exercise to favorites in firestore in user collection
 
@@ -58,11 +59,6 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
               ),
             );
           },
-          icon: Icon(
-            !isFavorite
-                ? Icons.favorite_border_rounded
-                : Icons.favorite_rounded,
-          ),
         ),
       ),
       body: ListView(
@@ -83,45 +79,43 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Table(
-                columnWidths: const {
-                  0: FlexColumnWidth(1),
-                  1: FlexColumnWidth(2),
-                },
-                children: [
-                  TableRow(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Text('Description'),
+          CardWidget.single(
+            padding: const EdgeInsets.all(10),
+            child: Table(
+              columnWidths: const {
+                0: FlexColumnWidth(1),
+                1: FlexColumnWidth(2),
+              },
+              children: [
+                TableRow(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text('Description'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(widget.exercise.description),
+                    ),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Text('Muscles'),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        widget.exercise.muscles
+                            .map((e) => e.strName)
+                            .join(', '),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(widget.exercise.description),
-                      ),
-                    ],
-                  ),
-                  TableRow(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Text('Muscles'),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          widget.exercise.muscles
-                              .map((e) => e.strName)
-                              .join(', '),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

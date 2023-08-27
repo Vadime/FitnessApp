@@ -34,7 +34,8 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
   }
 
   Widget editWorkoutButton() {
-    return IconButton(
+    return IconButtonWidget(
+      Icons.edit_rounded,
       onPressed: () async {
         Navigation.push(
           widget: UserWorkoutAddScreen(
@@ -42,12 +43,12 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
           ),
         );
       },
-      icon: const Icon(Icons.edit_rounded),
     );
   }
 
   Widget copyWorkoutButton() {
-    return IconButton(
+    return IconButtonWidget(
+      !copied ? Icons.copy_rounded : Icons.check_rounded,
       onPressed: () async {
         // copy workout to users workouts
         setState(() {
@@ -57,9 +58,6 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
 
         Navigation.flush(widget: const HomeScreen(initialIndex: 1));
       },
-      icon: !copied
-          ? const Icon(Icons.copy_rounded)
-          : const Icon(Icons.check_rounded, color: Colors.green),
     );
   }
 

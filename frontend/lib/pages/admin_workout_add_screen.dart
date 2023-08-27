@@ -159,7 +159,6 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
               entry: exercisesSel.elementAt(index),
               exercisesSel: exercisesSel,
               exercisesOth: exercisesOth,
-              setState: setState,
             ),
           ),
           const SizedBox(height: 10),
@@ -240,12 +239,10 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
 
   Widget deleteButton() => Padding(
         padding: const EdgeInsets.only(right: 20),
-        child: IconButton(
+        child: IconButtonWidget(
+          Icons.delete_rounded,
           onPressed: () => Navigation.pushPopup(
             widget: AdminWorkoutDeletePopup(widget: widget),
-          ),
-          icon: const Icon(
-            Icons.delete_rounded,
           ),
         ),
       );

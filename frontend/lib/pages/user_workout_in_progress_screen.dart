@@ -88,7 +88,8 @@ class _UserWorkoutInProgressScreenState
     );
   }
 
-  Widget previousButton() => IconButton(
+  Widget previousButton() => IconButtonWidget(
+        Icons.adaptive.arrow_back_rounded,
         onPressed: () async {
           await pageController.previousPage(
             duration: const Duration(milliseconds: 300),
@@ -96,7 +97,6 @@ class _UserWorkoutInProgressScreenState
           );
           setState(() {});
         },
-        icon: Icon(Icons.adaptive.arrow_back_rounded),
       );
 
   Widget nextButton() => Expanded(

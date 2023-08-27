@@ -57,7 +57,8 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
             if (widget.exercise != null)
               Padding(
                 padding: const EdgeInsets.only(right: 20),
-                child: IconButton(
+                child: IconButtonWidget(
+                  Icons.delete_rounded,
                   onPressed: () {
                     // delete exercise
                     Navigation.pushPopup(
@@ -66,9 +67,6 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                       ),
                     );
                   },
-                  icon: const Icon(
-                    Icons.delete_rounded,
-                  ),
                 ),
               ),
             // add and update button
@@ -155,10 +153,9 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                     )
                   : null,
             ),
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: context.theme.cardColor.withOpacity(0.8),
-              ),
+            child: TextButtonWidget(
+              'Upload Image',
+              backgroundColor: context.theme.cardColor.withOpacity(0.8),
               onPressed: () async {
                 var file = await FilePicking.pickImage();
                 if (file == null) {
@@ -171,11 +168,6 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                   imageFile = file;
                 });
               },
-              child: Text(
-                'Upload Image',
-                style: context.textTheme.labelMedium!
-                    .copyWith(color: context.theme.primaryColor),
-              ),
             ),
           ),
           CardWidget(

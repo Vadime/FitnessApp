@@ -94,14 +94,12 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
 
   Widget deleteCourseButton() => Padding(
         padding: const EdgeInsets.only(right: 20),
-        child: IconButton(
+        child: IconButtonWidget(
+          Icons.delete_rounded,
           onPressed: () => Navigation.pushPopup(
             widget: AdminCourseDeletePopup(
               widget: widget,
             ),
-          ),
-          icon: const Icon(
-            Icons.delete_rounded,
           ),
         ),
       );
@@ -146,10 +144,9 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
                     )
                   : null,
             ),
-            child: TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: context.theme.cardColor.withOpacity(0.8),
-              ),
+            child: TextButtonWidget(
+              'Upload Image',
+              backgroundColor: context.theme.cardColor.withOpacity(0.8),
               onPressed: () async {
                 var file = await FilePicking.pickImage();
                 if (file == null) {
@@ -162,11 +159,6 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
                   imageFile = file;
                 });
               },
-              child: Text(
-                'Upload Image',
-                style: context.textTheme.labelMedium!
-                    .copyWith(color: context.theme.primaryColor),
-              ),
             ),
           ),
           const SizedBox(height: 20),

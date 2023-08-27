@@ -3,7 +3,7 @@ import 'package:fitnessapp/pages/footer_privacy_screen.dart';
 import 'package:fitnessapp/pages/footer_terms_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart'
-    show FontAwesomeIcons, FaIcon;
+    show FontAwesomeIcons;
 import 'package:widgets/widgets.dart';
 
 class FooterPopup extends StatelessWidget {
@@ -18,16 +18,13 @@ class FooterPopup extends StatelessWidget {
           text: 'Instagram',
           onPressed: () async =>
               await UrlLauncher.launchBrowser('instagram.com'),
-          icon: const FaIcon(
-            FontAwesomeIcons.instagram,
-            color: Colors.pink,
-          ),
+          icon: FontAwesomeIcons.instagram,
         ),
         FooterSocialButtonWidget(
           text: 'Twitter',
           onPressed: () async =>
               await UrlLauncher.launchBrowser('https://twitter.com'),
-          icon: const FaIcon(FontAwesomeIcons.twitter, color: Colors.blue),
+          icon: FontAwesomeIcons.twitter,
         ),
       ],
       buttons: [

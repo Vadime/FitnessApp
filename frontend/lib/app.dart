@@ -40,15 +40,9 @@ class App extends StatelessWidget {
         ),
       ],
       child: BlocListener<AuthenticationController, bool>(
-        listener: (context, state) {
-          if (state) {
-            Navigation.flush(widget: const HomeScreen());
-          } else {
-            Navigation.flush(
-              widget: const AppOnboardingScreen(),
-            );
-          }
-        },
+        listener: (context, state) => Navigation.flush(
+          widget: state ? const HomeScreen() : const AppOnboardingScreen(),
+        ),
         child: BlocBuilder<ThemeController, ThemeMode>(
           builder: (context, themeMode) => Stack(
             alignment: Alignment.center,

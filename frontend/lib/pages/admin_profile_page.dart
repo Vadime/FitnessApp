@@ -41,32 +41,30 @@ class AdminProfilePage extends StatelessWidget {
         const SizedBox(height: 20),
         Text('Settings', style: context.textTheme.bodyMedium),
         const SizedBox(height: 20),
-        Card(
-          child: Column(
-            children: [
-              ListTileWidget(
-                title: 'Edit Profile',
-                padding: const EdgeInsets.all(20),
-                trailing: const Icon(
-                  Icons.edit_rounded,
-                ),
-                onTap: () =>
-                    Navigation.pushPopup(widget: const ProfileEditPopup()),
+        CardWidget(
+          children: [
+            ListTileWidget(
+              title: 'Edit Profile',
+              padding: const EdgeInsets.all(20),
+              trailing: const Icon(
+                Icons.edit_rounded,
               ),
-              ListTileWidget(
-                title: 'Change Password',
-                padding: const EdgeInsets.all(20),
+              onTap: () =>
+                  Navigation.pushPopup(widget: const ProfileEditPopup()),
+            ),
+            ListTileWidget(
+              title: 'Change Password',
+              padding: const EdgeInsets.all(20),
 
-                trailing: const Icon(
-                  Icons.password_rounded,
-                ),
-                // sign out user from firebase auth
-                onTap: () => Navigation.pushPopup(
-                  widget: const ProfilePasswordChangePopup(),
-                ),
+              trailing: const Icon(
+                Icons.password_rounded,
               ),
-            ],
-          ),
+              // sign out user from firebase auth
+              onTap: () => Navigation.pushPopup(
+                widget: const ProfilePasswordChangePopup(),
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 20),
         BlocBuilder<ThemeController, ThemeMode>(
