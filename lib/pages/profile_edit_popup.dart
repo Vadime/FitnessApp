@@ -13,7 +13,7 @@ class ProfileEditPopup extends StatefulWidget {
 
 class _ProfileEditPopupState extends State<ProfileEditPopup> {
   late TextFieldController nameBloc;
-  late TextFieldController emailBloc;
+  late TextFieldController contactBloc;
   late User? currentUser;
 
   @override
@@ -21,7 +21,18 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
     super.initState();
     currentUser = UserRepository.currentUser;
     nameBloc = TextFieldController.name(text: currentUser?.displayName);
-    emailBloc = TextFieldController.email(text: currentUser?.email);
+    if (currentUser?.contactAdress.type == ContactType.email) {
+      contactBloc =
+          TextFieldController.email(text: currentUser?.contactAdress.value);
+    } else if (currentUser?.contactAdress.type == ContactType.phone) {
+      contactBloc =
+          TextFieldController.phone(text: currentUser?.contactAdress.value);
+    } else {
+      contactBloc = TextFieldController(
+        currentUser?.contactAdress.name,
+        text: currentUser?.contactAdress.value,
+      );
+    }
   }
 
   @override
@@ -47,7 +58,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                       currentUser = UserRepository.currentUser;
                     });
                   } catch (e) {
-                    return Navigation.pushMessage(message: e.toString());
+                    return Messaging.info(message: e.toString());
                   }
                 } else {}
               },
@@ -61,7 +72,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                     autofocus: true,
                   ),
                   TextFieldWidget(
-                    controller: emailBloc,
+                    controller: contactBloc,
                     autofocus: true,
                   ),
                 ],
@@ -74,14 +85,14 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
           'Save Changes',
           onPressed: () async {
             // check if there is an error in email
-            if (!emailBloc.isValid()) {
-              return Navigation.pushMessage(
-                message: emailBloc.errorText!,
+            if (!contactBloc.isValid()) {
+              return Messaging.info(
+                message: contactBloc.errorText!,
               );
             }
             // check if there is an error in name
             if (!nameBloc.isValid()) {
-              return Navigation.pushMessage(
+              return Messaging.info(
                 message: nameBloc.errorText!,
               );
             }
@@ -90,10 +101,10 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
             try {
               await UserRepository.updateCurrentUserProfile(
                 displayName: nameBloc.text,
-                email: emailBloc.text,
+                email: contactBloc.text,
               );
             } catch (e) {
-              return Navigation.pushMessage(
+              return Messaging.info(
                 message: e.toString(),
               );
             }

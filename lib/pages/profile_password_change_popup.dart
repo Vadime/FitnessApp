@@ -46,13 +46,13 @@ class _ProfilePasswordChangePopupState
           onPressed: () async {
             // check if there is an error in password
             if (!oldPasswordBloc.isValid()) {
-              return Navigation.pushMessage(
+              return Messaging.info(
                 message: oldPasswordBloc.errorText,
               );
             }
             // check if there is an error in password
             if (!newPasswordBloc.isValid()) {
-              return Navigation.pushMessage(
+              return Messaging.info(
                 message: newPasswordBloc.errorText,
               );
             }
@@ -64,7 +64,7 @@ class _ProfilePasswordChangePopupState
               );
               Navigation.pop();
             } catch (e) {
-              Navigation.pushMessage(message: e.toString());
+              Messaging.info(message: e.toString());
             }
           },
         ),

@@ -9,47 +9,43 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return LoginPage(
       onEmailSignUp: (email, password) async {
-        try {
-          await UserRepository.createUserWithEmailAndPassword(
-            email: email.text,
-            password: password.text,
-          );
-        } catch (e) {
-          Navigation.pushMessage(message: e.toString());
-          return;
-        }
+        await UserRepository.createUserWithEmailAndPassword(
+          email: email.text,
+          password: password.text,
+        );
       },
       onEmailSignIn: (email, password) async {
-        try {
-          await UserRepository.signInWithEmailAndPassword(
-            email: email.text,
-            password: password.text,
-          );
-        } catch (e) {
-          Navigation.pushMessage(message: e.toString());
-          return;
-        }
+        await UserRepository.signInWithEmailAndPassword(
+          email: email.text,
+          password: password.text,
+        );
       },
       onEmailSendPassword: (email) async {
-        try {
-          await UserRepository.sendPasswordResetEmail(
-            email: email.text,
+        await UserRepository.sendPasswordResetEmail(
+          email: email.text,
+        );
+        Messaging.info(message: 'Email sent!');
+      },
+      onPhoneSendCode: (phone) async {
+        await UserRepository.loginWithPhoneNumber(
+          phoneNumber: phone.text,
+          onCodeSent: onPhoneVerifyCode,
+        );
+      },
+    );
+  }
+
+  void onPhoneVerifyCode(verificationId, token) {
+    Navigation.pop();
+    Navigation.pushPopup(
+      widget: VerifyPhoneCodeView(
+        verifyPhoneCode: (code) async {
+          await UserRepository.verifyPhoneCode(
+            verificationId: verificationId,
+            smsCode: code.text,
           );
-          Navigation.pushMessage(message: 'Email sent!');
-        } catch (e) {
-          Navigation.pushMessage(message: e.toString());
-          return;
-        }
-      },
-      onPhoneSendCode: (phone) {
-        Navigation.pushMessage(message: 'Not supported yet!');
-      },
-      onPhoneVerifyCode: (code) {
-        Navigation.pushMessage(message: 'Not supported yet!');
-      },
-      onAppleLogin: () {
-        Navigation.pushMessage(message: 'Not supported yet!');
-      },
+        },
+      ),
     );
   }
 }

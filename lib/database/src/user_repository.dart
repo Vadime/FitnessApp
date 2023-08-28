@@ -30,6 +30,41 @@ class UserRepository {
     return currentUser;
   }
 
+  static Future<void> loginWithPhoneNumber({
+    required String phoneNumber,
+    required Function(String verificationId, int? token) onCodeSent,
+  }) async {
+    await _authInstance.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (credential) async {
+        await _authInstance.signInWithCredential(credential);
+        checkAuthenticationState();
+      },
+      verificationFailed: (e) {
+        Logging.log(e.toString());
+        throw e.toString().split('] ').last;
+      },
+      codeSent: onCodeSent,
+      codeAutoRetrievalTimeout: (_) {},
+    );
+  }
+
+  static Future<void> verifyPhoneCode({
+    required String verificationId,
+    required String smsCode,
+  }) async {
+    try {
+      var credential = auth.PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+      await _authInstance.signInWithCredential(credential);
+      checkAuthenticationState();
+    } catch (e) {
+      throw e.toString().split('] ').last;
+    }
+  }
+
   // registriert den User
   static Future<User?> createUserWithEmailAndPassword({
     required String email,
@@ -85,9 +120,17 @@ class UserRepository {
     if (user == null) {
       return null;
     }
+    ContactMethod method;
+    if (user.email != null) {
+      method = ContactMethod.email(user.email!);
+    } else if (user.phoneNumber != null) {
+      method = ContactMethod.phone(user.phoneNumber!);
+    } else {
+      method = const ContactMethod.unknown();
+    }
     return User(
       uid: user.uid,
-      email: user.email ?? '-',
+      contactAdress: method,
       displayName: user.displayName ?? '-',
       userRole: UserRole.user,
       imageURL: user.photoURL,

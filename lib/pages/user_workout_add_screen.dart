@@ -199,12 +199,12 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
           widget.workout != null ? 'Save Workout' : 'Add Workout',
           onPressed: () async {
             if (!nameBloc.isValid()) {
-              return Navigation.pushMessage(
+              return Messaging.info(
                 message: nameBloc.errorText,
               );
             }
             if (!descriptionBloc.isValid()) {
-              return Navigation.pushMessage(
+              return Messaging.info(
                 message: descriptionBloc.errorText ?? 'Invalid description',
               );
             }
@@ -226,7 +226,7 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
               }
               Navigation.flush(widget: const HomeScreen(initialIndex: 1));
             } catch (e) {
-              Navigation.pushMessage(
+              Messaging.info(
                 message: 'Error saving workout: $e',
               );
             }

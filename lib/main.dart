@@ -17,7 +17,7 @@ void main() {
   ]);
   runApp(
     ThemeApp(
-      config: ThemeConfig.standard(
+      config: ThemeConfig(
         title: const String.fromEnvironment('application_name'),
         logoLocation: const String.fromEnvironment('application_logo'),
         primaryColor: Color(
@@ -43,6 +43,11 @@ void main() {
         darkNeutralColor: Color(
           int.parse(const String.fromEnvironment('neutral_dark')),
         ),
+        darkTextColor: Colors.white,
+        lightTextColor: Colors.black,
+        radius: 10,
+        padding: 20,
+        opacity: 1,
       ),
       home: const HomeScreen(),
       login: const OnboardingScreen(),

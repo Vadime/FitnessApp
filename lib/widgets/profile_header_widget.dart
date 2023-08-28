@@ -11,32 +11,46 @@ class ProfileHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        ImageWidget(
-          NetworkImage(currentUser!.imageURL!),
-          width: 100,
-          height: 100,
-        ),
-        const SizedBox(width: 20),
-        Expanded(
-          child: CardWidget(
-            padding: const EdgeInsets.all(20),
-            children: [
-              ListTileWidget(
-                title: 'Name',
-                subtitle: currentUser?.displayName ?? '-',
-              ),
-              const SizedBox(height: 10),
-              ListTileWidget(
-                title: 'Email',
-                subtitle: currentUser?.email ?? '-',
-                subtitleOverflow: TextOverflow.ellipsis,
-              ),
-            ],
+    if (currentUser == null) return const SizedBox();
+    return SizedBox(
+      height: 100,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ImageWidget(
+            currentUser!.imageURL == null
+                ? null
+                : NetworkImage(currentUser!.imageURL!),
+            width: 100,
+            height: 100,
           ),
-        ),
-      ],
+          const SizedBox(width: 20),
+          Expanded(
+            child: CardWidget(
+              padding: EdgeInsets.fromLTRB(
+                context.config.padding,
+                0,
+                context.config.padding,
+                0,
+              ),
+              children: [
+                const Spacer(),
+                ListTileWidget(
+                  title: 'Name',
+                  subtitle: currentUser!.displayName,
+                ),
+                const Spacer(),
+                ListTileWidget(
+                  title: currentUser!.contactAdress.name,
+                  subtitle: currentUser!.contactAdress.value,
+                  subtitleOverflow: TextOverflow.ellipsis,
+                ),
+                const Spacer(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

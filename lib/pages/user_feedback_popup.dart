@@ -31,7 +31,7 @@ class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
           onPressed: () async {
             // check if feedback is empty
             if (_feedbackController.text.isEmpty) {
-              Navigation.pushMessage(
+              Messaging.info(
                 message: 'Feedback is empty',
               );
               return;

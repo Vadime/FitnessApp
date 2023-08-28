@@ -76,24 +76,24 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                 'Save Exercise',
                 onPressed: () async {
                   if (!nameBloc.isValid()) {
-                    return Navigation.pushMessage(
+                    return Messaging.info(
                       message: nameBloc.errorText!,
                     );
                   }
                   if (!descriptionBloc.isValid()) {
-                    return Navigation.pushMessage(
+                    return Messaging.info(
                       message: descriptionBloc.errorText!,
                     );
                   }
 
                   if (musclesController.state.isEmpty) {
-                    return Navigation.pushMessage(
+                    return Messaging.info(
                       message: 'Please select at least one muscle',
                     );
                   }
 
                   if (imageFile == null) {
-                    return Navigation.pushMessage(
+                    return Messaging.info(
                       message: 'Please select an image',
                     );
                   }
@@ -124,7 +124,7 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                     );
                   }).catchError(
                     (e) {
-                      Navigation.pushMessage(
+                      Messaging.info(
                         message:
                             'Error ${widget.exercise == null ? 'adding' : 'updating'} exercise: $e',
                       );

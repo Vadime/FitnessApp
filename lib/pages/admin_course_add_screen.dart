@@ -45,20 +45,23 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
           'Save Course',
           onPressed: () async {
             if (!nameBloc.isValid()) {
-              return Navigation.pushMessage(
+              Messaging.info(
                 message: nameBloc.calcErrorText!,
               );
+              return;
             }
             if (!descriptionBloc.isValid()) {
-              return Navigation.pushMessage(
+              Messaging.info(
                 message: descriptionBloc.calcErrorText!,
               );
+              return;
             }
 
             if (imageFile == null) {
-              return Navigation.pushMessage(
+              Messaging.info(
                 message: 'Please select an image',
               );
+              return;
             }
             // generate id, for storage and firestore
             String id;
@@ -85,9 +88,10 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
                 widget: const HomeScreen(initialIndex: 0),
               );
             } catch (e) {
-              return Navigation.pushMessage(
+              Messaging.info(
                 message: 'Error saving course: $e',
               );
+              return;
             }
           },
         ),
