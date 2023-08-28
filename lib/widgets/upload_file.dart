@@ -1,11 +1,11 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class UploadFile extends StatefulWidget {
-  final File? imageFile;
-  final Function(File? image)? onChanged;
+  final Uint8List? imageFile;
+  final Function(Uint8List? image)? onChanged;
   const UploadFile({
     this.imageFile,
     this.onChanged,
@@ -17,7 +17,7 @@ class UploadFile extends StatefulWidget {
 }
 
 class _UploadFileState extends State<UploadFile> {
-  File? imageFile;
+  Uint8List? imageFile;
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _UploadFileState extends State<UploadFile> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           ImageWidget(
-            imageFile == null ? null : FileImage(imageFile!),
+            imageFile == null ? null : MemoryImage(imageFile!),
             height: 200,
             width: double.infinity,
           ),

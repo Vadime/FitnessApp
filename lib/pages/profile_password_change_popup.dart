@@ -47,13 +47,15 @@ class _ProfilePasswordChangePopupState
             // check if there is an error in password
             if (!oldPasswordBloc.isValid()) {
               return Messaging.info(
-                message: oldPasswordBloc.errorText,
+                oldPasswordBloc.errorText,
+                context: context,
               );
             }
             // check if there is an error in password
             if (!newPasswordBloc.isValid()) {
               return Messaging.info(
-                message: newPasswordBloc.errorText,
+                newPasswordBloc.errorText,
+                context: context,
               );
             }
             // check if all fields are filled
@@ -64,7 +66,10 @@ class _ProfilePasswordChangePopupState
               );
               Navigation.pop();
             } catch (e) {
-              Messaging.info(message: e.toString());
+              Messaging.info(
+                e.toString(),
+                context: context,
+              );
             }
           },
         ),

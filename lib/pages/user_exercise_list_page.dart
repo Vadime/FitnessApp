@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
@@ -14,7 +15,7 @@ class UserExerciseListPage extends StatefulWidget {
 }
 
 class _UserExerciseListPageState extends State<UserExerciseListPage> {
-  Map<Tupel<Exercise, File?>, bool>? exercises;
+  Map<Tupel<Exercise, Uint8List?>, bool>? exercises;
 
   @override
   void initState() {
@@ -85,18 +86,20 @@ class _UserExerciseListPageState extends State<UserExerciseListPage> {
     }
   }
 
-  Widget exerciseListTile(MapEntry<Tupel<Exercise, File?>, bool> entry) =>
+  Widget exerciseListTile(MapEntry<Tupel<Exercise, Uint8List?>, bool> entry) =>
       ListTileWidget(
         margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(10),
+        contentPadding: const EdgeInsets.all(10),
         subtitleOverflow: TextOverflow.ellipsis,
         title: entry.key.t1.name,
         trailing: entry.key.t2 == null
             ? null
             : ImageWidget(
-                FileImage(entry.key.t2!),
+                MemoryImage(entry.key.t2!),
                 height: 50,
                 width: 50,
+                margin: const EdgeInsets.all(10),
               ),
         subtitle: entry.key.t1.description,
         onTap: () => Navigation.push(

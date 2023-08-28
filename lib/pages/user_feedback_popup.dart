@@ -32,7 +32,8 @@ class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
             // check if feedback is empty
             if (_feedbackController.text.isEmpty) {
               Messaging.info(
-                message: 'Feedback is empty',
+                'Feedback is empty',
+                context: context,
               );
               return;
             }

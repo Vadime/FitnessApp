@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
@@ -24,8 +24,8 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
   late TextFieldController descriptionBloc;
   late SingleSelectionController<Schedule> scheduleController;
 
-  List<Tripple<Exercise, WorkoutExercise, File?>> exercisesSel = [];
-  List<Tupel<Exercise, File?>> exercisesOth = [];
+  List<Tripple<Exercise, WorkoutExercise, Uint8List?>> exercisesSel = [];
+  List<Tupel<Exercise, Uint8List?>> exercisesOth = [];
 
   @override
   void initState() {
@@ -201,12 +201,14 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
         onPressed: () async {
           if (!nameBloc.isValid()) {
             return Messaging.info(
-              message: nameBloc.errorText,
+              nameBloc.errorText,
+              context: context,
             );
           }
           if (!descriptionBloc.isValid()) {
             return Messaging.info(
-              message: descriptionBloc.errorText ?? 'Invalid description',
+              descriptionBloc.errorText ?? 'Invalid description',
+              context: context,
             );
           }
           try {
@@ -229,8 +231,8 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
             Navigation.flush(widget: const HomeScreen(initialIndex: 1));
           } catch (e) {
             Messaging.info(
-              message:
-                  'Error ${widget.workout == null ? 'adding' : 'updating'} workout: $e',
+              'Error ${widget.workout == null ? 'adding' : 'updating'} workout: $e',
+              context: context,
             );
           }
         },

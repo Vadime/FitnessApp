@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
@@ -25,7 +25,7 @@ class UserWorkoutInfoScreen extends StatefulWidget {
 
 class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
   bool copied = false;
-  Map<Tupel<Exercise, WorkoutExercise>, File?>? exercises;
+  Map<Tupel<Exercise, WorkoutExercise>, Uint8List?>? exercises;
 
   @override
   void initState() {
@@ -135,7 +135,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
               child: LoadingWidget(),
             )
           else
-            for (MapEntry<Tupel<Exercise, WorkoutExercise>, File?> e
+            for (MapEntry<Tupel<Exercise, WorkoutExercise>, Uint8List?> e
                 in exercises!.entries)
               exerciseListTile(e),
           const SafeArea(
@@ -148,16 +148,17 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
   }
 
   loadExercises() async {
+    exercises = {};
     for (WorkoutExercise w in widget.workout.workoutExercises) {
       var exercise = await ExerciseRepository.getExercise(w.exerciseUID);
       var image = await ExerciseRepository.getExerciseImage(exercise);
-      (exercises ??= {}).putIfAbsent(Tupel(exercise, w), () => image);
-      setState(() {});
+      exercises!.putIfAbsent(Tupel(exercise, w), () => image);
+      if (context.mounted) setState(() {});
     }
   }
 
   Widget exerciseListTile(
-    MapEntry<Tupel<Exercise, WorkoutExercise>, File?> e,
+    MapEntry<Tupel<Exercise, WorkoutExercise>, Uint8List?> e,
   ) =>
       Column(
         children: [
@@ -168,7 +169,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
             trailing: e.value == null
                 ? null
                 : ImageWidget(
-                    FileImage(e.value!),
+                    MemoryImage(e.value!),
                     height: 50,
                     width: 50,
                   ),

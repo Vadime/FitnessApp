@@ -1,17 +1,12 @@
 part of 'database.dart';
 
 class CourseRepository {
-  static Future<File?> getCourseImage(Course course) async {
+  static Future<Uint8List?> getCourseImage(Course course) async {
     if (course.imageURL == null) return null;
     try {
-      Uint8List? data = await storage.FirebaseStorage.instance
+      return await storage.FirebaseStorage.instance
           .refFromURL(course.imageURL!)
           .getData();
-      if (data == null) return null;
-      File image = File(
-        '${Directory.systemTemp.path}/${course.uid}',
-      )..writeAsBytesSync(data.toList());
-      return image;
     } catch (e, s) {
       DatabaseLogging.error(e.toString(), s);
       return null;
@@ -60,11 +55,11 @@ class CourseRepository {
 
   static Future<String?> uploadCourseImage(
     String courseUID,
-    File imageFile,
+    Uint8List imageFile,
   ) async =>
       await (await storage.FirebaseStorage.instance
               .ref('courses/$courseUID')
-              .putFile(imageFile))
+              .putData(imageFile))
           .ref
           .getDownloadURL();
 

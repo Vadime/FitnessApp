@@ -39,7 +39,8 @@ class AdminCourseDeletePopup extends StatelessWidget {
               } catch (e, s) {
                 Logging.logDetails(e.toString(), s);
                 Messaging.info(
-                  message: 'Error deleting course: $e',
+                  'Error deleting course: $e',
+                  context: context,
                 );
                 return;
               }

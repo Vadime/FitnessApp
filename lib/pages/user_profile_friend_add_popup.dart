@@ -42,7 +42,8 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                 Navigation.flush(widget: const HomeScreen(initialIndex: 3));
               } catch (e) {
                 Messaging.info(
-                  message: e.toString(),
+                  e.toString(),
+                  context: context,
                 );
                 return;
               }

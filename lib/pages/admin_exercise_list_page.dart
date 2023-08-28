@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
@@ -14,7 +15,7 @@ class AdminExerciseListPage extends StatefulWidget {
 }
 
 class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
-  List<Tupel<Exercise, File?>>? exercises;
+  List<Tupel<Exercise, Uint8List?>>? exercises;
 
   @override
   void initState() {
@@ -47,7 +48,7 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
       itemCount: exercises!.length,
       padding: const EdgeInsets.all(20).add(context.safeArea),
       itemBuilder: (context, index) {
-        Tupel<Exercise, File?> exercise = exercises![index];
+        Tupel<Exercise, Uint8List?> exercise = exercises![index];
 
         return ListTileWidget(
           margin: const EdgeInsets.only(bottom: 20),
@@ -56,7 +57,7 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
           trailing: exercise.t2 == null
               ? null
               : ImageWidget(
-                  FileImage(exercise.t2!),
+                  MemoryImage(exercise.t2!),
                   height: 40,
                   width: 40,
                 ),

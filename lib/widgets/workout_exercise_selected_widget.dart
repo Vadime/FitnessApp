@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/workout_exercise_type.dart';
@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class WorkoutExerciseSelectedWidget extends StatefulWidget {
-  final Tripple<Exercise, WorkoutExercise, File?> entry;
-  final List<Tripple<Exercise, WorkoutExercise, File?>> exercisesSel;
-  final List<Tupel<Exercise, File?>> exercisesOth;
+  final Tripple<Exercise, WorkoutExercise, Uint8List?> entry;
+  final List<Tripple<Exercise, WorkoutExercise, Uint8List?>> exercisesSel;
+  final List<Tupel<Exercise, Uint8List?>> exercisesOth;
   const WorkoutExerciseSelectedWidget({
     required this.entry,
     required this.exercisesSel,
@@ -150,7 +150,7 @@ class _WorkoutExerciseSelectedWidgetState
           leading: widget.entry.c == null
               ? null
               : ImageWidget(
-                  FileImage(widget.entry.c!),
+                  MemoryImage(widget.entry.c!),
                   height: 40,
                   width: 40,
                 ),

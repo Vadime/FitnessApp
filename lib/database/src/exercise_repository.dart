@@ -27,26 +27,21 @@ class ExerciseRepository {
 
   static Future<String> uploadExerciseImage(
     String exerciseUID,
-    File imageFile,
+    Uint8List imageFile,
   ) async {
     return await (await storage.FirebaseStorage.instance
             .ref('exercises/$exerciseUID')
-            .putFile(imageFile))
+            .putData(imageFile))
         .ref
         .getDownloadURL();
   }
 
-  static Future<File?> getExerciseImage(Exercise exercise) async {
+  static Future<Uint8List?> getExerciseImage(Exercise exercise) async {
     if (exercise.imageURL == null) return null;
     try {
-      Uint8List? data = await storage.FirebaseStorage.instance
+      return await storage.FirebaseStorage.instance
           .refFromURL(exercise.imageURL!)
           .getData();
-      if (data == null) return null;
-      File image = File(
-        '${Directory.systemTemp.path}/${exercise.uid}',
-      )..writeAsBytesSync(data.toList());
-      return image;
     } catch (e, s) {
       DatabaseLogging.error(e.toString(), s);
       return null;

@@ -1,5 +1,6 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/models/src/friend.dart';
 import 'package:fitnessapp/pages/profile_edit_popup.dart';
 import 'package:fitnessapp/pages/profile_password_change_popup.dart';
 import 'package:fitnessapp/pages/user_accunt_delete_popup.dart';
@@ -12,8 +13,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:widgets/widgets.dart';
 
-class UserProfilePage extends StatelessWidget {
+class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
+
+  @override
+  State<UserProfilePage> createState() => _UserProfilePageState();
+}
+
+class _UserProfilePageState extends State<UserProfilePage> {
+  List<Friend>? friends;
+
+  @override
+  void initState() {
+    super.initState();
+    UserRepository.getFriends()
+        .then((value) => setState(() => friends = value));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +52,34 @@ class UserProfilePage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        const UserProfileFriendsWidget(),
+        if (friends == null)
+          const SizedBox(
+            height: 100,
+            child: LoadingWidget(),
+          )
+        else if (friends!.isEmpty)
+          const SizedBox(
+            height: 100,
+            child: FailWidget('You have no friends'),
+          )
+        else
+          for (Friend friend in friends!)
+            ListTileWidget(
+              margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              padding: const EdgeInsets.all(20),
+              title: friend.displayName,
+              subtitle: friend.email,
+              onTap: () => Navigation.pushPopup(
+                widget: UserProfileFriendsGraphPopup(
+                  friend: friend,
+                ),
+              ),
+              trailing: ImageWidget(
+                NetworkImage(friend.imageURL ?? ''),
+                width: 40,
+                height: 40,
+              ),
+            ),
         const SizedBox(height: 40),
         Text('Statistics', style: context.textTheme.bodyMedium),
         const SizedBox(height: 40),
@@ -103,7 +145,7 @@ class UserProfilePage extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           trailing: Icon(
             Icons.delete_rounded,
-            color: context.theme.colorScheme.error,
+            color: context.colorScheme.error,
           ),
           onTap: () {
             // delete user from firebase auth

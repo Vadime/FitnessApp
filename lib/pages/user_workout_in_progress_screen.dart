@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_exercise_page.dart';
@@ -8,7 +9,7 @@ import 'package:widgets/widgets.dart';
 
 class UserWorkoutInProgressScreen extends StatefulWidget {
   final Workout workout;
-  final Map<Tupel<Exercise, WorkoutExercise>, File?> exercises;
+  final Map<Tupel<Exercise, WorkoutExercise>, Uint8List?> exercises;
   const UserWorkoutInProgressScreen({
     required this.workout,
     required this.exercises,

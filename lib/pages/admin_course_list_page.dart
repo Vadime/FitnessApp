@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/src/course.dart';
@@ -14,7 +15,7 @@ class AdminCourseListPage extends StatefulWidget {
 }
 
 class _AdminCourseListPageState extends State<AdminCourseListPage> {
-  Map<Course, File?>? courses;
+  Map<Course, Uint8List?>? courses;
 
   @override
   void initState() {
@@ -64,7 +65,7 @@ class _AdminCourseListPageState extends State<AdminCourseListPage> {
               trailing: entry.value == null
                   ? null
                   : ImageWidget(
-                      FileImage(entry.value!),
+                      MemoryImage(entry.value!),
                       height: 40,
                       width: 40,
                     ),

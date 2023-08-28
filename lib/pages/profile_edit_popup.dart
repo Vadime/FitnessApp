@@ -58,7 +58,11 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                       currentUser = UserRepository.currentUser;
                     });
                   } catch (e) {
-                    return Messaging.info(message: e.toString());
+                    Logging.log(e);
+                    return Messaging.info(
+                      e.toString(),
+                      context: context,
+                    );
                   }
                 } else {}
               },
@@ -87,13 +91,15 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
             // check if there is an error in email
             if (!contactBloc.isValid()) {
               return Messaging.info(
-                message: contactBloc.errorText!,
+                contactBloc.errorText!,
+                context: context,
               );
             }
             // check if there is an error in name
             if (!nameBloc.isValid()) {
               return Messaging.info(
-                message: nameBloc.errorText!,
+                nameBloc.errorText!,
+                context: context,
               );
             }
 
@@ -105,7 +111,8 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
               );
             } catch (e) {
               return Messaging.info(
-                message: e.toString(),
+                e.toString(),
+                context: context,
               );
             }
 

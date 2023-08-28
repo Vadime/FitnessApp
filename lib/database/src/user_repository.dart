@@ -33,6 +33,7 @@ class UserRepository {
   static Future<void> loginWithPhoneNumber({
     required String phoneNumber,
     required Function(String verificationId, int? token) onCodeSent,
+    required Function(String error) onFailed,
   }) async {
     await _authInstance.verifyPhoneNumber(
       phoneNumber: phoneNumber,
@@ -42,7 +43,7 @@ class UserRepository {
       },
       verificationFailed: (e) {
         Logging.log(e.toString());
-        throw e.toString().split('] ').last;
+        onFailed(e.message ?? 'Unknown error');
       },
       codeSent: onCodeSent,
       codeAutoRetrievalTimeout: (_) {},
@@ -176,6 +177,7 @@ class UserRepository {
     try {
       await _authInstance.currentUser?.updateEmail(email);
       await _authInstance.currentUser?.updateDisplayName(displayName);
+      await _authInstance.currentUser?.reload();
     } catch (e) {
       throw e.toString().split('] ').last;
     }
@@ -183,13 +185,14 @@ class UserRepository {
 
   // aktualisiert imageURL
   static Future<void> updateCurrentUserImage({
-    required File image,
+    required Uint8List image,
   }) async {
     try {
       String imageRef = 'user/${_authInstance.currentUser?.uid}/profileImage';
-      var snapshot = await _storageInstance.ref(imageRef).putFile(image);
+      var snapshot = await _storageInstance.ref(imageRef).putData(image);
       var imageURL = await snapshot.ref.getDownloadURL();
       await _authInstance.currentUser?.updatePhotoURL(imageURL);
+      await _authInstance.currentUser?.reload();
     } catch (e) {
       throw e.toString().split('] ').last;
     }

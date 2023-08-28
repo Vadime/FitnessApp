@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/src/course.dart';
@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class AdminCourseAddScreen extends StatefulWidget {
-  final MapEntry<Course, File?>? entry;
+  final MapEntry<Course, Uint8List?>? entry;
   const AdminCourseAddScreen({
     this.entry,
     super.key,
@@ -25,7 +25,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
 
   late DateTime selectedDate;
 
-  File? imageFile;
+  Uint8List? imageFile;
 
   @override
   void initState() {
@@ -46,20 +46,23 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
           onPressed: () async {
             if (!nameBloc.isValid()) {
               Messaging.info(
-                message: nameBloc.calcErrorText!,
+                nameBloc.calcErrorText!,
+                context: context,
               );
               return;
             }
             if (!descriptionBloc.isValid()) {
               Messaging.info(
-                message: descriptionBloc.calcErrorText!,
+                descriptionBloc.calcErrorText!,
+                context: context,
               );
               return;
             }
 
             if (imageFile == null) {
               Messaging.info(
-                message: 'Please select an image',
+                'Please select an image',
+                context: context,
               );
               return;
             }
@@ -89,7 +92,8 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
               );
             } catch (e) {
               Messaging.info(
-                message: 'Error saving course: $e',
+                'Error saving course: $e',
+                context: context,
               );
               return;
             }

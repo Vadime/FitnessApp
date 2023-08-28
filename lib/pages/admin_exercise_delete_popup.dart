@@ -40,7 +40,8 @@ class AdminExerciseDeletePopup extends StatelessWidget {
               } catch (e, s) {
                 Logging.logDetails(e.toString(), s);
                 Messaging.info(
-                  message: 'Error deleting exercise: $e',
+                  'Error deleting exercise: $e',
+                  context: context,
                 );
                 Navigation.pop();
                 return;

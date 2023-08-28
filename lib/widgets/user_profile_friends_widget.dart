@@ -5,55 +5,6 @@ import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
-class UserProfileFriendsWidget extends StatelessWidget {
-  const UserProfileFriendsWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: UserRepository.getFriends(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const SizedBox(
-            height: 100,
-            child: LoadingWidget(),
-          );
-        }
-        if (snapshot.hasError ||
-            snapshot.data == null ||
-            snapshot.data!.isEmpty) {
-          return const SizedBox(
-            height: 100,
-            child: FailWidget('You have no friends'),
-          );
-        }
-
-        return Column(
-          children: [
-            for (Friend friend in snapshot.data!)
-              ListTileWidget(
-                margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                padding: const EdgeInsets.all(20),
-                title: friend.displayName,
-                subtitle: friend.email,
-                onTap: () => Navigation.pushPopup(
-                  widget: UserProfileFriendsGraphPopup(
-                    friend: friend,
-                  ),
-                ),
-                trailing: ImageWidget(
-                  NetworkImage(friend.imageURL ?? ''),
-                  width: 40,
-                  height: 40,
-                ),
-              ),
-          ],
-        );
-      },
-    );
-  }
-}
-
 class UserProfileFriendsGraphPopup extends StatelessWidget {
   final Friend friend;
   const UserProfileFriendsGraphPopup({

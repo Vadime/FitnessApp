@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
@@ -10,7 +10,7 @@ import 'package:widgets/widgets.dart';
 
 class AdminExerciseAddScreen extends StatefulWidget {
   final Exercise? exercise;
-  final File? imageFile;
+  final Uint8List? imageFile;
   const AdminExerciseAddScreen({this.exercise, this.imageFile, super.key});
 
   @override
@@ -23,7 +23,7 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
 
   late MultiSelectionController<ExerciseMuscles> musclesController;
 
-  File? imageFile;
+  Uint8List? imageFile;
 
   @override
   void initState() {
@@ -77,24 +77,28 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                 onPressed: () async {
                   if (!nameBloc.isValid()) {
                     return Messaging.info(
-                      message: nameBloc.errorText!,
+                      nameBloc.errorText!,
+                      context: context,
                     );
                   }
                   if (!descriptionBloc.isValid()) {
                     return Messaging.info(
-                      message: descriptionBloc.errorText!,
+                      descriptionBloc.errorText!,
+                      context: context,
                     );
                   }
 
                   if (musclesController.state.isEmpty) {
                     return Messaging.info(
-                      message: 'Please select at least one muscle',
+                      'Please select at least one muscle',
+                      context: context,
                     );
                   }
 
                   if (imageFile == null) {
                     return Messaging.info(
-                      message: 'Please select an image',
+                      'Please select an image',
+                      context: context,
                     );
                   }
                   // generate id, for storage and firestore
@@ -125,8 +129,8 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                   }).catchError(
                     (e) {
                       Messaging.info(
-                        message:
-                            'Error ${widget.exercise == null ? 'adding' : 'updating'} exercise: $e',
+                        'Error ${widget.exercise == null ? 'adding' : 'updating'} exercise: $e',
+                        context: context,
                       );
                     },
                   );

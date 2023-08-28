@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/workout_exercise_type.dart';
@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class UserWorkoutInProgressExercisePage extends StatelessWidget {
-  final MapEntry<Tupel<Exercise, WorkoutExercise>, File?> exercise;
+  final MapEntry<Tupel<Exercise, WorkoutExercise>, Uint8List?> exercise;
   const UserWorkoutInProgressExercisePage({
     required this.exercise,
     super.key,
@@ -20,13 +20,9 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Spacer(),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Image.file(
-              exercise.value!,
-              height: 200,
-              fit: BoxFit.cover,
-            ),
+          Image(
+            image: MemoryImage(exercise.value!),
+            height: 200,
           ),
           const Expanded(child: SizedBox(height: 20)),
           // alle daten in tabelle anzeigen

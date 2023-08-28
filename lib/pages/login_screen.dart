@@ -24,12 +24,16 @@ class LoginScreen extends StatelessWidget {
         await UserRepository.sendPasswordResetEmail(
           email: email.text,
         );
-        Messaging.info(message: 'Email sent!');
+        Messaging.info('Email sent!', context: context);
       },
       onPhoneSendCode: (phone) async {
         await UserRepository.loginWithPhoneNumber(
           phoneNumber: phone.text,
           onCodeSent: onPhoneVerifyCode,
+          onFailed: (error) {
+            phone.emptyAllowed = false;
+            Messaging.error(error, context: context);
+          },
         );
       },
     );

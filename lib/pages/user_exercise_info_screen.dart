@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
@@ -8,7 +8,7 @@ import 'package:widgets/widgets.dart';
 
 class UserExerciseInfoScreen extends StatefulWidget {
   final Exercise exercise;
-  final File? imageFile;
+  final Uint8List? imageFile;
   final bool isFavorite;
   const UserExerciseInfoScreen({
     required this.exercise,
@@ -73,7 +73,7 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
               image: widget.imageFile == null
                   ? null
                   : DecorationImage(
-                      image: FileImage(widget.imageFile!),
+                      image: MemoryImage(widget.imageFile!),
                       fit: BoxFit.cover,
                     ),
             ),

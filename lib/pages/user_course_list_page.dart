@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
@@ -14,7 +14,7 @@ class UserCourseListPage extends StatefulWidget {
 }
 
 class _UserCourseListPageState extends State<UserCourseListPage> {
-  Map<Tupel<Course, File?>, bool>? courses;
+  Map<Tupel<Course, Uint8List?>, bool>? courses;
 
   @override
   void initState() {
@@ -76,7 +76,8 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
     }
   }
 
-  Widget courseListTile(MapEntry<Tupel<Course, File?>, bool> entry) => Column(
+  Widget courseListTile(MapEntry<Tupel<Course, Uint8List?>, bool> entry) =>
+      Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
@@ -91,7 +92,7 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
             trailing: entry.key.t2 == null
                 ? null
                 : ImageWidget(
-                    FileImage(entry.key.t2!),
+                    MemoryImage(entry.key.t2!),
                     height: 50,
                     width: 50,
                   ),

@@ -13,16 +13,18 @@ class ProfileHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (currentUser == null) return const SizedBox();
     return SizedBox(
-      height: 100,
+      height: 110,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ImageWidget(
-            currentUser!.imageURL == null
-                ? null
-                : NetworkImage(currentUser!.imageURL!),
-            width: 100,
-            height: 100,
+          Center(
+            child: ImageWidget(
+              currentUser!.imageURL == null
+                  ? null
+                  : NetworkImage(currentUser!.imageURL!),
+              width: 100,
+              height: 100,
+            ),
           ),
           const SizedBox(width: 20),
           Expanded(
