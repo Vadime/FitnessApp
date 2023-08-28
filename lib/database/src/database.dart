@@ -42,27 +42,25 @@ class Database {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return const FirebaseOptions(
-          apiKey: String.fromEnvironment('api_key_android'),
-          appId: String.fromEnvironment('app_id_android'),
-          messagingSenderId:
-              String.fromEnvironment('messaging_sender_id_android'),
-          projectId: String.fromEnvironment('project_id_android'),
-          authDomain: String.fromEnvironment('auth_domain_android'),
-          databaseURL: String.fromEnvironment('database_url_android'),
-          storageBucket: String.fromEnvironment('storage_bucket_android'),
-          measurementId: String.fromEnvironment('measurement_id_android'),
+          apiKey: 'AIzaSyBmU426TVziB9QrtOqwQxcjZEDuH63bfFo',
+          appId: '1:534633074686:android:de07d1fedd973d6e317aaf',
+          messagingSenderId: '534633074686',
+          projectId: 'fitnessapp-9dd39',
+          databaseURL:
+              'https://fitnessapp-9dd39-default-rtdb.europe-west1.firebasedatabase.app',
+          storageBucket: 'fitnessapp-9dd39.appspot.com',
         );
       case TargetPlatform.iOS:
         return const FirebaseOptions(
-          apiKey: String.fromEnvironment('api_key_ios'),
-          appId: String.fromEnvironment('appId_ios'),
-          messagingSenderId: String.fromEnvironment('messaging_sender_id_ios'),
-          projectId: String.fromEnvironment('project_id_ios'),
-          authDomain: String.fromEnvironment('auth_domain_ios'),
-          databaseURL: String.fromEnvironment('database_url_ios'),
-          storageBucket: String.fromEnvironment('storage_bucket_ios'),
-          measurementId: String.fromEnvironment('measurement_id_ios'),
-          iosBundleId: String.fromEnvironment('application_id'),
+          apiKey: 'AIzaSyC2ABCt_uX1w_RjDwgkkAMB8K6Lny_sY-E',
+          appId: '1:534633074686:ios:c381d0e456202bdc317aaf',
+          messagingSenderId: '534633074686',
+          projectId: 'fitnessapp-9dd39',
+          databaseURL:
+              'https://fitnessapp-9dd39-default-rtdb.europe-west1.firebasedatabase.app',
+          storageBucket: 'fitnessapp-9dd39.appspot.com',
+          iosBundleId:
+              '534633074686-t6eupvdqbpru0d8i63edqn8jvonkrnnb.apps.googleusercontent.com',
         );
       case TargetPlatform.macOS:
         throw UnsupportedError(
@@ -86,14 +84,14 @@ class Database {
     }
   }
 
-  static Future<void> initializeApp() async {
+  static Future<void> initializeApp({bool useEmulator = false}) async {
     try {
       // initialize firebase app
       await Firebase.initializeApp(
         options: _firebaseOptions,
       );
 
-      if (const String.fromEnvironment('env') == 'dev') {
+      if (useEmulator) {
         // use the local emulators
         await auth.FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
         firestore.FirebaseFirestore.instance

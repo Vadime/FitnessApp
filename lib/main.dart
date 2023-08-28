@@ -17,32 +17,16 @@ void main() {
   ]);
   runApp(
     ThemeApp(
-      config: ThemeConfig(
-        title: const String.fromEnvironment('application_name'),
-        logoLocation: const String.fromEnvironment('application_logo'),
-        primaryColor: Color(
-          int.parse(const String.fromEnvironment('primary')),
-        ),
-        lightBackgroundColor: Color(
-          int.parse(
-            const String.fromEnvironment('background_light'),
-          ),
-        ),
-        lightCardColor: Color(
-          int.parse(const String.fromEnvironment('card_light')),
-        ),
-        lightNeutralColor: Color(
-          int.parse(const String.fromEnvironment('neutral_light')),
-        ),
-        darkBackgroundColor: Color(
-          int.parse(const String.fromEnvironment('background_dark')),
-        ),
-        darkCardColor: Color(
-          int.parse(const String.fromEnvironment('card_dark')),
-        ),
-        darkNeutralColor: Color(
-          int.parse(const String.fromEnvironment('neutral_dark')),
-        ),
+      config: const ThemeConfig(
+        title: 'Fitness App',
+        logoLocation: 'res/logo/foreground.png',
+        primaryColor: Color(0xFFFF9800),
+        lightBackgroundColor: Color(0xFFEEEEEE),
+        lightCardColor: Color(0xFFFFFFFF),
+        lightNeutralColor: Color(0xFFE0E0E0),
+        darkBackgroundColor: Color(0xFF000000),
+        darkCardColor: Color(0xFF212121),
+        darkNeutralColor: Color(0xFF616161),
         darkTextColor: Colors.white,
         lightTextColor: Colors.black,
         radius: 10,
