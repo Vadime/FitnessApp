@@ -14,18 +14,18 @@
       "name": "Launch Dev Release",
       "request": "launch",
       "type": "dart",
-      "program": "frontend/lib/main.dart",
+      "program": "lib/main.dart",
       "flutterMode": "release",
       "args": [
         "--dart-define-from-file",
-        "config/config-dev.json"
+        "config/config-dev.json",
       ]
     },
     {
       "name": "Launch Dev Debug",
       "request": "launch",
       "type": "dart",
-      "program": "frontend/lib/main.dart",
+      "program": "lib/main.dart",
       "flutterMode": "debug",
       "args": [
         "--dart-define-from-file",
@@ -36,11 +36,11 @@
       "name": "Launch Dev Profile",
       "request": "launch",
       "type": "dart",
-      "program": "frontend/lib/main.dart",
+      "program": "lib/main.dart",
       "flutterMode": "profile",
       "args": [
         "--dart-define-from-file",
-        "config/config-dev.json"
+        "config/config-dev.json",
       ]
     },
     // ____                _            _   _             
@@ -52,18 +52,18 @@
       "name": "Launch Prod Release",
       "request": "launch",
       "type": "dart",
-      "program": "frontend/lib/main.dart",
+      "program": "lib/main.dart",
       "flutterMode": "release",
       "args": [
         "--dart-define-from-file",
-        "config/config-prd.json"
+        "config/config-prd.json",
       ]
     },
     {
       "name": "Launch Prod Debug",
       "request": "launch",
       "type": "dart",
-      "program": "frontend/lib/main.dart",
+      "program": "lib/main.dart",
       "flutterMode": "debug",
       "args": [
         "--dart-define-from-file",
@@ -74,11 +74,11 @@
       "name": "Launch Prod Profile",
       "request": "launch",
       "type": "dart",
-      "program": "frontend/lib/main.dart",
+      "program": "lib/main.dart",
       "flutterMode": "profile",
       "args": [
         "--dart-define-from-file",
-        "config/config-prd.json"
+        "config/config-prd.json",
       ]
     },    
   ]
