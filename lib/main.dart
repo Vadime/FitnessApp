@@ -31,7 +31,7 @@ void main() {
         lightTextColor: Colors.black,
         radius: 10,
         padding: 20,
-        opacity: 1,
+        opacity: 0.8,
       ),
       home: const HomeScreen(),
       login: const OnboardingScreen(),
