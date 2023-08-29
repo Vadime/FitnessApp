@@ -14,23 +14,21 @@ class ProfileEditPopup extends StatefulWidget {
 class _ProfileEditPopupState extends State<ProfileEditPopup> {
   late TextFieldController nameBloc;
   late TextFieldController contactBloc;
-  late User? currentUser;
 
   @override
   void initState() {
     super.initState();
-    currentUser = UserRepository.currentUser;
-    nameBloc = TextFieldController.name(text: currentUser?.displayName);
-    if (currentUser?.contactAdress.type == ContactType.email) {
+    nameBloc = TextFieldController.name(text: UserRepository.currentUserName);
+    if (UserRepository.currentUserContact?.type == ContactType.email) {
       contactBloc =
-          TextFieldController.email(text: currentUser?.contactAdress.value);
-    } else if (currentUser?.contactAdress.type == ContactType.phone) {
+          TextFieldController.email(text: UserRepository.currentUserEmail);
+    } else if (UserRepository.currentUserContact?.type == ContactType.phone) {
       contactBloc =
-          TextFieldController.phone(text: currentUser?.contactAdress.value);
+          TextFieldController.phone(text: UserRepository.currentUserPhone);
     } else {
       contactBloc = TextFieldController(
-        currentUser?.contactAdress.name,
-        text: currentUser?.contactAdress.value,
+        UserRepository.currentUserContact?.name,
+        text: UserRepository.currentUserContact?.value,
       );
     }
   }
@@ -46,25 +44,22 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
         Row(
           children: [
             ImageWidget(
-              NetworkImage(currentUser!.imageURL!),
+              UserRepository.currentUserImageURL == null
+                  ? null
+                  : NetworkImage(UserRepository.currentUserImageURL!),
               width: 100,
               height: 100,
               onTap: () async {
                 var image = await FilePicking.pickImage();
-                if (image != null) {
-                  try {
-                    await UserRepository.updateCurrentUserImage(image: image);
-                    setState(() {
-                      currentUser = UserRepository.currentUser;
-                    });
-                  } catch (e) {
-                    Logging.log(e);
-                    return Messaging.info(
-                      e.toString(),
-                      context: context,
-                    );
-                  }
-                } else {}
+                if (image == null) return;
+                try {
+                  await UserRepository.updateCurrentUserImage(image: image);
+                  setState(() {});
+                } catch (e) {
+                  Logging.log(e);
+                  Toast.info(e.toString(), context: context);
+                  return;
+                }
               },
             ),
             const SizedBox(width: 20),
@@ -77,7 +72,6 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                   ),
                   TextFieldWidget(
                     controller: contactBloc,
-                    autofocus: true,
                   ),
                 ],
               ),
@@ -90,14 +84,14 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
           onPressed: () async {
             // check if there is an error in email
             if (!contactBloc.isValid()) {
-              return Messaging.info(
+              return Toast.info(
                 contactBloc.errorText!,
                 context: context,
               );
             }
             // check if there is an error in name
             if (!nameBloc.isValid()) {
-              return Messaging.info(
+              return Toast.info(
                 nameBloc.errorText!,
                 context: context,
               );
@@ -110,10 +104,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                 email: contactBloc.text,
               );
             } catch (e) {
-              return Messaging.info(
-                e.toString(),
-                context: context,
-              );
+              return Toast.info(e.toString(), context: context);
             }
 
             Navigation.flush(
@@ -125,5 +116,12 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    nameBloc.dispose();
+    contactBloc.dispose();
+    super.dispose();
   }
 }

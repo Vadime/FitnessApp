@@ -68,8 +68,8 @@ exports.getFriendByEmail = functions.https.onCall(async (data, context) => {
         const user = await admin.auth().getUserByEmail(data.email);
         return {
             uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
+            displayName: user.displayName ?? '-',
+            contactMethod: { value: user.email, type: "email"},
             imageURL: user.photoURL,
         };
     } catch (error) {
@@ -77,17 +77,40 @@ exports.getFriendByEmail = functions.https.onCall(async (data, context) => {
     }
 });
 
-
+exports.getFriendByPhone = functions.https.onCall(async (data, context) => {
+    try {
+        const user = await admin.auth().getUserByPhoneNumber(data.phone);
+        return {
+            uid: user.uid,
+            displayName: user.displayName ?? '-',
+            contactMethod: { value: user.phoneNumber, type: "phone"},
+            imageURL: user.photoURL,
+        };
+    } catch (error) {
+        return null;
+    }
+});
 
 exports.getFriendByUID = functions.https.onCall(async (data, context) => {
     try {
         const user = await admin.auth().getUser(data.uid);
+
+        var contactMethod;
+        if (user.email != null) {
+            contactMethod = { value: user.email, type: "email"};
+        } else if (user.phoneNumber != null) {
+            contactMethod = { value: user.phoneNumber, type: "phone"};
+        } else {
+            contactMethod = { value: "-", type: "unknown"};
+        }
+
         return {
             uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
+            displayName: user.displayName ?? '-',
+            contactMethod: contactMethod,
             imageURL: user.photoURL,
         };
+        
     } catch (error) {
         return null;
     }

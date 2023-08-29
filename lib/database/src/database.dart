@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:isolate';
 
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
@@ -7,8 +6,10 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:firebase_storage/firebase_storage.dart' as storage;
+import 'package:fitnessapp/database/src/messaging.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/course.dart';
 import 'package:fitnessapp/models/src/friend.dart';
@@ -84,13 +85,18 @@ class Database {
     }
   }
 
-  static Future<void> initializeApp({bool useEmulator = false}) async {
+  static Future<void> initializeApp({
+    bool useEmulator = false,
+    void Function(RemoteMessage message)? onMessage,
+  }) async {
     try {
       // initialize firebase app
       await Firebase.initializeApp(
         options: _firebaseOptions,
       );
-
+      await Messaging.init(
+        onMessage: onMessage,
+      );
       if (useEmulator) {
         // use the local emulators
         await auth.FirebaseAuth.instance.useAuthEmulator('localhost', 9099);

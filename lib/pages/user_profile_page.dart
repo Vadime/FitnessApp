@@ -68,7 +68,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
               padding: const EdgeInsets.all(20),
               title: friend.displayName,
-              subtitle: friend.email,
+              subtitle: friend.contactMethod.value,
               onTap: () => Navigation.pushPopup(
                 widget: UserProfileFriendsGraphPopup(
                   friend: friend,

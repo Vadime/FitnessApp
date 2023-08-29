@@ -199,13 +199,13 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
           widget.workout != null ? 'Save Workout' : 'Add Workout',
           onPressed: () async {
             if (!nameBloc.isValid()) {
-              return Messaging.info(
+              return Toast.info(
                 nameBloc.errorText,
                 context: context,
               );
             }
             if (!descriptionBloc.isValid()) {
-              return Messaging.info(
+              return Toast.info(
                 descriptionBloc.errorText ?? 'Invalid description',
                 context: context,
               );
@@ -228,7 +228,7 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
               }
               Navigation.flush(widget: const HomeScreen(initialIndex: 1));
             } catch (e) {
-              Messaging.info(
+              Toast.info(
                 'Error saving workout: $e',
                 context: context,
               );

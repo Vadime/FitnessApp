@@ -76,27 +76,27 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                 'Save Exercise',
                 onPressed: () async {
                   if (!nameBloc.isValid()) {
-                    return Messaging.info(
+                    return Toast.info(
                       nameBloc.errorText!,
                       context: context,
                     );
                   }
                   if (!descriptionBloc.isValid()) {
-                    return Messaging.info(
+                    return Toast.info(
                       descriptionBloc.errorText!,
                       context: context,
                     );
                   }
 
                   if (musclesController.state.isEmpty) {
-                    return Messaging.info(
+                    return Toast.info(
                       'Please select at least one muscle',
                       context: context,
                     );
                   }
 
                   if (imageFile == null) {
-                    return Messaging.info(
+                    return Toast.info(
                       'Please select an image',
                       context: context,
                     );
@@ -128,7 +128,7 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                     );
                   }).catchError(
                     (e) {
-                      Messaging.info(
+                      Toast.info(
                         'Error ${widget.exercise == null ? 'adding' : 'updating'} exercise: $e',
                         context: context,
                       );

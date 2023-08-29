@@ -45,14 +45,14 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
           'Save Course',
           onPressed: () async {
             if (!nameBloc.isValid()) {
-              Messaging.info(
+              Toast.info(
                 nameBloc.calcErrorText!,
                 context: context,
               );
               return;
             }
             if (!descriptionBloc.isValid()) {
-              Messaging.info(
+              Toast.info(
                 descriptionBloc.calcErrorText!,
                 context: context,
               );
@@ -60,7 +60,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
             }
 
             if (imageFile == null) {
-              Messaging.info(
+              Toast.info(
                 'Please select an image',
                 context: context,
               );
@@ -91,7 +91,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
                 widget: const HomeScreen(initialIndex: 0),
               );
             } catch (e) {
-              Messaging.info(
+              Toast.info(
                 'Error saving course: $e',
                 context: context,
               );

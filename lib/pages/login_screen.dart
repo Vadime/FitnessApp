@@ -24,7 +24,7 @@ class LoginScreen extends StatelessWidget {
         await UserRepository.sendPasswordResetEmail(
           email: email.text,
         );
-        Messaging.info('Email sent!', context: context);
+        Toast.info('Email sent!', context: context);
       },
       onPhoneSendCode: (phone) async {
         await UserRepository.loginWithPhoneNumber(
@@ -32,7 +32,7 @@ class LoginScreen extends StatelessWidget {
           onCodeSent: onPhoneVerifyCode,
           onFailed: (error) {
             phone.emptyAllowed = false;
-            Messaging.error(error, context: context);
+            Toast.error(error, context: context);
           },
         );
       },

@@ -146,7 +146,13 @@ class UserRepository {
   static String? get currentUserName => _authInstance.currentUser?.displayName;
 
   // gibt email zurück
+  static ContactMethod? get currentUserContact => currentUser?.contactAdress;
+
+  // gibt email zurück
   static String? get currentUserEmail => _authInstance.currentUser?.email;
+
+  // gibt phone zurück
+  static String? get currentUserPhone => _authInstance.currentUser?.phoneNumber;
 
   // gibt uid zurück
   static String? get currentUserUID => _authInstance.currentUser?.uid;
@@ -345,41 +351,53 @@ class UserRepository {
     });
   }
 
-  static Future<Friend> addFriend(String email) async {
+  static Future<Friend> addFriendByEmail(String email) async {
     Friend? friend = await functions.FirebaseFunctions.instance
         .httpsCallable('getFriendByEmail')
         .call({
           'email': email,
         })
         .then((value) => value.data)
-        .then(
-          (map) => map == null
-              ? null
-              : Friend(
-                  uid: map['uid'],
-                  displayName: map['displayName'],
-                  email: map['email'],
-                  imageURL: map['imageURL'],
-                ),
-        );
+        .then((map) => map == null ? null : Friend.fromJson(map));
 
-    if (friend == null) throw 'User not found';
+    if (friend == null) throw 'User with $email not found 😢';
 
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .set({
-      'friends': firestore.FieldValue.arrayUnion([friend.uid]),
-    });
+    await addFriend(friend);
+
     return friend;
   }
 
-  static Future<void> removeFriend(String uid) async {
+  static Future<Friend> addFriendByPhone(String phone) async {
+    Friend? friend = await functions.FirebaseFunctions.instance
+        .httpsCallable('getFriendByPhone')
+        .call({
+          'phone': phone,
+        })
+        .then((value) => value.data)
+        .then((map) => map == null ? null : Friend.fromJson(map));
+
+    if (friend == null) throw 'User with $phone not found 😢';
+
+    await addFriend(friend);
+
+    return friend;
+  }
+
+  static Future<void> addFriend(Friend friend) async {
     await firestore.FirebaseFirestore.instance
         .collection('users')
         .doc(UserRepository.currentUserUID)
         .update({
-      'friends': firestore.FieldValue.arrayRemove([uid]),
+      'friends': firestore.FieldValue.arrayUnion([friend.uid]),
+    });
+  }
+
+  static Future<void> removeFriend(Friend friend) async {
+    await firestore.FirebaseFirestore.instance
+        .collection('users')
+        .doc(UserRepository.currentUserUID)
+        .update({
+      'friends': firestore.FieldValue.arrayRemove([friend.uid]),
     });
   }
 
@@ -389,9 +407,8 @@ class UserRepository {
             .doc(UserRepository.currentUserUID)
             .get())
         .data()?['friends'] as List<dynamic>?;
-
+    Logging.log(friendStrs);
     if (friendStrs == null) return [];
-
     List<Friend> friends = [];
     for (String uid in friendStrs) {
       Friend? friend;
@@ -402,15 +419,10 @@ class UserRepository {
               'uid': uid,
             })
             .then((value) => value.data)
-            .then(
-              (map) => Friend(
-                uid: map['uid'],
-                displayName: map['displayName'],
-                email: map['email'],
-                imageURL: map['imageURL'],
-              ),
-            );
-      } catch (_) {}
+            .then((map) => Friend.fromJson(map));
+      } catch (e, s) {
+        Logging.logDetails('Error loading Friend', e, s);
+      }
 
       if (friend != null) friends.add(friend);
     }

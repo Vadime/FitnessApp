@@ -1,21 +1,68 @@
 import 'package:fitnessapp/models/models.dart';
 
+extension ContactTypeExtension on ContactType {
+  get str {
+    switch (this) {
+      case ContactType.email:
+        return 'Email';
+      case ContactType.phone:
+        return 'Phone';
+      default:
+        return 'Unknown';
+    }
+  }
+
+  toJson() {
+    switch (this) {
+      case ContactType.email:
+        return 'email';
+      case ContactType.phone:
+        return 'phone';
+      default:
+        return 'unknown';
+    }
+  }
+}
+
 enum ContactType { email, phone, unknown }
 
+ContactType contactTypeFromJson(String json) {
+  switch (json) {
+    case 'email':
+      return ContactType.email;
+    case 'phone':
+      return ContactType.phone;
+    default:
+      return ContactType.unknown;
+  }
+}
+
 class ContactMethod {
-  final String name;
   final String value;
   final ContactType type;
 
-  const ContactMethod(
-      {required this.name, required this.value, required this.type});
+  const ContactMethod({
+    required this.value,
+    required this.type,
+  });
 
   const ContactMethod.email(String email)
-      : this(name: 'Email', value: email, type: ContactType.email);
+      : this(value: email, type: ContactType.email);
   const ContactMethod.phone(String phone)
-      : this(name: 'Phone', value: phone, type: ContactType.phone);
-  const ContactMethod.unknown()
-      : this(name: 'Contact', value: '-', type: ContactType.unknown);
+      : this(value: phone, type: ContactType.phone);
+  const ContactMethod.unknown() : this(value: '-', type: ContactType.unknown);
+
+  get name => type.str;
+
+  factory ContactMethod.fromJson(Map<Object?, Object?> json) => ContactMethod(
+        value: json['value'].toString(),
+        type: contactTypeFromJson(json['type'].toString()),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'value': value,
+        'type': type.toJson(),
+      };
 }
 
 class User {

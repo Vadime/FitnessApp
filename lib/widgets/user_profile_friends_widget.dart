@@ -28,7 +28,7 @@ class UserProfileFriendsGraphPopup extends StatelessWidget {
         ElevatedButtonWidget(
           'Remove Friend',
           onPressed: () async {
-            await UserRepository.removeFriend(friend.uid);
+            await UserRepository.removeFriend(friend);
             Navigation.flush(
               widget: const HomeScreen(
                 initialIndex: 3,
