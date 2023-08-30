@@ -1,6 +1,6 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/src/friend.dart';
-import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/pages/user_home_screen.dart';
 import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -30,7 +30,7 @@ class UserProfileFriendsGraphPopup extends StatelessWidget {
           onPressed: () async {
             await UserRepository.removeFriend(friend);
             Navigation.flush(
-              widget: const HomeScreen(
+              widget: const UserHomeScreen(
                 initialIndex: 3,
               ),
             );

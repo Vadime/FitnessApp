@@ -1,12 +1,11 @@
-import 'dart:typed_data';
-
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/workout_exercise_type.dart';
+import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class UserWorkoutInProgressExercisePage extends StatelessWidget {
-  final MapEntry<Tupel<Exercise, WorkoutExercise>, Uint8List?> exercise;
+  final WorkoutExerciseUI exercise;
   const UserWorkoutInProgressExercisePage({
     required this.exercise,
     super.key,
@@ -21,7 +20,9 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
         children: [
           const Spacer(),
           ImageWidget(
-            MemoryImage(exercise.value!),
+            exercise.exerciseUI.image == null
+                ? null
+                : MemoryImage(exercise.exerciseUI.image!),
             height: 200,
           ),
           const Expanded(child: SizedBox(height: 20)),
@@ -33,19 +34,24 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
             },
             rows: [
               TableRowWidget(
-                cells: ['Name', exercise.key.t1.name],
+                cells: ['Name', exercise.exerciseUI.exercise.name],
               ),
               TableRowWidget(
-                cells: ['Description', exercise.key.t1.description],
+                cells: [
+                  'Description',
+                  exercise.exerciseUI.exercise.description,
+                ],
               ),
               TableRowWidget(
-                cells: ['Type', exercise.key.t2.type.toString()],
+                cells: ['Type', exercise.workoutExercise.type.toString()],
               ),
-              if (exercise.key.t2.type is WorkoutExerciseTypeDuration) ...[
+              if (exercise.workoutExercise.type
+                  is WorkoutExerciseTypeDuration) ...[
                 TableRowWidget(
                   cells: [
                     'Minuten',
-                    (exercise.key.t2.type as WorkoutExerciseTypeDuration)
+                    (exercise.workoutExercise.type
+                            as WorkoutExerciseTypeDuration)
                         .min
                         .toString(),
                   ],
@@ -53,7 +59,8 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                 TableRowWidget(
                   cells: [
                     'Sekunden',
-                    (exercise.key.t2.type as WorkoutExerciseTypeDuration)
+                    (exercise.workoutExercise.type
+                            as WorkoutExerciseTypeDuration)
                         .sec
                         .toString(),
                   ],
@@ -61,17 +68,19 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                 TableRowWidget(
                   cells: [
                     'Weights',
-                    (exercise.key.t2.type as WorkoutExerciseTypeDuration)
+                    (exercise.workoutExercise.type
+                            as WorkoutExerciseTypeDuration)
                         .weights
                         .toString(),
                   ],
                 ),
-              ] else if (exercise.key.t2.type
+              ] else if (exercise.workoutExercise.type
                   is WorkoutExerciseTypeRepetition) ...[
                 TableRowWidget(
                   cells: [
                     'Sets',
-                    (exercise.key.t2.type as WorkoutExerciseTypeRepetition)
+                    (exercise.workoutExercise.type
+                            as WorkoutExerciseTypeRepetition)
                         .sets
                         .toString(),
                   ],
@@ -79,7 +88,8 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                 TableRowWidget(
                   cells: [
                     'Reps',
-                    (exercise.key.t2.type as WorkoutExerciseTypeRepetition)
+                    (exercise.workoutExercise.type
+                            as WorkoutExerciseTypeRepetition)
                         .reps
                         .toString(),
                   ],
@@ -87,7 +97,8 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                 TableRowWidget(
                   cells: [
                     'Weights',
-                    (exercise.key.t2.type as WorkoutExerciseTypeRepetition)
+                    (exercise.workoutExercise.type
+                            as WorkoutExerciseTypeRepetition)
                         .weights
                         .toString(),
                   ],
@@ -96,7 +107,9 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
               TableRowWidget(
                 cells: [
                   'Muscles',
-                  exercise.key.t1.muscles.map((e) => e.strName).join(', '),
+                  exercise.exerciseUI.exercise.muscles
+                      .map((e) => e.strName)
+                      .join(', '),
                 ],
               ),
             ],

@@ -1,16 +1,16 @@
 import 'package:fitnessapp/database/database.dart';
-import 'package:fitnessapp/pages/admin_course_add_screen.dart';
-import 'package:fitnessapp/pages/admin_home_screen.dart';
+import 'package:fitnessapp/pages/user_home_screen.dart';
+import 'package:fitnessapp/pages/user_exercise_add_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
-class AdminCourseDeletePopup extends StatelessWidget {
-  const AdminCourseDeletePopup({
+class UserExerciseDeletePopup extends StatelessWidget {
+  const UserExerciseDeletePopup({
     super.key,
     required this.widget,
   });
 
-  final AdminCourseAddScreen widget;
+  final UserExerciseAddScreen widget;
 
   @override
   Widget build(BuildContext context) {
@@ -19,34 +19,36 @@ class AdminCourseDeletePopup extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Delete Course',
+          'Delete Exercise',
           style: context.textTheme.titleLarge,
         ),
         const SizedBox(height: 10),
         const Text(
-          'Are you sure you want to delete this course?',
+          'Are you sure you want to delete this exercise?',
         ),
         const SizedBox(height: 20),
         ElevatedButtonWidget(
           'Delete',
           backgroundColor: context.colorScheme.error,
           onPressed: () async {
-            if (widget.entry != null) {
-              // delete image from storage
+            if (widget.exercise != null) {
               try {
-                await CourseRepository.deleteCourseImage(widget.entry!.course);
-                await CourseRepository.deleteCourse(widget.entry!.course);
+                await ExerciseRepository.deleteExerciseImage(
+                  widget.exercise!,
+                );
+                await UserRepository.deleteUsersExercise(widget.exercise!);
               } catch (e, s) {
                 Logging.logDetails(e.toString(), s);
                 Toast.info(
-                  'Error deleting course: $e',
+                  'Error deleting exercise: $e',
                   context: context,
                 );
+                Navigation.pop();
                 return;
               }
             }
             Navigation.flush(
-              widget: const AdminHomeScreen(),
+              widget: const UserHomeScreen(initialIndex: 2),
             );
           },
         ),

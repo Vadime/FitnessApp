@@ -1,18 +1,13 @@
 part of 'database.dart';
 
 class WorkoutStatisticsRepository {
-  static Future<List<DateTime>> getWorkoutDatesStatistics() async {
+  static Future<List<WorkoutStatistic>> getWorkoutDatesStatistics() async {
     var res = await firestore.FirebaseFirestore.instance
         .collectionGroup('workoutStatistics')
         .get();
-    var dates = res.docs
-        .map(
-          (e) => (e.data()['date'] ?? DateTime.now().formattedDate)
-              .toString()
-              .toDateTime(),
-        )
-        .toList();
-    dates.sort((a, b) => a.compareTo(b));
-    return dates;
+    var workouts =
+        res.docs.map((e) => WorkoutStatistic.fromJson(e.id, e.data())).toList();
+    workouts.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    return workouts;
   }
 }

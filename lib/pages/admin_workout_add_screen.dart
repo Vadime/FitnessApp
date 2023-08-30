@@ -1,10 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/schedule.dart';
+import 'package:fitnessapp/models_ui/exercise_ui.dart';
+import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
 import 'package:fitnessapp/pages/admin_workout_delete_popup.dart';
-import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/pages/admin_home_screen.dart';
 import 'package:fitnessapp/widgets/workout_exercise_not_selected_widget.dart';
 import 'package:fitnessapp/widgets/workout_exercise_selected_widget.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +24,8 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
   late TextFieldController descriptionBloc;
   late SingleSelectionController<Schedule> scheduleController;
 
-  List<Tripple<Exercise, WorkoutExercise, Uint8List?>> exercisesSel = [];
-  List<Tupel<Exercise, Uint8List?>> exercisesOth = [];
+  List<WorkoutExerciseUI> exercisesSel = [];
+  List<ExerciseUI> exercisesOth = [];
 
   @override
   void initState() {
@@ -58,13 +58,17 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
           );
           if (workoutExercise.exerciseUID.isNotEmpty) {
             exercisesSel.add(
-              Tripple(exercise, workoutExercise, image),
+              WorkoutExerciseUI(ExerciseUI(exercise, image), workoutExercise),
             );
           } else {
-            exercisesOth.add(Tupel(exercise, image));
+            exercisesOth.add(ExerciseUI(exercise, image));
           }
-          exercisesSel.sort((a, b) => a.b.index.compareTo(b.b.index));
-          exercisesOth.sort((a, b) => a.t1.name.compareTo(b.t1.name));
+          exercisesSel.sort(
+            (a, b) =>
+                a.workoutExercise.index.compareTo(b.workoutExercise.index),
+          );
+          exercisesOth
+              .sort((a, b) => a.exercise.name.compareTo(b.exercise.name));
 
           if (context.mounted) setState(() {});
         }
@@ -150,13 +154,16 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
               if (oldIndex < newIndex) {
                 newIndex -= 1;
               }
-              exercisesSel.elementAt(oldIndex).b.index = newIndex;
-              exercisesSel.elementAt(newIndex).b.index = oldIndex;
-              exercisesSel.sort((a, b) => a.b.index.compareTo(b.b.index));
+              exercisesSel.elementAt(oldIndex).workoutExercise.index = newIndex;
+              exercisesSel.elementAt(newIndex).workoutExercise.index = oldIndex;
+              exercisesSel.sort(
+                (a, b) =>
+                    a.workoutExercise.index.compareTo(b.workoutExercise.index),
+              );
               setState(() {});
             },
             itemBuilder: (context, index) => WorkoutExerciseSelectedWidget(
-              key: Key(exercisesSel.elementAt(index).a.uid),
+              key: Key(exercisesSel.elementAt(index).exerciseUI.exercise.uid),
               entry: exercisesSel.elementAt(index),
               exercisesSel: exercisesSel,
               exercisesOth: exercisesOth,
@@ -212,7 +219,10 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
             );
           }
           try {
-            exercisesSel.sort((a, b) => a.b.index.compareTo(b.b.index));
+            exercisesSel.sort(
+              (a, b) =>
+                  a.workoutExercise.index.compareTo(b.workoutExercise.index),
+            );
 
             Workout workout = Workout(
               uid: widget.workout?.uid ??
@@ -220,7 +230,8 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
               name: nameBloc.text,
               description: descriptionBloc.text,
               schedule: scheduleController.state ?? Schedule.daily,
-              workoutExercises: exercisesSel.map((e) => e.b).toList(),
+              workoutExercises:
+                  exercisesSel.map((e) => e.workoutExercise).toList(),
             );
             if (widget.workout != null) {
               await WorkoutRepository.updateWorkout(workout);
@@ -228,7 +239,7 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
               await WorkoutRepository.addWorkout(workout);
             }
 
-            Navigation.flush(widget: const HomeScreen(initialIndex: 1));
+            Navigation.flush(widget: const AdminHomeScreen(initialIndex: 1));
           } catch (e) {
             Toast.info(
               'Error ${widget.workout == null ? 'adding' : 'updating'} workout: $e',

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/admin_exercise_delete_popup.dart';
-import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/pages/admin_home_screen.dart';
 import 'package:fitnessapp/widgets/upload_file.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -124,7 +124,7 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                   await ExerciseRepository.uploadExercise(exercise)
                       .then((value) {
                     Navigation.flush(
-                      widget: const HomeScreen(initialIndex: 2),
+                      widget: const AdminHomeScreen(initialIndex: 2),
                     );
                   }).catchError(
                     (e) {

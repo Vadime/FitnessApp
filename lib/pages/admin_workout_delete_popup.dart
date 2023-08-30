@@ -1,6 +1,6 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/pages/admin_workout_add_screen.dart';
-import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/pages/admin_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -35,7 +35,7 @@ class AdminWorkoutDeletePopup extends StatelessWidget {
               await WorkoutRepository.deleteWorkout(widget.workout!);
             }
 
-            Navigation.flush(widget: const HomeScreen(initialIndex: 1));
+            Navigation.flush(widget: const AdminHomeScreen(initialIndex: 1));
           },
         ),
       ],

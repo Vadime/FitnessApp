@@ -1,5 +1,5 @@
 import 'package:fitnessapp/database/database.dart';
-import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/pages/user_home_screen.dart';
 import 'package:fitnessapp/pages/user_workout_add_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -35,7 +35,7 @@ class UserWorkoutDeletePopup extends StatelessWidget {
               UserRepository.deleteUserWorkout(widget.workout!);
             }
 
-            Navigation.flush(widget: const HomeScreen(initialIndex: 1));
+            Navigation.flush(widget: const UserHomeScreen(initialIndex: 1));
           },
         ),
       ],

@@ -1,6 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_exercise_page.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_finished_popup.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,7 @@ import 'package:widgets/widgets.dart';
 
 class UserWorkoutInProgressScreen extends StatefulWidget {
   final Workout workout;
-  final Map<Tupel<Exercise, WorkoutExercise>, Uint8List?> exercises;
+  final List<WorkoutExerciseUI> exercises;
   const UserWorkoutInProgressScreen({
     required this.workout,
     required this.exercises,
@@ -52,7 +51,7 @@ class _UserWorkoutInProgressScreenState
                 child: PageView(
                   physics: const NeverScrollableScrollPhysics(),
                   controller: pageController,
-                  children: widget.exercises.entries
+                  children: widget.exercises
                       .map(
                         (e) => UserWorkoutInProgressExercisePage(
                           exercise: e,

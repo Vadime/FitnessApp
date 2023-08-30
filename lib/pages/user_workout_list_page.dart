@@ -35,7 +35,10 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage> {
     return ListView(
       padding: const EdgeInsets.all(20).add(context.safeArea),
       children: [
-        const Text('Your Workouts'),
+        const TextWidget(
+          'Your Workouts',
+          margin: EdgeInsets.symmetric(vertical: 10),
+        ),
         if (userWorkouts == null)
           const SizedBox(
             height: 100,
@@ -50,8 +53,10 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage> {
           )
         else
           for (var u in userWorkouts!) workoutListTile(u, true),
-        const SizedBox(height: 10),
-        const Text('All Workouts'),
+        const TextWidget(
+          'All Workouts',
+          margin: EdgeInsets.symmetric(vertical: 10),
+        ),
         if (adminWorkouts == null)
           const SizedBox(
             height: 100,

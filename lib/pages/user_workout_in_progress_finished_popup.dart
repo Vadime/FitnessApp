@@ -1,6 +1,7 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/models/src/workout_statistic.dart';
+import 'package:fitnessapp/pages/user_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -26,26 +27,34 @@ class UserWorkoutInProgressFinishedPopup extends StatelessWidget {
         const TextWidget(
           'You have finished your workout! How was it?',
         ),
-        Row(
-          children: WorkoutDifficulty.values
-              .map(
-                (e) => Expanded(
-                  child: ElevatedButtonWidget(
-                    e.strName,
-                    margin: const EdgeInsets.all(10),
-                    onPressed: () async {
-                      await UserRepository.saveWorkoutStatistics(
-                        workout,
-                        e,
-                      );
-                      Navigation.flush(
-                        widget: const HomeScreen(initialIndex: 3),
-                      );
-                    },
+        const SizedBox(height: 10),
+        CardWidget.single(
+          padding: const EdgeInsets.all(5),
+          child: Row(
+            children: WorkoutDifficulty.values
+                .map(
+                  (e) => Expanded(
+                    child: ElevatedButtonWidget(
+                      e.strName,
+                      margin: const EdgeInsets.all(5),
+                      onPressed: () async {
+                        await UserRepository.saveWorkoutStatistics(
+                          WorkoutStatistic(
+                            uid: '',
+                            workoutId: workout.uid,
+                            dateTime: DateTime.now(),
+                            difficulty: e,
+                          ),
+                        );
+                        Navigation.flush(
+                          widget: const UserHomeScreen(initialIndex: 3),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              )
-              .toList(),
+                )
+                .toList(),
+          ),
         ),
       ],
     );

@@ -13,6 +13,7 @@ import 'package:fitnessapp/database/src/messaging.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/course.dart';
 import 'package:fitnessapp/models/src/friend.dart';
+import 'package:fitnessapp/models/src/workout_statistic.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -41,24 +42,35 @@ extension StringExtension on DateTime {
 class FirestoreThemeModeSaver extends ThemeModeSaver {
   @override
   Future<ThemeMode?> load(String key) async {
-    var snap = await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .get();
-    return ThemeMode.values[snap.data()?[key] ?? 0];
+    try {
+      var snap = await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .get();
+      return ThemeMode.values[snap.data()?[key] ?? 0];
+    } catch (_) {
+      // not important (happens if offline)
+      Logging.log('Error loading ThemeMode');
+    }
+    return null;
   }
 
   @override
   Future<void> save(String key, ThemeMode mode) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .set(
-      {
-        key: mode.index,
-      },
-      firestore.SetOptions(mergeFields: [key]),
-    );
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .set(
+        {
+          key: mode.index,
+        },
+        firestore.SetOptions(mergeFields: [key]),
+      );
+    } catch (_) {
+      // not important (happens if offline)
+      Logging.log('Error saving ThemeMode');
+    }
   }
 }
 
@@ -155,10 +167,23 @@ class Database {
 
       await auth.FirebaseAuth.instance.currentUser?.reload();
       await UserRepository.checkAuthenticationState();
+
+      await firestore.FirebaseFirestore.setLoggingEnabled(true);
+
+      const firestore.Settings(persistenceEnabled: true);
+
+      if (kIsWeb) {
+        await firestore.FirebaseFirestore.instance.enablePersistence(
+          const firestore.PersistenceSettings(synchronizeTabs: true),
+        );
+      }
+      if (kIsWeb) {
+        auth.FirebaseAuth.instance.setPersistence(auth.Persistence.LOCAL);
+      }
     } on auth.FirebaseAuthException {
       UserRepository.signOutCurrentUser();
     } catch (e, s) {
-      DatabaseLogging.crash(e.toString().split('] ').last, s);
+      Logging.logDetails('Error Database setup', e, s);
     }
   }
 }

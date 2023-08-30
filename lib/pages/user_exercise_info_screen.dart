@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/pages/user_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -54,7 +54,7 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
               isFavorite = !isFavorite;
             });
             Navigation.flush(
-              widget: const HomeScreen(
+              widget: const UserHomeScreen(
                 initialIndex: 2,
               ),
             );

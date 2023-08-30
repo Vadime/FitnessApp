@@ -1,10 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/schedule.dart';
 import 'package:fitnessapp/models/src/workout_exercise_type.dart';
-import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/models_ui/exercise_ui.dart';
+import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
+import 'package:fitnessapp/pages/user_home_screen.dart';
 import 'package:fitnessapp/pages/user_workout_add_screen.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class UserWorkoutInfoScreen extends StatefulWidget {
 
 class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
   bool copied = false;
-  Map<Tupel<Exercise, WorkoutExercise>, Uint8List?>? exercises;
+  List<WorkoutExerciseUI>? exercises;
 
   @override
   void initState() {
@@ -56,7 +56,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
         });
         await UserRepository.copyToPersonalWorkouts(widget.workout);
 
-        Navigation.flush(widget: const HomeScreen(initialIndex: 1));
+        Navigation.flush(widget: const UserHomeScreen(initialIndex: 1));
       },
     );
   }
@@ -135,9 +135,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
               child: LoadingWidget(),
             )
           else
-            for (MapEntry<Tupel<Exercise, WorkoutExercise>, Uint8List?> e
-                in exercises!.entries)
-              exerciseListTile(e),
+            for (WorkoutExerciseUI e in exercises!) exerciseListTile(e),
           const SafeArea(
             top: false,
             child: SizedBox(),
@@ -148,96 +146,109 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
   }
 
   loadExercises() async {
-    exercises = {};
+    exercises ??= [];
     for (WorkoutExercise w in widget.workout.workoutExercises) {
       var exercise = await ExerciseRepository.getExercise(w.exerciseUID);
       var image = await ExerciseRepository.getExerciseImage(exercise);
-      exercises!.putIfAbsent(Tupel(exercise, w), () => image);
+      exercises!.add(WorkoutExerciseUI(ExerciseUI(exercise, image), w));
       if (context.mounted) setState(() {});
     }
   }
 
   Widget exerciseListTile(
-    MapEntry<Tupel<Exercise, WorkoutExercise>, Uint8List?> e,
+    WorkoutExerciseUI e,
   ) =>
       Column(
         children: [
           const SizedBox(height: 10),
           ListTileWidget(
-            padding: const EdgeInsets.fromLTRB(20, 4, 4, 4),
-            title: e.key.t1.name,
-            trailing: e.value == null
-                ? null
-                : ImageWidget(
-                    MemoryImage(e.value!),
-                    height: 50,
-                    width: 50,
-                  ),
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+            title: e.exerciseUI.exercise.name,
           ),
           const SizedBox(height: 10),
-          TableWidget(
-            columnWidths: const {
-              0: FlexColumnWidth(1),
-              1: FlexColumnWidth(2),
-            },
-            rows: [
-              TableRowWidget(
-                cells: [
-                  'Description',
-                  e.key.t1.description,
+          Stack(
+            children: [
+              TableWidget(
+                columnWidths: const {
+                  0: FlexColumnWidth(1),
+                  1: FlexColumnWidth(2),
+                },
+                rows: [
+                  TableRowWidget(
+                    cells: [
+                      'Description',
+                      e.exerciseUI.exercise.description,
+                    ],
+                  ),
+                  if (e.workoutExercise.type
+                      is WorkoutExerciseTypeDuration) ...[
+                    TableRowWidget(
+                      cells: [
+                        'Minuten',
+                        (e.workoutExercise.type as WorkoutExerciseTypeDuration)
+                            .min
+                            .toString(),
+                      ],
+                    ),
+                    TableRowWidget(
+                      cells: [
+                        'Sekunden',
+                        (e.workoutExercise.type as WorkoutExerciseTypeDuration)
+                            .sec
+                            .toString(),
+                      ],
+                    ),
+                    TableRowWidget(
+                      cells: [
+                        'Weights',
+                        (e.workoutExercise.type as WorkoutExerciseTypeDuration)
+                            .weights
+                            .toString(),
+                      ],
+                    ),
+                  ] else if (e.workoutExercise.type
+                      is WorkoutExerciseTypeRepetition) ...[
+                    TableRowWidget(
+                      cells: [
+                        'Sets',
+                        (e.workoutExercise.type
+                                as WorkoutExerciseTypeRepetition)
+                            .sets
+                            .toString(),
+                      ],
+                    ),
+                    TableRowWidget(
+                      cells: [
+                        'Reps',
+                        (e.workoutExercise.type
+                                as WorkoutExerciseTypeRepetition)
+                            .reps
+                            .toString(),
+                      ],
+                    ),
+                    TableRowWidget(
+                      cells: [
+                        'Weights',
+                        (e.workoutExercise.type
+                                as WorkoutExerciseTypeRepetition)
+                            .weights
+                            .toString(),
+                      ],
+                    ),
+                  ],
                 ],
               ),
-              if (e.key.t2.type is WorkoutExerciseTypeDuration) ...[
-                TableRowWidget(
-                  cells: [
-                    'Minuten',
-                    (e.key.t2.type as WorkoutExerciseTypeDuration)
-                        .min
-                        .toString(),
-                  ],
+              Positioned(
+                right: 20,
+                bottom: 20,
+                child: ImageWidget(
+                  e.exerciseUI.image == null
+                      ? null
+                      : MemoryImage(e.exerciseUI.image!),
+                  height: 50,
+                  width: 50,
                 ),
-                TableRowWidget(
-                  cells: [
-                    'Sekunden',
-                    (e.key.t2.type as WorkoutExerciseTypeDuration)
-                        .sec
-                        .toString(),
-                  ],
-                ),
-                TableRowWidget(
-                  cells: [
-                    'Weights',
-                    (e.key.t2.type as WorkoutExerciseTypeDuration)
-                        .weights
-                        .toString(),
-                  ],
-                ),
-              ] else if (e.key.t2.type is WorkoutExerciseTypeRepetition) ...[
-                TableRowWidget(
-                  cells: [
-                    'Sets',
-                    (e.key.t2.type as WorkoutExerciseTypeRepetition)
-                        .sets
-                        .toString(),
-                  ],
-                ),
-                TableRowWidget(
-                  cells: [
-                    'Reps',
-                    (e.key.t2.type as WorkoutExerciseTypeRepetition)
-                        .reps
-                        .toString(),
-                  ],
-                ),
-                TableRowWidget(
-                  cells: [
-                    'Weights',
-                    (e.key.t2.type as WorkoutExerciseTypeRepetition)
-                        .weights
-                        .toString(),
-                  ],
-                ),
-              ],
+              ),
             ],
           ),
           const SizedBox(height: 10),

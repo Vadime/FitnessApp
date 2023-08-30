@@ -8,7 +8,7 @@ class CourseRepository {
           .refFromURL(course.imageURL!)
           .getData();
     } catch (e, s) {
-      DatabaseLogging.error(e.toString(), s);
+      Logging.logDetails('Error getting Course Image', e, s);
       return null;
     }
   }

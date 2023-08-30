@@ -1,8 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:fitnessapp/database/database.dart';
-import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models/src/course.dart';
+import 'package:fitnessapp/models_ui/course_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -14,7 +11,8 @@ class UserCourseListPage extends StatefulWidget {
 }
 
 class _UserCourseListPageState extends State<UserCourseListPage> {
-  Map<Tupel<Course, Uint8List?>, bool>? courses;
+  List<CourseUI>? enteredCourses;
+  List<CourseUI>? notEnteredCourses;
 
   @override
   void initState() {
@@ -24,75 +22,72 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (courses == null) {
-      return const LoadingWidget();
-    }
-
-    if (courses!.isEmpty) {
-      return const FailWidget(
-        'No courses found',
-      );
-    }
-
     return ListView(
       padding: const EdgeInsets.all(20).add(context.safeArea),
       children: [
-        const Text('Deine Kurse'),
-        const SizedBox(height: 10),
-        if (courses!.entries.where((element) => element.value).isEmpty)
-          const SizedBox(
-            height: 100,
-            child: FailWidget('Du nimmst an keinen Kursen teil'),
-          )
-        else
-          for (var entry in courses!.entries.where((element) => element.value))
-            courseListTile(entry),
-        const SizedBox(height: 10),
-        const Text('Weitere Kurse'),
-        const SizedBox(height: 10),
-        if (courses!.entries.where((element) => !element.value).isEmpty)
-          const SizedBox(
-            height: 100,
-            child: FailWidget('Keine weiteren Kurse gefunden'),
-          )
-        else
-          for (var entry in courses!.entries.where((element) => !element.value))
-            courseListTile(entry),
+        if (enteredCourses != null) ...[
+          const TextWidget(
+            'Deine Kurse',
+            margin: EdgeInsets.symmetric(vertical: 10),
+          ),
+          if (enteredCourses!.isEmpty)
+            const SizedBox(
+              height: 100,
+              child: FailWidget('Du nimmst an keinen Kursen teil'),
+            )
+          else
+            for (var entry in enteredCourses!) courseListTile(entry, true),
+        ],
+        if (enteredCourses != null) ...[
+          const TextWidget(
+            'Weitere Kurse',
+            margin: EdgeInsets.symmetric(vertical: 10),
+          ),
+          if (notEnteredCourses!.isEmpty)
+            const SizedBox(
+              height: 100,
+              child: FailWidget('Keine weiteren Kurse gefunden'),
+            )
+          else
+            for (var entry in notEnteredCourses!) courseListTile(entry, false),
+        ],
       ],
     );
   }
 
   loadCourses() async {
     var courseList = await CourseRepository.coursesAsFuture;
-
+    enteredCourses ??= [];
+    notEnteredCourses ??= [];
     for (var course in courseList) {
       var image = await CourseRepository.getCourseImage(course);
       if (!mounted) return;
-      (courses ??= {}).putIfAbsent(
-        Tupel(course, image),
-        () => course.userUIDS.contains(UserRepository.currentUser!.uid),
-      );
+      bool entered = course.userUIDS.contains(UserRepository.currentUser!.uid);
+      if (entered) {
+        enteredCourses!.add(CourseUI(course, image));
+      } else {
+        notEnteredCourses!.add(CourseUI(course, image));
+      }
       if (mounted) setState(() {});
     }
   }
 
-  Widget courseListTile(MapEntry<Tupel<Course, Uint8List?>, bool> entry) =>
-      Column(
+  Widget courseListTile(CourseUI course, bool entered) => Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            '${(entry.key.t1.userUIDS.length)} Personen - ${(entry.key.t1.date.toDate())}',
+            '${(course.course.userUIDS.length)} Personen - ${(course.course.date.toDate())}',
             style: context.textTheme.labelSmall,
           ),
           const SizedBox(height: 10),
           ListTileWidget(
             padding: const EdgeInsets.all(20),
-            title: entry.key.t1.name,
-            subtitle: entry.key.t1.description,
-            trailing: entry.key.t2 == null
+            title: course.course.name,
+            subtitle: course.course.description,
+            trailing: course.image == null
                 ? null
                 : ImageWidget(
-                    MemoryImage(entry.key.t2!),
+                    MemoryImage(course.image!),
                     height: 50,
                     width: 50,
                   ),
@@ -102,35 +97,42 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    !entry.value
-                        ? 'Möchtest du dem Kurs "${entry.key.t1.name}" wirklich beitreten?'
-                        : 'Möchtest du den Kurs ${entry.key.t1.name} wirklich verlassen?',
+                    !entered
+                        ? 'Möchtest du dem Kurs "${course.course.name}" wirklich beitreten?'
+                        : 'Möchtest du den Kurs ${course.course.name} wirklich verlassen?',
                   ),
                   const SizedBox(height: 10),
                   ElevatedButtonWidget(
-                    !entry.value ? 'Beitreten' : 'Verlassen',
+                    !entered ? 'Beitreten' : 'Verlassen',
                     onPressed: () async {
-                      if (entry.value) {
+                      if (entered) {
                         await CourseRepository.leaveCourse(
-                          entry.key.t1,
+                          course.course,
                           UserRepository.currentUser,
                         );
-                        entry.key.t1.userUIDS
+                        course.course.userUIDS
                             .remove(UserRepository.currentUser!.uid);
                       } else {
                         await CourseRepository.enterCourse(
-                          entry.key.t1,
+                          course.course,
                           UserRepository.currentUser,
                         );
-                        entry.key.t1.userUIDS
+                        course.course.userUIDS
                             .add(UserRepository.currentUser!.uid);
                       }
 
-                      courses![entry.key] = !entry.value;
+                      if (entered) {
+                        enteredCourses!.remove(course);
+                        notEnteredCourses!.add(course);
+                      } else {
+                        enteredCourses!.add(course);
+                        notEnteredCourses!.remove(course);
+                      }
+
                       setState(() {});
                       Navigation.pop();
                     },
-                    backgroundColor: !entry.value
+                    backgroundColor: !entered
                         ? context.theme.primaryColor
                         : context.colorScheme.error,
                   ),

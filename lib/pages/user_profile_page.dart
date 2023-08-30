@@ -82,11 +82,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
         const SizedBox(height: 40),
         Text('Statistics', style: context.textTheme.bodyMedium),
-        const SizedBox(height: 40),
+        const SizedBox(height: 20),
         ProfileUserStatsGraph(
           loader: UserRepository.getWorkoutDatesStatistics(),
         ),
-        const SizedBox(height: 40),
+        const SizedBox(height: 30),
         Text('Settings', style: context.textTheme.bodyMedium),
         const SizedBox(height: 20),
         ListTileWidget(

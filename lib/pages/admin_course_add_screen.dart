@@ -2,14 +2,15 @@ import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/src/course.dart';
+import 'package:fitnessapp/models_ui/course_ui.dart';
 import 'package:fitnessapp/pages/admin_course_delete_popup.dart';
-import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/pages/admin_home_screen.dart';
 import 'package:fitnessapp/widgets/upload_file.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class AdminCourseAddScreen extends StatefulWidget {
-  final MapEntry<Course, Uint8List?>? entry;
+  final CourseUI? entry;
   const AdminCourseAddScreen({
     this.entry,
     super.key,
@@ -30,14 +31,14 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
   @override
   void initState() {
     super.initState();
-    imageFile = widget.entry?.value;
+    imageFile = widget.entry?.image;
 
-    nameBloc = TextFieldController.name(text: widget.entry?.key.name ?? '');
+    nameBloc = TextFieldController.name(text: widget.entry?.course.name ?? '');
     descriptionBloc = TextFieldController(
       'Description',
-      text: widget.entry?.key.description ?? '',
+      text: widget.entry?.course.description ?? '',
     );
-    selectedDate = widget.entry?.key.date ?? DateTime.now();
+    selectedDate = widget.entry?.course.date ?? DateTime.now();
   }
 
   Widget saveCourseButton() => Expanded(
@@ -68,10 +69,10 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
             }
             // generate id, for storage and firestore
             String id;
-            if (widget.entry?.key == null) {
+            if (widget.entry?.course == null) {
               id = CourseRepository.genId();
             } else {
-              id = widget.entry!.key.uid;
+              id = widget.entry!.course.uid;
             }
 
             try {
@@ -80,7 +81,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
                 name: nameBloc.text,
                 description: descriptionBloc.text,
                 date: selectedDate,
-                userUIDS: widget.entry?.key.userUIDS ?? [],
+                userUIDS: widget.entry?.course.userUIDS ?? [],
                 imageURL: await CourseRepository.uploadCourseImage(
                   id,
                   imageFile!,
@@ -88,7 +89,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
               );
               await CourseRepository.uploadCourse(course);
               return Navigation.flush(
-                widget: const HomeScreen(initialIndex: 0),
+                widget: const AdminHomeScreen(initialIndex: 0),
               );
             } catch (e) {
               Toast.info(
@@ -126,7 +127,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
         child: Row(
           children: [
             const SizedBox(width: 30),
-            if (widget.entry?.key != null) deleteCourseButton(),
+            if (widget.entry?.course != null) deleteCourseButton(),
             saveCourseButton(),
             const SizedBox(width: 30),
           ],

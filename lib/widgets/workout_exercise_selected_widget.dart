@@ -1,14 +1,13 @@
-import 'dart:typed_data';
-
-import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/workout_exercise_type.dart';
+import 'package:fitnessapp/models_ui/exercise_ui.dart';
+import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class WorkoutExerciseSelectedWidget extends StatefulWidget {
-  final Tripple<Exercise, WorkoutExercise, Uint8List?> entry;
-  final List<Tripple<Exercise, WorkoutExercise, Uint8List?>> exercisesSel;
-  final List<Tupel<Exercise, Uint8List?>> exercisesOth;
+  final WorkoutExerciseUI entry;
+  final List<WorkoutExerciseUI> exercisesSel;
+  final List<ExerciseUI> exercisesOth;
   const WorkoutExerciseSelectedWidget({
     required this.entry,
     required this.exercisesSel,
@@ -36,71 +35,76 @@ class _WorkoutExerciseSelectedWidgetState
   }
 
   void initControllers() {
-    if (widget.entry.b.type is WorkoutExerciseTypeDuration) {
+    if (widget.entry.workoutExercise.type is WorkoutExerciseTypeDuration) {
       durMintesController = TextFieldController.number(
         labelText: 'Minutes',
-        text:
-            (widget.entry.b.type as WorkoutExerciseTypeDuration).min.toString(),
+        text: (widget.entry.workoutExercise.type as WorkoutExerciseTypeDuration)
+            .min
+            .toString(),
       )
         ..addListener(() {
-          (widget.entry.b.type as WorkoutExerciseTypeDuration).min =
-              durMintesController?.text ?? '';
+          (widget.entry.workoutExercise.type as WorkoutExerciseTypeDuration)
+              .min = durMintesController?.text ?? '';
         })
         ..selectionToEnd();
       durSecController = TextFieldController.number(
         labelText: 'Seconds',
-        text:
-            (widget.entry.b.type as WorkoutExerciseTypeDuration).sec.toString(),
+        text: (widget.entry.workoutExercise.type as WorkoutExerciseTypeDuration)
+            .sec
+            .toString(),
       )
         ..addListener(() {
-          (widget.entry.b.type as WorkoutExerciseTypeDuration).sec =
-              durSecController?.text ?? '';
+          (widget.entry.workoutExercise.type as WorkoutExerciseTypeDuration)
+              .sec = durSecController?.text ?? '';
         })
         ..selectionToEnd();
       durWeightController = TextFieldController.number(
         labelText: 'Weights',
-        text: (widget.entry.b.type as WorkoutExerciseTypeDuration)
+        text: (widget.entry.workoutExercise.type as WorkoutExerciseTypeDuration)
             .weights
             .toString(),
       )
         ..addListener(() {
-          (widget.entry.b.type as WorkoutExerciseTypeDuration).weights =
-              durWeightController?.text ?? '';
+          (widget.entry.workoutExercise.type as WorkoutExerciseTypeDuration)
+              .weights = durWeightController?.text ?? '';
         })
         ..selectionToEnd();
     }
-    if (widget.entry.b.type is WorkoutExerciseTypeRepetition) {
+    if (widget.entry.workoutExercise.type is WorkoutExerciseTypeRepetition) {
       repSetsController = TextFieldController.number(
         labelText: 'Sets',
-        text: (widget.entry.b.type as WorkoutExerciseTypeRepetition)
-            .sets
-            .toString(),
+        text:
+            (widget.entry.workoutExercise.type as WorkoutExerciseTypeRepetition)
+                .sets
+                .toString(),
       )
         ..addListener(() {
-          (widget.entry.b.type as WorkoutExerciseTypeRepetition).sets =
-              repSetsController?.text ?? '';
+          (widget.entry.workoutExercise.type as WorkoutExerciseTypeRepetition)
+              .sets = repSetsController?.text ?? '';
         })
         ..selectionToEnd();
       repRepsController = TextFieldController.number(
         labelText: 'Reps',
-        text: (widget.entry.b.type as WorkoutExerciseTypeRepetition)
-            .reps
-            .toString(),
+        text:
+            (widget.entry.workoutExercise.type as WorkoutExerciseTypeRepetition)
+                .reps
+                .toString(),
       )
         ..addListener(() {
-          (widget.entry.b.type as WorkoutExerciseTypeRepetition).reps =
-              repRepsController?.text ?? '';
+          (widget.entry.workoutExercise.type as WorkoutExerciseTypeRepetition)
+              .reps = repRepsController?.text ?? '';
         })
         ..selectionToEnd();
       repWeightController = TextFieldController.number(
         labelText: 'Weights',
-        text: (widget.entry.b.type as WorkoutExerciseTypeRepetition)
-            .weights
-            .toString(),
+        text:
+            (widget.entry.workoutExercise.type as WorkoutExerciseTypeRepetition)
+                .weights
+                .toString(),
       )
         ..addListener(() {
-          (widget.entry.b.type as WorkoutExerciseTypeRepetition).weights =
-              repWeightController?.text ?? '';
+          (widget.entry.workoutExercise.type as WorkoutExerciseTypeRepetition)
+              .weights = repWeightController?.text ?? '';
         })
         ..selectionToEnd();
     }
@@ -115,22 +119,25 @@ class _WorkoutExerciseSelectedWidgetState
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             TextWidget(
-              '${widget.entry.b.type is WorkoutExerciseTypeDuration ? 'Duration' : 'Repetition'} Exercise - ',
+              '${widget.entry.workoutExercise.type is WorkoutExerciseTypeDuration ? 'Duration' : 'Repetition'} Exercise - ',
               style: context.textTheme.labelMedium,
             ),
             TextButtonWidget(
               'Change',
               onPressed: () {
                 // change exercise type
-                if (widget.entry.b.type is WorkoutExerciseTypeDuration) {
-                  widget.entry.b.type = WorkoutExerciseTypeRepetition(
+                if (widget.entry.workoutExercise.type
+                    is WorkoutExerciseTypeDuration) {
+                  widget.entry.workoutExercise.type =
+                      WorkoutExerciseTypeRepetition(
                     '0',
                     '0',
                     '0',
                   );
-                } else if (widget.entry.b.type
+                } else if (widget.entry.workoutExercise.type
                     is WorkoutExerciseTypeRepetition) {
-                  widget.entry.b.type = WorkoutExerciseTypeDuration(
+                  widget.entry.workoutExercise.type =
+                      WorkoutExerciseTypeDuration(
                     '0',
                     '0',
                     '0',
@@ -146,23 +153,30 @@ class _WorkoutExerciseSelectedWidgetState
         ListTileWidget(
           padding: const EdgeInsets.fromLTRB(20, 20, 10, 20),
           contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-          title: widget.entry.a.name,
-          leading: widget.entry.c == null
-              ? null
-              : ImageWidget(
-                  MemoryImage(widget.entry.c!),
-                  height: 40,
-                  width: 40,
-                ),
-          subtitle: widget.entry.a.description,
+          title: widget.entry.exerciseUI.exercise.name,
+          leading: ImageWidget(
+            widget.entry.exerciseUI.image == null
+                ? null
+                : MemoryImage(widget.entry.exerciseUI.image!),
+            height: 40,
+            width: 40,
+          ),
+          subtitle: widget.entry.exerciseUI.exercise.description,
           trailing: IconButtonWidget(
             Icons.delete_rounded,
             foregroundColor: context.colorScheme.error,
             onPressed: () {
               widget.exercisesSel.removeWhere(
-                (e) => e.a.uid == widget.entry.a.uid,
+                (e) =>
+                    e.exerciseUI.exercise.uid ==
+                    widget.entry.exerciseUI.exercise.uid,
               );
-              widget.exercisesOth.add(Tupel(widget.entry.a, widget.entry.c));
+              widget.exercisesOth.add(
+                ExerciseUI(
+                  widget.entry.exerciseUI.exercise,
+                  widget.entry.exerciseUI.image,
+                ),
+              );
               setState(() {});
             },
           ),
@@ -170,7 +184,8 @@ class _WorkoutExerciseSelectedWidgetState
         const SizedBox(height: 10),
         Row(
           children: [
-            if (widget.entry.b.type is WorkoutExerciseTypeDuration) ...[
+            if (widget.entry.workoutExercise.type
+                is WorkoutExerciseTypeDuration) ...[
               Expanded(
                 child: TextFieldWidget(controller: durMintesController),
               ),
@@ -182,7 +197,7 @@ class _WorkoutExerciseSelectedWidgetState
               Expanded(
                 child: TextFieldWidget(controller: durWeightController),
               ),
-            ] else if (widget.entry.b.type
+            ] else if (widget.entry.workoutExercise.type
                 is WorkoutExerciseTypeRepetition) ...[
               Expanded(
                 child: TextFieldWidget(controller: repSetsController),

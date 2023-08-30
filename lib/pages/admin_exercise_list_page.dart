@@ -1,7 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/models_ui/exercise_ui.dart';
 import 'package:fitnessapp/pages/admin_exercise_add_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -14,7 +13,7 @@ class AdminExerciseListPage extends StatefulWidget {
 }
 
 class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
-  List<Tupel<Exercise, Uint8List?>>? exercises;
+  List<ExerciseUI>? exercises;
 
   @override
   void initState() {
@@ -27,7 +26,7 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
     for (Exercise exercise in exerciseList) {
       if (!mounted) return;
       var image = await ExerciseRepository.getExerciseImage(exercise);
-      (exercises ??= []).add(Tupel(exercise, image));
+      (exercises ??= []).add(ExerciseUI(exercise, image));
       if (mounted) setState(() {});
     }
   }
@@ -47,24 +46,24 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
       itemCount: exercises!.length,
       padding: const EdgeInsets.all(20).add(context.safeArea),
       itemBuilder: (context, index) {
-        Tupel<Exercise, Uint8List?> exercise = exercises![index];
+        ExerciseUI exercise = exercises![index];
 
         return ListTileWidget(
           margin: const EdgeInsets.only(bottom: 20),
           padding: const EdgeInsets.all(20),
-          title: exercise.t1.name,
-          trailing: exercise.t2 == null
+          title: exercise.exercise.name,
+          trailing: exercise.image == null
               ? null
               : ImageWidget(
-                  MemoryImage(exercise.t2!),
+                  MemoryImage(exercise.image!),
                   height: 40,
                   width: 40,
                 ),
-          subtitle: exercise.t1.description,
+          subtitle: exercise.exercise.description,
           onTap: () => Navigation.push(
             widget: AdminExerciseAddScreen(
-              exercise: exercise.t1,
-              imageFile: exercise.t2,
+              exercise: exercise.exercise,
+              imageFile: exercise.image,
             ),
           ),
         );

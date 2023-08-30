@@ -1,14 +1,14 @@
-import 'dart:typed_data';
-
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/workout_exercise_type.dart';
+import 'package:fitnessapp/models_ui/exercise_ui.dart';
+import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class WorkoutExerciseNotSelectedWidget extends StatelessWidget {
-  final Tupel<Exercise, Uint8List?> entry;
-  final List<Tripple<Exercise, WorkoutExercise, Uint8List?>> exercisesSel;
-  final List<Tupel<Exercise, Uint8List?>> exercisesOth;
+  final ExerciseUI entry;
+  final List<WorkoutExerciseUI> exercisesSel;
+  final List<ExerciseUI> exercisesOth;
   final Function(Function()) setState;
   const WorkoutExerciseNotSelectedWidget({
     required this.entry,
@@ -24,26 +24,28 @@ class WorkoutExerciseNotSelectedWidget extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
       padding: const EdgeInsets.all(20),
       contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-      title: entry.t1.name,
-      leading: entry.t2 == null
+      title: entry.exercise.name,
+      leading: entry.image == null
           ? null
           : ImageWidget(
-              MemoryImage(entry.t2!),
+              MemoryImage(entry.image!),
               height: 40,
               width: 40,
             ),
-      subtitle: entry.t1.description,
+      subtitle: entry.exercise.description,
       onTap: () {
-        exercisesOth.removeWhere((e) => e.t1.uid == entry.t1.uid);
+        exercisesOth.removeWhere((e) => e.exercise.uid == entry.exercise.uid);
         exercisesSel.add(
-          Tripple(
-            entry.t1,
+          WorkoutExerciseUI(
+            ExerciseUI(
+              entry.exercise,
+              entry.image,
+            ),
             WorkoutExercise(
-              exerciseUID: entry.t1.uid,
+              exerciseUID: entry.exercise.uid,
               index: exercisesSel.length,
               type: WorkoutExerciseTypeRepetition('0', '0', '0'),
             ),
-            entry.t2,
           ),
         );
         setState(() {});

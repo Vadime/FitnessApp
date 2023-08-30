@@ -1,6 +1,8 @@
 import 'package:fitnessapp/database/database.dart';
-import 'package:fitnessapp/pages/home_screen.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/pages/admin_home_screen.dart';
 import 'package:fitnessapp/pages/onboarding_screen.dart';
+import 'package:fitnessapp/pages/user_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -34,8 +36,10 @@ void main() {
         opacity: 0.8,
       ),
       themeModeSaver: FirestoreThemeModeSaver(),
-      home: const HomeScreen(),
-      login: const OnboardingScreen(),
+      homeBuilder: (_) => UserRepository.currentUserRole == UserRole.admin
+          ? const AdminHomeScreen()
+          : const UserHomeScreen(),
+      loginBuilder: (_) => const OnboardingScreen(),
       initialize: (BuildContext context) async {
         await Database.initializeApp(
           onMessage: (message) {

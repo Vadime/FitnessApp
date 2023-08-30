@@ -43,7 +43,7 @@ class ExerciseRepository {
           .refFromURL(exercise.imageURL!)
           .getData();
     } catch (e, s) {
-      DatabaseLogging.error(e.toString(), s);
+      Logging.logDetails('Error getting Exercise Image', e, s);
       return null;
     }
   }

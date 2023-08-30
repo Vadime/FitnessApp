@@ -23,6 +23,7 @@ class UserRepository {
         password: password,
       );
       checkAuthenticationState();
+    } on auth.FirebaseAuthException catch (_) {
     } catch (e) {
       throw e.toString().split('] ').last;
     }
@@ -229,6 +230,18 @@ class UserRepository {
           .toList() ??
       [];
 
+  static Future<List<Exercise>> get currentUserCustomExercisesAsFuture async =>
+      (await firestore.FirebaseFirestore.instance
+              .collection('users')
+              .doc(UserRepository.currentUserUID)
+              .collection('exercises')
+              .get())
+          .docs
+          .map(
+            (e) => Exercise.fromJson(e.id, e.data()),
+          )
+          .toList();
+
   static Future<List<Workout>> get currentUserCustomWorkoutsAsFuture async =>
       (await firestore.FirebaseFirestore.instance
               .collection('users')
@@ -267,18 +280,13 @@ class UserRepository {
   }
 
   static Future<void> saveWorkoutStatistics(
-    Workout workout,
-    WorkoutDifficulty difficulty,
+    WorkoutStatistic statistic,
   ) async {
     await firestore.FirebaseFirestore.instance
         .collection('users')
         .doc(UserRepository.currentUserUID)
         .collection('workoutStatistics')
-        .add({
-      'uid': workout.uid,
-      'difficulty': difficulty.name,
-      'date': DateTime.now().formattedDate,
-    });
+        .add(statistic.toJson());
   }
 
   static Future<void> updateUsersWorkout(Workout workout) async {
@@ -318,22 +326,18 @@ class UserRepository {
         .delete();
   }
 
-  static Future<List<DateTime>> getWorkoutDatesStatistics([String? uid]) async {
+  static Future<List<WorkoutStatistic>> getWorkoutDatesStatistics(
+      [String? uid,]) async {
     uid ??= currentUserUID;
     var res = await firestore.FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .collection('workoutStatistics')
         .get();
-    var dates = res.docs
-        .map(
-          (e) => (e.data()['date'] ?? DateTime.now().formattedDate)
-              .toString()
-              .toDateTime(),
-        )
-        .toList();
-    dates.sort((a, b) => a.compareTo(b));
-    return dates;
+    var workouts =
+        res.docs.map((e) => WorkoutStatistic.fromJson(e.id, e.data())).toList();
+    workouts.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    return workouts;
   }
 
   static Future<void> addFavoriteExercise(String exerciseUID) async {
@@ -445,30 +449,21 @@ class UserRepository {
     }
   }
 
-  // signin with phone
-  // static Future<void> verifyPhoneNumber({
-  //   required String phoneNumber,
-  //   required Function(String verificationId) onCodeSent,
-  //   required Function(String verificationId, String smsCode) onCodeCompleted,
-  //   required Function(FirebaseAuthException e) onVerificationFailed,
-  //   required Function(String verificationId) onVerificationCompleted,
-  // }) async {
-  //   try {
-  //     await _authInstance.verifyPhoneNumber(
-  //       phoneNumber: phoneNumber,
-  //       verificationCompleted: (credential) {
-  //         onVerificationCompleted(credential.verificationId);
-  //       },
-  //       verificationFailed: (e) {
-  //         onVerificationFailed(e);
-  //       },
-  //       codeSent: (verificationId, _) {
-  //         onCodeSent(verificationId);
-  //       },
-  //       codeAutoRetrievalTimeout: (_) {},
-  //     );
-  //   } catch (e) {
-  //     throw e.toString().split('] ').last;
-  //   }
-  // }
+  static Future<void> uploadUsersExercise(Exercise exercise) async {
+    await firestore.FirebaseFirestore.instance
+        .collection('users')
+        .doc(UserRepository.currentUserUID)
+        .collection('exercises')
+        .doc(exercise.uid)
+        .set(exercise.toJson());
+  }
+
+  static Future<void> deleteUsersExercise(Exercise exercise) async {
+    await firestore.FirebaseFirestore.instance
+        .collection('users')
+        .doc(UserRepository.currentUserUID)
+        .collection('exercises')
+        .doc(exercise.uid)
+        .delete();
+  }
 }
