@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Push Notifications (1)
 - Phone Update bug fixes (2)
 - Userstatistics (3)
+- Bug fixes and auth error handling (4)
 
 ### Changed
 
