@@ -2,12 +2,12 @@ import 'dart:isolate';
 
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:cloud_functions/cloud_functions.dart' as functions;
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/firebase_analytics.dart' as analytics;
 import 'package:firebase_auth/firebase_auth.dart' as auth;
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_performance/firebase_performance.dart';
+import 'package:firebase_core/firebase_core.dart' as core;
+import 'package:firebase_crashlytics/firebase_crashlytics.dart' as crashlytics;
+import 'package:firebase_messaging/firebase_messaging.dart' as messaging;
+import 'package:firebase_performance/firebase_performance.dart' as performance;
 import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:fitnessapp/database/src/messaging.dart';
 import 'package:fitnessapp/models/models.dart';
@@ -75,10 +75,10 @@ class FirestoreThemeModeSaver extends ThemeModeSaver {
 }
 
 class Database {
-  static FirebaseOptions get _firebaseOptions {
+  static core.FirebaseOptions get _firebaseOptions {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return const FirebaseOptions(
+        return const core.FirebaseOptions(
           apiKey: 'AIzaSyBmU426TVziB9QrtOqwQxcjZEDuH63bfFo',
           appId: '1:534633074686:android:de07d1fedd973d6e317aaf',
           messagingSenderId: '534633074686',
@@ -88,7 +88,7 @@ class Database {
           storageBucket: 'fitnessapp-9dd39.appspot.com',
         );
       case TargetPlatform.iOS:
-        return const FirebaseOptions(
+        return const core.FirebaseOptions(
           apiKey: 'AIzaSyC2ABCt_uX1w_RjDwgkkAMB8K6Lny_sY-E',
           appId: '1:534633074686:ios:c381d0e456202bdc317aaf',
           messagingSenderId: '534633074686',
@@ -123,11 +123,11 @@ class Database {
 
   static Future<void> initializeApp({
     bool useEmulator = false,
-    void Function(RemoteMessage message)? onMessage,
+    void Function(messaging.RemoteMessage message)? onMessage,
   }) async {
     try {
       // initialize firebase app
-      await Firebase.initializeApp(
+      await core.Firebase.initializeApp(
         options: _firebaseOptions,
       );
       await Messaging.init(
@@ -143,19 +143,23 @@ class Database {
         await storage.FirebaseStorage.instance
             .useStorageEmulator('localhost', 9199);
       }
-      await FirebasePerformance.instance.setPerformanceCollectionEnabled(true);
-      await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+      await performance.FirebasePerformance.instance
+          .setPerformanceCollectionEnabled(true);
+      await crashlytics.FirebaseCrashlytics.instance
+          .setCrashlyticsCollectionEnabled(true);
+      FlutterError.onError =
+          crashlytics.FirebaseCrashlytics.instance.recordFlutterError;
       // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
       PlatformDispatcher.instance.onError = (error, stack) {
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: false);
+        crashlytics.FirebaseCrashlytics.instance
+            .recordError(error, stack, fatal: false);
         return true;
       };
 
       Isolate.current.addErrorListener(
         RawReceivePort((pair) async {
           final List<dynamic> errorAndStacktrace = pair;
-          await FirebaseCrashlytics.instance.recordError(
+          await crashlytics.FirebaseCrashlytics.instance.recordError(
             errorAndStacktrace.first,
             errorAndStacktrace.last,
             fatal: false,
@@ -163,7 +167,8 @@ class Database {
         }).sendPort,
       );
 
-      await FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+      await analytics.FirebaseAnalytics.instance
+          .setAnalyticsCollectionEnabled(true);
 
       await auth.FirebaseAuth.instance.currentUser?.reload();
       await UserRepository.checkAuthenticationState();
@@ -180,8 +185,11 @@ class Database {
       if (kIsWeb) {
         auth.FirebaseAuth.instance.setPersistence(auth.Persistence.LOCAL);
       }
-    } on auth.FirebaseAuthException {
+    } on auth.FirebaseAuthException catch (e, s) {
+      Logging.logDetails('FirebaseAuthException setup', e, s);
       UserRepository.signOutCurrentUser();
+    } on core.FirebaseException catch (e, s) {
+      Logging.logDetails('FirebaseException setup', e, s);
     } catch (e, s) {
       Logging.logDetails('Error Database setup', e, s);
     }

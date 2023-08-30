@@ -18,7 +18,6 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Spacer(),
           ImageWidget(
             exercise.exerciseUI.image == null
                 ? null
@@ -41,9 +40,6 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                   'Description',
                   exercise.exerciseUI.exercise.description,
                 ],
-              ),
-              TableRowWidget(
-                cells: ['Type', exercise.workoutExercise.type.toString()],
               ),
               if (exercise.workoutExercise.type
                   is WorkoutExerciseTypeDuration) ...[

@@ -1,5 +1,54 @@
 part of 'database.dart';
 
+extension on auth.FirebaseAuthException {
+  String readable() {
+    switch (code) {
+      case 'invalid-email':
+        return 'Die E-Mail-Adresse ist ungültig.';
+      case 'wrong-password':
+        return 'Das Passwort ist falsch.';
+      case 'user-not-found':
+        return 'Es wurde kein Benutzer mit dieser E-Mail-Adresse gefunden.';
+      case 'user-disabled':
+        return 'Dieser Benutzer wurde deaktiviert.';
+      case 'too-many-requests':
+        return 'Zu viele Anfragen. Versuchen Sie es später erneut.';
+      case 'operation-not-allowed':
+        return 'Diese Operation ist nicht erlaubt.';
+      case 'email-already-in-use':
+        return 'Es existiert bereits ein Benutzer mit dieser E-Mail-Adresse.';
+      case 'weak-password':
+        return 'Das Passwort ist zu schwach.';
+      case 'invalid-phone-number':
+        return 'Die Telefonnummer ist ungültig.';
+      case 'invalid-verification-code':
+        return 'Der Verifizierungscode ist ungültig.';
+      case 'network-request-failed':
+        return 'Netzwerkfehler. Versuchen Sie es später erneut.';
+      default:
+        return 'Ein unbekannter Fehler ist aufgetreten.';
+    }
+  }
+}
+
+// firestore Exceptions
+extension on core.FirebaseException {
+  String readable() {
+    switch (code) {
+      case 'permission-denied':
+        return 'Keine Berechtigung.';
+      case 'unavailable':
+        return 'Nicht verfügbar.';
+      case 'cancelled':
+        return 'Abgebrochen.';
+      case 'unknown':
+        return 'Ein unbekannter Fehler ist aufgetreten.';
+      default:
+        return 'Ein unbekannter Fehler ist aufgetreten.';
+    }
+  }
+}
+
 class UserRepository {
   static auth.FirebaseAuth get _authInstance => auth.FirebaseAuth.instance;
 
@@ -23,10 +72,9 @@ class UserRepository {
         password: password,
       );
       checkAuthenticationState();
-    } on auth.FirebaseAuthException catch (_) {
-    } catch (e) {
-      throw e.toString().split('] ').last;
-    }
+    } on auth.FirebaseAuthException catch (e) {
+      throw e.readable();
+    } catch (_) {}
 
     return currentUser;
   }
@@ -36,19 +84,23 @@ class UserRepository {
     required Function(String verificationId, int? token) onCodeSent,
     required Function(String error) onFailed,
   }) async {
-    await _authInstance.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: (credential) async {
-        await _authInstance.signInWithCredential(credential);
-        checkAuthenticationState();
-      },
-      verificationFailed: (e) {
-        Logging.log(e.toString());
-        onFailed(e.message ?? 'Unknown error');
-      },
-      codeSent: onCodeSent,
-      codeAutoRetrievalTimeout: (_) {},
-    );
+    try {
+      await _authInstance.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (credential) async {
+          await _authInstance.signInWithCredential(credential);
+          checkAuthenticationState();
+        },
+        verificationFailed: (e) {
+          Logging.log(e.toString());
+          onFailed(e.message ?? 'Unknown error');
+        },
+        codeSent: onCodeSent,
+        codeAutoRetrievalTimeout: (_) {},
+      );
+    } on auth.FirebaseAuthException catch (e) {
+      throw e.readable();
+    } catch (_) {}
   }
 
   static Future<void> verifyPhoneCode({
@@ -62,9 +114,9 @@ class UserRepository {
       );
       await _authInstance.signInWithCredential(credential);
       checkAuthenticationState();
-    } catch (e) {
-      throw e.toString().split('] ').last;
-    }
+    } on auth.FirebaseAuthException catch (e) {
+      throw e.readable();
+    } catch (_) {}
   }
 
   // registriert den User
@@ -84,9 +136,10 @@ class UserRepository {
       // auf fehler von firebase function prüfen
       if (value.data['error'] != null) throw Exception(value.data['error']);
       checkAuthenticationState();
-    } catch (e) {
-      throw e.toString().split('] ').last;
-    }
+    } on auth.FirebaseAuthException catch (e) {
+      throw e.readable();
+    } catch (_) {}
+
     return currentUser;
   }
 
@@ -96,9 +149,9 @@ class UserRepository {
   }) async {
     try {
       return await _authInstance.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      throw e.toString().split('] ').last;
-    }
+    } on auth.FirebaseAuthException catch (e) {
+      throw e.readable();
+    } catch (_) {}
   }
 
   // macht die role zum lesbaren String
@@ -188,9 +241,9 @@ class UserRepository {
       }
       await _authInstance.currentUser?.updateDisplayName(displayName);
       await _authInstance.currentUser?.reload();
-    } catch (e) {
-      throw e.toString().split('] ').last;
-    }
+    } on auth.FirebaseAuthException catch (e) {
+      throw e.readable();
+    } catch (_) {}
   }
 
   // aktualisiert imageURL
@@ -326,8 +379,9 @@ class UserRepository {
         .delete();
   }
 
-  static Future<List<WorkoutStatistic>> getWorkoutDatesStatistics(
-      [String? uid,]) async {
+  static Future<List<WorkoutStatistic>> getWorkoutDatesStatistics([
+    String? uid,
+  ]) async {
     uid ??= currentUserUID;
     var res = await firestore.FirebaseFirestore.instance
         .collection('users')

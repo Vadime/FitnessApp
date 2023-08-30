@@ -29,7 +29,7 @@ class UserWorkoutDeletePopup extends StatelessWidget {
         const SizedBox(height: 20),
         ElevatedButtonWidget(
           'Delete',
-          backgroundColor: context.colorScheme.error,
+          backgroundColor: context.config.errorColor,
           onPressed: () async {
             if (widget.workout != null) {
               UserRepository.deleteUserWorkout(widget.workout!);

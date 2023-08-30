@@ -6,19 +6,30 @@ class ExerciseRepository {
           firestore.FirebaseFirestore.instance.collection('exercises');
 
   static Future<List<Exercise>> getExercises() async {
-    var doc = await firestore.FirebaseFirestore.instance
-        .collection('exercises')
-        .get();
-    return doc.docs.map((e) => Exercise.fromJson(e.id, e.data())).toList();
+    try {
+      var doc = await firestore.FirebaseFirestore.instance
+          .collection('exercises')
+          .get();
+
+      return doc.docs.map((e) => Exercise.fromJson(e.id, e.data())).toList();
+    } on core.FirebaseException catch (e, s) {
+      Logging.logDetails(e.readable(), e, s);
+    } catch (_) {}
+    return [];
   }
 
   static Future<Exercise> getExercise(String uid) async {
-    var doc = await firestore.FirebaseFirestore.instance
-        .collection('exercises')
-        .doc(uid)
-        .get();
-    if (doc.data() == null) throw 'Exercise not found';
-    return Exercise.fromJson(doc.id, doc.data()!);
+    try {
+      var doc = await firestore.FirebaseFirestore.instance
+          .collection('exercises')
+          .doc(uid)
+          .get();
+      if (doc.data() == null) throw 'Exercise not found';
+      return Exercise.fromJson(doc.id, doc.data()!);
+    } on core.FirebaseException catch (e, s) {
+      Logging.logDetails(e.readable(), e, s);
+    } catch (_) {}
+    return Exercise.emptyExercise;
   }
 
   static Future<void> uploadExercise(Exercise exercise) async {
@@ -29,11 +40,16 @@ class ExerciseRepository {
     String exerciseUID,
     Uint8List imageFile,
   ) async {
-    return await (await storage.FirebaseStorage.instance
-            .ref('exercises/$exerciseUID')
-            .putData(imageFile))
-        .ref
-        .getDownloadURL();
+    try {
+      return await (await storage.FirebaseStorage.instance
+              .ref('exercises/$exerciseUID')
+              .putData(imageFile))
+          .ref
+          .getDownloadURL();
+    } on core.FirebaseException catch (e, s) {
+      Logging.logDetails(e.readable(), e, s);
+    } catch (_) {}
+    return '';
   }
 
   static Future<Uint8List?> getExerciseImage(Exercise exercise) async {

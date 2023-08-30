@@ -42,7 +42,7 @@ class _UserWorkoutInProgressScreenState
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                 child: LinearProgressWidget(
                   stepValue * currentPageIndex + stepValue,
                 ),

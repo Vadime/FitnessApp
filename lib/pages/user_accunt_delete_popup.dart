@@ -34,14 +34,14 @@ class _UserAccountDeletePopupState extends State<UserAccountDeletePopup> {
             error,
             textAlign: TextAlign.center,
             style: context.textTheme.labelSmall!.copyWith(
-              color: context.colorScheme.error,
+              color: context.config.errorColor,
               fontSize: 10,
             ),
           ),
         const SizedBox(height: 10),
         ElevatedButtonWidget(
           'Delete',
-          backgroundColor: context.colorScheme.error,
+          backgroundColor: context.config.errorColor,
           onPressed: () async {
             try {
               await UserRepository.deleteUser(passwordBloc.text);

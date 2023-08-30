@@ -1,6 +1,6 @@
 import 'package:fitnessapp/database/database.dart';
-import 'package:fitnessapp/pages/admin_workout_add_screen.dart';
 import 'package:fitnessapp/pages/admin_home_screen.dart';
+import 'package:fitnessapp/pages/admin_workout_add_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -29,7 +29,7 @@ class AdminWorkoutDeletePopup extends StatelessWidget {
         const SizedBox(height: 20),
         ElevatedButtonWidget(
           'Delete',
-          backgroundColor: context.colorScheme.error,
+          backgroundColor: context.config.errorColor,
           onPressed: () async {
             if (widget.workout != null) {
               await WorkoutRepository.deleteWorkout(widget.workout!);

@@ -80,7 +80,7 @@ class AdminProfilePage extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           trailing: Icon(
             Icons.logout_rounded,
-            color: context.colorScheme.error,
+            color: context.config.errorColor,
           ),
           // sign out user from firebase auth
           onTap: () => UserRepository.signOutCurrentUser(),

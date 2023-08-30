@@ -134,7 +134,7 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
                     },
                     backgroundColor: !entered
                         ? context.theme.primaryColor
-                        : context.colorScheme.error,
+                        : context.config.errorColor,
                   ),
                 ],
               ),

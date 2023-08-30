@@ -145,7 +145,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
           padding: const EdgeInsets.all(20),
           trailing: Icon(
             Icons.delete_rounded,
-            color: context.colorScheme.error,
+            color: context.config.errorColor,
           ),
           onTap: () {
             // delete user from firebase auth
