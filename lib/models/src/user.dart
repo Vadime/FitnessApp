@@ -52,7 +52,7 @@ class ContactMethod {
       : this(value: phone, type: ContactType.phone);
   const ContactMethod.unknown() : this(value: '-', type: ContactType.unknown);
 
-  get name => type.str;
+  String get name => type.str;
 
   factory ContactMethod.fromJson(Map<Object?, Object?> json) => ContactMethod(
         value: json['value'].toString(),

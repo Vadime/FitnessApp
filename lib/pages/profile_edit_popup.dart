@@ -70,8 +70,13 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                     controller: nameBloc,
                     autofocus: true,
                   ),
+                  // only enable to change contactInfo if it is an Email one
+                  // because phone number updates needs a verification code
+                  // can be done in the future
                   TextFieldWidget(
                     controller: contactBloc,
+                    enabled: UserRepository.currentUserContact?.type ==
+                        ContactType.email,
                   ),
                 ],
               ),
@@ -101,7 +106,9 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
             try {
               await UserRepository.updateCurrentUserProfile(
                 displayName: nameBloc.text,
-                email: contactBloc.text,
+                contactType: UserRepository.currentUserContact?.type ??
+                    ContactType.unknown,
+                contactValue: contactBloc.text,
               );
             } catch (e) {
               return Toast.info(e.toString(), context: context);

@@ -53,8 +53,8 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                 try {
                   await UserRepository.addFriendByEmail(emailController.text);
                   Navigation.flush(widget: const HomeScreen(initialIndex: 3));
-                } catch (e) {
-                  Logging.log(e);
+                } catch (e, s) {
+                  Logging.logDetails('', e, s);
                   Toast.info(e.toString(), context: context);
                   return;
                 }
@@ -70,8 +70,8 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                 try {
                   await UserRepository.addFriendByPhone(phoneController.text);
                   Navigation.flush(widget: const HomeScreen(initialIndex: 3));
-                } catch (e) {
-                  Logging.log(e);
+                } catch (e, s) {
+                  Logging.logDetails('', e, s);
                   Toast.info(e.toString(), context: context);
                   return;
                 }

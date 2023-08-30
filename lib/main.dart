@@ -33,6 +33,7 @@ void main() {
         padding: 20,
         opacity: 0.8,
       ),
+      themeModeSaver: FirestoreThemeModeSaver(),
       home: const HomeScreen(),
       login: const OnboardingScreen(),
       initialize: (BuildContext context) async {

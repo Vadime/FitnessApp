@@ -38,6 +38,30 @@ extension StringExtension on DateTime {
   }
 }
 
+class FirestoreThemeModeSaver extends ThemeModeSaver {
+  @override
+  Future<ThemeMode?> load(String key) async {
+    var snap = await firestore.FirebaseFirestore.instance
+        .collection('users')
+        .doc(UserRepository.currentUserUID)
+        .get();
+    return ThemeMode.values[snap.data()?[key] ?? 0];
+  }
+
+  @override
+  Future<void> save(String key, ThemeMode mode) async {
+    await firestore.FirebaseFirestore.instance
+        .collection('users')
+        .doc(UserRepository.currentUserUID)
+        .set(
+      {
+        key: mode.index,
+      },
+      firestore.SetOptions(mergeFields: [key]),
+    );
+  }
+}
+
 class Database {
   static FirebaseOptions get _firebaseOptions {
     switch (defaultTargetPlatform) {

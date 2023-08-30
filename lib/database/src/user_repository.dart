@@ -178,10 +178,13 @@ class UserRepository {
   // aktualisiert den displayName und die email
   static Future<void> updateCurrentUserProfile({
     required String? displayName,
-    required String email,
+    required ContactType contactType,
+    required String contactValue,
   }) async {
     try {
-      await _authInstance.currentUser?.updateEmail(email);
+      if (contactType == ContactType.email) {
+        await _authInstance.currentUser?.updateEmail(contactValue);
+      }
       await _authInstance.currentUser?.updateDisplayName(displayName);
       await _authInstance.currentUser?.reload();
     } catch (e) {
@@ -387,9 +390,12 @@ class UserRepository {
     await firestore.FirebaseFirestore.instance
         .collection('users')
         .doc(UserRepository.currentUserUID)
-        .update({
-      'friends': firestore.FieldValue.arrayUnion([friend.uid]),
-    });
+        .set(
+      {
+        'friends': firestore.FieldValue.arrayUnion([friend.uid]),
+      },
+      firestore.SetOptions(mergeFields: ['friends']),
+    );
   }
 
   static Future<void> removeFriend(Friend friend) async {
@@ -428,23 +434,6 @@ class UserRepository {
     }
 
     return friends;
-  }
-
-  static Future<ThemeMode> getThemeMode() async {
-    var snap = await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .get();
-    return ThemeMode.values[snap.data()?['themeMode'] ?? 0];
-  }
-
-  static Future<void> updateThemeMode(ThemeMode mode) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .update({
-      'themeMode': mode.index,
-    });
   }
 
   static Future<void> checkAuthenticationState() async {

@@ -20,8 +20,8 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Spacer(),
-          Image(
-            image: MemoryImage(exercise.value!),
+          ImageWidget(
+            MemoryImage(exercise.value!),
             height: 200,
           ),
           const Expanded(child: SizedBox(height: 20)),
