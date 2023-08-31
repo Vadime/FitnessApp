@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Userstatistics (3)
 - Bug fixes and auth error handling (4)
 - Bug fixes and general error handling (5)
+- Toast witout context and phone number update feature (6)
 
 ### Changed
 

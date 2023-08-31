@@ -25,32 +25,38 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
     return ListView(
       padding: const EdgeInsets.all(20).add(context.safeArea),
       children: [
-        if (enteredCourses != null) ...[
-          const TextWidget(
-            'Deine Kurse',
-            margin: EdgeInsets.symmetric(vertical: 10),
-          ),
-          if (enteredCourses!.isEmpty)
-            const SizedBox(
-              height: 100,
-              child: FailWidget('Du nimmst an keinen Kursen teil'),
-            )
-          else
-            for (var entry in enteredCourses!) courseListTile(entry, true),
-        ],
-        if (enteredCourses != null) ...[
-          const TextWidget(
-            'Weitere Kurse',
-            margin: EdgeInsets.symmetric(vertical: 10),
-          ),
-          if (notEnteredCourses!.isEmpty)
-            const SizedBox(
-              height: 100,
-              child: FailWidget('Keine weiteren Kurse gefunden'),
-            )
-          else
-            for (var entry in notEnteredCourses!) courseListTile(entry, false),
-        ],
+        const TextWidget(
+          'Deine Kurse',
+          margin: EdgeInsets.symmetric(vertical: 10),
+        ),
+        if (enteredCourses == null)
+          const SizedBox(
+            height: 100,
+            child: LoadingWidget(),
+          )
+        else if (enteredCourses!.isEmpty)
+          const SizedBox(
+            height: 100,
+            child: FailWidget('Du nimmst an keinen Kursen teil'),
+          )
+        else
+          for (var entry in enteredCourses!) courseListTile(entry, true),
+        const TextWidget(
+          'Weitere Kurse',
+          margin: EdgeInsets.symmetric(vertical: 10),
+        ),
+        if (enteredCourses == null)
+          const SizedBox(
+            height: 100,
+            child: LoadingWidget(),
+          )
+        else if (notEnteredCourses!.isEmpty)
+          const SizedBox(
+            height: 100,
+            child: FailWidget('Keine weiteren Kurse gefunden'),
+          )
+        else
+          for (var entry in notEnteredCourses!) courseListTile(entry, false),
       ],
     );
   }

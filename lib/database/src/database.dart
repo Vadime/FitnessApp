@@ -120,16 +120,13 @@ class Database {
 
   static Future<void> initializeApp({
     bool useEmulator = false,
-    void Function(messaging.RemoteMessage message)? onMessage,
   }) async {
     try {
       // initialize firebase app
       await core.Firebase.initializeApp(
         options: _firebaseOptions,
       );
-      await Messaging.init(
-        onMessage: onMessage,
-      );
+      await Messaging.init();
       if (useEmulator) {
         // use the local emulators
         await auth.FirebaseAuth.instance.useAuthEmulator('localhost', 9099);

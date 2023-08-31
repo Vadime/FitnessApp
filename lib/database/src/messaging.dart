@@ -1,14 +1,13 @@
 part of 'database.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(
-    messaging.RemoteMessage message,) async {
+  messaging.RemoteMessage message,
+) async {
   Logging.log('Handling a background message ${message.messageId}');
 }
 
 class Messaging {
-  static Future<void> init({
-    void Function(messaging.RemoteMessage message)? onMessage,
-  }) async {
+  static Future<void> init() async {
     try {
       await messaging.FirebaseMessaging.instance.requestPermission();
       await messaging.FirebaseMessaging.instance.getToken(

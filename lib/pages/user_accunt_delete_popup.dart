@@ -35,7 +35,7 @@ class _UserAccountDeletePopupState extends State<UserAccountDeletePopup> {
             try {
               await UserRepository.deleteUser(passwordBloc.text);
             } catch (e) {
-              return Toast.info(e, context: context);
+              return ToastController().show(e);
             }
           },
         ),

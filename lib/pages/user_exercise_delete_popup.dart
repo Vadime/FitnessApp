@@ -38,7 +38,7 @@ class UserExerciseDeletePopup extends StatelessWidget {
                 );
                 await UserRepository.deleteUsersExercise(widget.exercise!);
               } catch (e) {
-                Toast.info(e, context: context);
+                ToastController().show(e);
                 Navigation.pop();
                 return;
               }

@@ -46,16 +46,14 @@ class _ProfilePasswordChangePopupState
           onPressed: () async {
             // check if there is an error in password
             if (!oldPasswordBloc.isValid()) {
-              return Toast.info(
+              return ToastController().show(
                 oldPasswordBloc.errorText,
-                context: context,
               );
             }
             // check if there is an error in password
             if (!newPasswordBloc.isValid()) {
-              return Toast.info(
+              return ToastController().show(
                 newPasswordBloc.errorText,
-                context: context,
               );
             }
             // check if all fields are filled
@@ -66,7 +64,7 @@ class _ProfilePasswordChangePopupState
               );
               Navigation.pop();
             } catch (e) {
-              return Toast.info(e, context: context);
+              return ToastController().show(e);
             }
           },
         ),

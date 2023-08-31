@@ -36,6 +36,9 @@ String handleException(Object? e, [StackTrace? s]) {
         return 'Der Verifizierungscode ist ungültig.'.log(e, s);
       case 'network-request-failed':
         return 'Netzwerkfehler. Versuchen Sie es später erneut.'.log(e, s);
+      case 'credential-already-in-use':
+        return 'Nutzer mit den selben Anmeldeinformationen existiert bereits.'
+            .log(e, s);
       default:
         return 'Ein unbekannter Fehler ist aufgetreten.'.log(e, s);
     }

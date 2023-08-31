@@ -97,29 +97,25 @@ class _UserExerciseAddScreenState extends State<UserExerciseAddScreen> {
           'Save Exercise',
           onPressed: () async {
             if (!nameBloc.isValid()) {
-              return Toast.info(
+              return ToastController().show(
                 nameBloc.errorText!,
-                context: context,
               );
             }
             if (!descriptionBloc.isValid()) {
-              return Toast.info(
+              return ToastController().show(
                 descriptionBloc.errorText!,
-                context: context,
               );
             }
 
             if (musclesController.state.isEmpty) {
-              return Toast.info(
+              return ToastController().show(
                 'Please select at least one muscle',
-                context: context,
               );
             }
 
             if (imageFile == null) {
-              return Toast.info(
+              return ToastController().show(
                 'Please select an image',
-                context: context,
               );
             }
             // generate id, for storage and firestore
@@ -148,9 +144,8 @@ class _UserExerciseAddScreenState extends State<UserExerciseAddScreen> {
               );
             }).catchError(
               (e) {
-                Toast.info(
+                ToastController().show(
                   'Error ${widget.exercise == null ? 'adding' : 'updating'} exercise: $e',
-                  context: context,
                 );
               },
             );

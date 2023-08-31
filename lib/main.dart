@@ -41,11 +41,7 @@ void main() {
           : const UserHomeScreen(),
       loginBuilder: (_) => const OnboardingScreen(),
       initialize: (BuildContext context) async {
-        await Database.initializeApp(
-          onMessage: (message) {
-            Toast.info(message.notification, context: context);
-          },
-        );
+        await Database.initializeApp();
       },
     ),
   );

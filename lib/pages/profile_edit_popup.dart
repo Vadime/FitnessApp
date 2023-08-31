@@ -56,7 +56,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                   await UserRepository.updateCurrentUserImage(image: image);
                   setState(() {});
                 } catch (e) {
-                  Toast.info(e, context: context);
+                  ToastController().show(e);
                   return;
                 }
               },
@@ -74,8 +74,8 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                   // can be done in the future
                   TextFieldWidget(
                     controller: contactBloc,
-                    enabled: UserRepository.currentUserContact?.type ==
-                        ContactType.email,
+                    // enabled: UserRepository.currentUserContact?.type ==
+                    //     ContactType.email,
                   ),
                 ],
               ),
@@ -88,36 +88,51 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
           onPressed: () async {
             // check if there is an error in email
             if (!contactBloc.isValid()) {
-              return Toast.info(
+              return ToastController().show(
                 contactBloc.errorText!,
-                context: context,
               );
             }
             // check if there is an error in name
             if (!nameBloc.isValid()) {
-              return Toast.info(
+              return ToastController().show(
                 nameBloc.errorText!,
-                context: context,
               );
             }
 
             // update user profile
             try {
-              await UserRepository.updateCurrentUserProfile(
-                displayName: nameBloc.text,
-                contactType: UserRepository.currentUserContact?.type ??
-                    ContactType.unknown,
-                contactValue: contactBloc.text,
-              );
+              await UserRepository.updateCurrentUserName(nameBloc.text);
+              if (UserRepository.currentUserContact?.type ==
+                  ContactType.email) {
+                await UserRepository.updateCurrentUserEmail(contactBloc.text);
+                await UserRepository.reloadCurrentUser();
+                Navigation.flush(
+                  widget: const AdminHomeScreen(
+                    initialIndex: 3,
+                  ),
+                );
+              } else if (UserRepository.currentUserContact?.type ==
+                  ContactType.phone) {
+                await UserRepository.updateCurrentUserPhone(
+                  phoneNumber: contactBloc.text,
+                  onCompletion: () async {
+                    await UserRepository.reloadCurrentUser();
+                    Navigation.flush(
+                      widget: const AdminHomeScreen(
+                        initialIndex: 3,
+                      ),
+                    );
+                  },
+                  onCodeSent: onPhoneVerifyCode,
+                  onFailed: (error) {
+                    contactBloc.emptyAllowed = false;
+                    return ToastController().show(error);
+                  },
+                );
+              }
             } catch (e) {
-              return Toast.info(e, context: context);
+              return ToastController().show(e);
             }
-
-            Navigation.flush(
-              widget: const AdminHomeScreen(
-                initialIndex: 3,
-              ),
-            );
           },
         ),
       ],
@@ -129,5 +144,24 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
     nameBloc.dispose();
     contactBloc.dispose();
     super.dispose();
+  }
+
+  Future<void> onPhoneVerifyCode(verificationId, token) async {
+    Navigation.pushPopup(
+      widget: VerifyPhoneCodeView(
+        verifyPhoneCode: (code) async {
+          await UserRepository.verifyUpdatedPhoneCode(
+            verificationId: verificationId,
+            smsCode: code.text,
+          );
+          await UserRepository.reloadCurrentUser();
+          Navigation.flush(
+            widget: const AdminHomeScreen(
+              initialIndex: 3,
+            ),
+          );
+        },
+      ),
+    );
   }
 }

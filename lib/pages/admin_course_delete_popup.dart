@@ -37,7 +37,7 @@ class AdminCourseDeletePopup extends StatelessWidget {
                 await CourseRepository.deleteCourseImage(widget.entry!.course);
                 await CourseRepository.deleteCourse(widget.entry!.course);
               } catch (e, s) {
-                Toast.info(e, context: context);
+                ToastController().show(e);
                 return;
               }
             }

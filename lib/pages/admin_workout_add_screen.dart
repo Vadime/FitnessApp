@@ -208,15 +208,13 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
         widget.workout != null ? 'Save Workout' : 'Add Workout',
         onPressed: () async {
           if (!nameBloc.isValid()) {
-            return Toast.info(
+            return ToastController().show(
               nameBloc.errorText,
-              context: context,
             );
           }
           if (!descriptionBloc.isValid()) {
-            return Toast.info(
+            return ToastController().show(
               descriptionBloc.errorText ?? 'Invalid description',
-              context: context,
             );
           }
           try {
@@ -238,7 +236,7 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
 
             Navigation.flush(widget: const AdminHomeScreen(initialIndex: 1));
           } catch (e) {
-            Toast.info(e, context: context);
+            ToastController().show(e);
           }
         },
       ),

@@ -56,7 +56,7 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                     widget: const UserHomeScreen(initialIndex: 3),
                   );
                 } catch (e) {
-                  Toast.info(e, context: context);
+                  ToastController().show(e);
                   return;
                 }
               } else {
@@ -74,7 +74,7 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                     widget: const UserHomeScreen(initialIndex: 3),
                   );
                 } catch (e) {
-                  Toast.info(e, context: context);
+                  ToastController().show(e);
                   return;
                 }
               } else {

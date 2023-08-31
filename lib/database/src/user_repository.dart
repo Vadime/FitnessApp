@@ -55,6 +55,21 @@ class UserRepository {
     }
   }
 
+  static Future<void> verifyUpdatedPhoneCode({
+    required String verificationId,
+    required String smsCode,
+  }) async {
+    try {
+      var credential = auth.PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: smsCode,
+      );
+      await authInstance.currentUser?.updatePhoneNumber(credential);
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
+
   // registriert den User
   static Future<User?> createUserWithEmailAndPassword({
     required String email,
@@ -171,17 +186,46 @@ class UserRepository {
     }
   }
 
-  // aktualisiert den displayName und die email
-  static Future<void> updateCurrentUserProfile({
-    required String? displayName,
-    required ContactType contactType,
-    required String contactValue,
+  static Future<void> updateCurrentUserEmail(String email) async {
+    try {
+      await authInstance.currentUser?.updateEmail(email);
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
+
+  static Future<void> updateCurrentUserPhone({
+    required String phoneNumber,
+    required Function(String verificationId, int? token) onCodeSent,
+    required Function() onCompletion,
+    required Function(String error) onFailed,
   }) async {
     try {
-      if (contactType == ContactType.email) {
-        await authInstance.currentUser?.updateEmail(contactValue);
-      }
+      await authInstance.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (credential) async {
+          await authInstance.currentUser?.updatePhoneNumber(credential);
+          await onCompletion();
+        },
+        verificationFailed: (e) => onFailed(handleException(e)),
+        codeSent: onCodeSent,
+        codeAutoRetrievalTimeout: (_) {},
+      );
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
+
+  static Future<void> updateCurrentUserName(String? displayName) async {
+    try {
       await authInstance.currentUser?.updateDisplayName(displayName);
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
+
+  static Future<void> reloadCurrentUser() async {
+    try {
       await authInstance.currentUser?.reload();
     } catch (e, s) {
       throw handleException(e, s);

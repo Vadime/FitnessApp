@@ -31,9 +31,8 @@ class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
           onPressed: () async {
             // check if feedback is empty
             if (_feedbackController.text.isEmpty) {
-              Toast.info(
+              ToastController().show(
                 'Feedback is empty',
-                context: context,
               );
               return;
             }
