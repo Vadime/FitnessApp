@@ -56,11 +56,9 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                     widget: const UserHomeScreen(initialIndex: 3),
                   );
                 } catch (e) {
-                  ToastController().show(e);
+                  emailController.setError(e.toString());
                   return;
                 }
-              } else {
-                emailController.emptyAllowed = false;
               }
             }
 
@@ -74,11 +72,9 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                     widget: const UserHomeScreen(initialIndex: 3),
                   );
                 } catch (e) {
-                  ToastController().show(e);
+                  phoneController.setError(e.toString());
                   return;
                 }
-              } else {
-                phoneController.emptyAllowed = false;
               }
             }
             setState(() {});

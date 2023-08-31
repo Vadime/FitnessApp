@@ -45,17 +45,9 @@ class _ProfilePasswordChangePopupState
           'Change Password',
           onPressed: () async {
             // check if there is an error in password
-            if (!oldPasswordBloc.isValid()) {
-              return ToastController().show(
-                oldPasswordBloc.errorText,
-              );
-            }
+            if (!oldPasswordBloc.isValid()) return;
             // check if there is an error in password
-            if (!newPasswordBloc.isValid()) {
-              return ToastController().show(
-                newPasswordBloc.errorText,
-              );
-            }
+            if (!newPasswordBloc.isValid()) return;
             // check if all fields are filled
             try {
               await UserRepository.updateCurrentUserPassword(
@@ -64,7 +56,7 @@ class _ProfilePasswordChangePopupState
               );
               Navigation.pop();
             } catch (e) {
-              return ToastController().show(e);
+              newPasswordBloc.setError(e.toString());
             }
           },
         ),

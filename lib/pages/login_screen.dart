@@ -33,8 +33,7 @@ class LoginScreen extends StatelessWidget {
           phoneNumber: phone.text,
           onCodeSent: onPhoneVerifyCode,
           onFailed: (error) {
-            phone.emptyAllowed = false;
-            ToastController().show(error);
+            phone.setError(error);
           },
         );
       },

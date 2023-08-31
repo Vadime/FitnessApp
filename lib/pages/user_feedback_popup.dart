@@ -30,12 +30,7 @@ class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
           'Send',
           onPressed: () async {
             // check if feedback is empty
-            if (_feedbackController.text.isEmpty) {
-              ToastController().show(
-                'Feedback is empty',
-              );
-              return;
-            }
+            if (!_feedbackController.isValid()) return;
 
             await FeedbackRepository.addFeedback(
               MyFeedback(

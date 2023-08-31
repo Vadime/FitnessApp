@@ -43,6 +43,7 @@ messaging.FirebaseMessaging get messagingInstance =>
 class FirestoreThemeModeSaver extends ThemeModeSaver {
   @override
   Future<ThemeMode?> load(String key) async {
+    if (UserRepository.currentUser == null) return null;
     try {
       var snap = await firestore.FirebaseFirestore.instance
           .collection('users')
@@ -57,6 +58,7 @@ class FirestoreThemeModeSaver extends ThemeModeSaver {
 
   @override
   Future<void> save(String key, ThemeMode mode) async {
+    if (UserRepository.currentUser == null) return;
     try {
       await firestore.FirebaseFirestore.instance
           .collection('users')

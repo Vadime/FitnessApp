@@ -206,16 +206,8 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
         child: ElevatedButtonWidget(
           widget.workout != null ? 'Save Workout' : 'Add Workout',
           onPressed: () async {
-            if (!nameBloc.isValid()) {
-              return ToastController().show(
-                nameBloc.errorText,
-              );
-            }
-            if (!descriptionBloc.isValid()) {
-              return ToastController().show(
-                descriptionBloc.errorText ?? 'Invalid description',
-              );
-            }
+            if (!nameBloc.isValid()) return;
+            if (!descriptionBloc.isValid()) return;
             try {
               exercisesSel.sort(
                 (a, b) =>

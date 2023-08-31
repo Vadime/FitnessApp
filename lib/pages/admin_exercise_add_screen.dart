@@ -75,27 +75,17 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
               child: ElevatedButtonWidget(
                 'Save Exercise',
                 onPressed: () async {
-                  if (!nameBloc.isValid()) {
-                    return ToastController().show(
-                      nameBloc.errorText!,
-                    );
-                  }
-                  if (!descriptionBloc.isValid()) {
-                    return ToastController().show(
-                      descriptionBloc.errorText!,
-                    );
-                  }
+                  if (!nameBloc.isValid()) return;
+                  if (!descriptionBloc.isValid()) return;
 
                   if (musclesController.state.isEmpty) {
                     return ToastController().show(
-                      'Please select at least one muscle',
+                      'Please select at least one muscle group',
                     );
                   }
 
                   if (imageFile == null) {
-                    return ToastController().show(
-                      'Please select an image',
-                    );
+                    return ToastController().show('Please select an image');
                   }
                   // generate id, for storage and firestore
                   String id;
@@ -117,18 +107,15 @@ class _AdminExerciseAddScreenState extends State<AdminExerciseAddScreen> {
                     ),
                   );
 
-                  await ExerciseRepository.uploadExercise(exercise)
-                      .then((value) {
+                  try {
+                    await ExerciseRepository.uploadExercise(exercise);
                     Navigation.flush(
                       widget: const AdminHomeScreen(initialIndex: 2),
                     );
-                  }).catchError(
-                    (e) {
-                      ToastController().show(
-                        'Error ${widget.exercise == null ? 'adding' : 'updating'} exercise: $e',
-                      );
-                    },
-                  );
+                  } catch (e) {
+                    ToastController().show(e);
+                    return;
+                  }
                 },
               ),
             ),

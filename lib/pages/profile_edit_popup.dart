@@ -87,17 +87,9 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
           'Save Changes',
           onPressed: () async {
             // check if there is an error in email
-            if (!contactBloc.isValid()) {
-              return ToastController().show(
-                contactBloc.errorText!,
-              );
-            }
+            if (!contactBloc.isValid()) return;
             // check if there is an error in name
-            if (!nameBloc.isValid()) {
-              return ToastController().show(
-                nameBloc.errorText!,
-              );
-            }
+            if (!nameBloc.isValid()) return;
 
             // update user profile
             try {
@@ -125,8 +117,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                   },
                   onCodeSent: onPhoneVerifyCode,
                   onFailed: (error) {
-                    contactBloc.emptyAllowed = false;
-                    return ToastController().show(error);
+                    contactBloc.setError(error);
                   },
                 );
               }

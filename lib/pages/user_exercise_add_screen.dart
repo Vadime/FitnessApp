@@ -96,16 +96,8 @@ class _UserExerciseAddScreenState extends State<UserExerciseAddScreen> {
         child: ElevatedButtonWidget(
           'Save Exercise',
           onPressed: () async {
-            if (!nameBloc.isValid()) {
-              return ToastController().show(
-                nameBloc.errorText!,
-              );
-            }
-            if (!descriptionBloc.isValid()) {
-              return ToastController().show(
-                descriptionBloc.errorText!,
-              );
-            }
+            if (!nameBloc.isValid()) return;
+            if (!descriptionBloc.isValid()) return;
 
             if (musclesController.state.isEmpty) {
               return ToastController().show(
@@ -137,18 +129,15 @@ class _UserExerciseAddScreenState extends State<UserExerciseAddScreen> {
                 imageFile!,
               ),
             );
-
-            await UserRepository.uploadUsersExercise(exercise).then((value) {
+            try {
+              await ExerciseRepository.uploadExercise(exercise);
               Navigation.flush(
                 widget: const UserHomeScreen(initialIndex: 2),
               );
-            }).catchError(
-              (e) {
-                ToastController().show(
-                  'Error ${widget.exercise == null ? 'adding' : 'updating'} exercise: $e',
-                );
-              },
-            );
+            } catch (e) {
+              ToastController().show(e);
+              return;
+            }
           },
         ),
       );

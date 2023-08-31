@@ -45,23 +45,11 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
         child: ElevatedButtonWidget(
           'Save Course',
           onPressed: () async {
-            if (!nameBloc.isValid()) {
-              ToastController().show(
-                nameBloc.calcErrorText!,
-              );
-              return;
-            }
-            if (!descriptionBloc.isValid()) {
-              ToastController().show(
-                descriptionBloc.calcErrorText!,
-              );
-              return;
-            }
+            if (!nameBloc.isValid()) return;
+            if (!descriptionBloc.isValid()) return;
 
             if (imageFile == null) {
-              ToastController().show(
-                'Please select an image',
-              );
+              ToastController().show('Please select an image');
               return;
             }
             // generate id, for storage and firestore
