@@ -8,10 +8,12 @@ class WorkoutExerciseSelectedWidget extends StatefulWidget {
   final WorkoutExerciseUI entry;
   final List<WorkoutExerciseUI> exercisesSel;
   final List<ExerciseUI> exercisesOth;
+  final Function(Function()) parentState;
   const WorkoutExerciseSelectedWidget({
     required this.entry,
     required this.exercisesSel,
     required this.exercisesOth,
+    required this.parentState,
     super.key,
   });
 
@@ -177,7 +179,7 @@ class _WorkoutExerciseSelectedWidgetState
                   widget.entry.exerciseUI.image,
                 ),
               );
-              setState(() {});
+              widget.parentState(() {});
             },
           ),
         ),

@@ -13,7 +13,6 @@ class UserAccountDeletePopup extends StatefulWidget {
 class _UserAccountDeletePopupState extends State<UserAccountDeletePopup> {
   TextFieldController passwordBloc = TextFieldController.password();
 
-  String error = '';
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -28,17 +27,7 @@ class _UserAccountDeletePopupState extends State<UserAccountDeletePopup> {
           controller: passwordBloc,
           autofocus: true,
         ),
-        const SizedBox(height: 10),
-        if (error.isNotEmpty)
-          Text(
-            error,
-            textAlign: TextAlign.center,
-            style: context.textTheme.labelSmall!.copyWith(
-              color: context.config.errorColor,
-              fontSize: 10,
-            ),
-          ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
         ElevatedButtonWidget(
           'Delete',
           backgroundColor: context.config.errorColor,
@@ -46,8 +35,7 @@ class _UserAccountDeletePopupState extends State<UserAccountDeletePopup> {
             try {
               await UserRepository.deleteUser(passwordBloc.text);
             } catch (e) {
-              error = e.toString().split('] ').last;
-              setState(() {});
+              return Toast.info(e, context: context);
             }
           },
         ),

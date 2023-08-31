@@ -110,7 +110,7 @@ class BarChartWidgetLegend extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 10),
-            TextWidget(diff.strName),
+            TextWidget(diff.str),
             const SizedBox(width: 10),
           ],
         ],

@@ -12,10 +12,9 @@ class ExerciseRepository {
           .get();
 
       return doc.docs.map((e) => Exercise.fromJson(e.id, e.data())).toList();
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails(e.readable(), e, s);
-    } catch (_) {}
-    return [];
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<Exercise> getExercise(String uid) async {
@@ -26,10 +25,9 @@ class ExerciseRepository {
           .get();
       if (doc.data() == null) throw 'Exercise not found';
       return Exercise.fromJson(doc.id, doc.data()!);
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails(e.readable(), e, s);
-    } catch (_) {}
-    return Exercise.emptyExercise;
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> uploadExercise(Exercise exercise) async {
@@ -46,10 +44,9 @@ class ExerciseRepository {
               .putData(imageFile))
           .ref
           .getDownloadURL();
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails(e.readable(), e, s);
-    } catch (_) {}
-    return '';
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<Uint8List?> getExerciseImage(Exercise exercise) async {
@@ -59,31 +56,42 @@ class ExerciseRepository {
           .refFromURL(exercise.imageURL!)
           .getData();
     } catch (e, s) {
-      Logging.logDetails('Error getting Exercise Image', e, s);
-      return null;
+      throw handleException(e, s);
     }
   }
 
   // Nimm alle Exercises aus einer Collection
-  static Stream<List<Exercise>> get streamExercises => firestore
-      .FirebaseFirestore.instance
-      .collection('exercises')
-      .snapshots()
-      .map(
-        (event) =>
-            event.docs.map((e) => Exercise.fromJson(e.id, e.data())).toList(),
-      );
+  static Stream<List<Exercise>> get streamExercises {
+    try {
+      return firestore.FirebaseFirestore.instance
+          .collection('exercises')
+          .snapshots()
+          .map(
+            (event) => event.docs
+                .map((e) => Exercise.fromJson(e.id, e.data()))
+                .toList(),
+          );
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
 
   static Future<void> deleteExerciseImage(Exercise exercise) async {
-    await storage.FirebaseStorage.instance
-        .refFromURL(
-          exercise.imageURL ?? '',
-        )
-        .delete()
-        .catchError((_) {});
+    if (exercise.imageURL == null) return;
+    try {
+      await storage.FirebaseStorage.instance
+          .refFromURL(exercise.imageURL!)
+          .delete();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> deleteExercise(Exercise exercise) async {
-    await collectionReference.doc(exercise.uid).delete();
+    try {
+      await collectionReference.doc(exercise.uid).delete();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 }

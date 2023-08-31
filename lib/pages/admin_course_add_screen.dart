@@ -92,10 +92,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
                 widget: const AdminHomeScreen(initialIndex: 0),
               );
             } catch (e) {
-              Toast.info(
-                'Error saving course: $e',
-                context: context,
-              );
+              Toast.info(e, context: context);
               return;
             }
           },
@@ -167,7 +164,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
                 const Text('Datum'),
                 const Spacer(),
                 TextButtonWidget(
-                  selectedDate.toDate(),
+                  selectedDate.str,
                   onPressed: () {
                     Navigation.pushDatePicker(
                       firstDate:

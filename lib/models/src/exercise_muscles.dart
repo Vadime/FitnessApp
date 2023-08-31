@@ -1,5 +1,5 @@
 extension ExerciseMusclesExtension on ExerciseMuscles {
-  String get strName {
+  String get str {
     switch (this) {
       case ExerciseMuscles.chest:
         return 'Chest';

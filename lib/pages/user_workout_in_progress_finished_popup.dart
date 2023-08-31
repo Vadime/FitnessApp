@@ -35,7 +35,7 @@ class UserWorkoutInProgressFinishedPopup extends StatelessWidget {
                 .map(
                   (e) => Expanded(
                     child: ElevatedButtonWidget(
-                      e.strName,
+                      e.str,
                       margin: const EdgeInsets.all(5),
                       onPressed: () async {
                         await UserRepository.saveWorkoutStatistics(

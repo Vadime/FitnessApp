@@ -2,12 +2,14 @@ part of 'database.dart';
 
 class DatabaseLogging {
   // log info into firebase
-  static void log(String message) {
+  static void log(dynamic message) {
+    Logging.log(message);
     crashlytics.FirebaseCrashlytics.instance.log(message);
   }
 
   // log error into firebase
   static void error(e, StackTrace s) {
+    Logging.logDetails('', e, s);
     crashlytics.FirebaseCrashlytics.instance.recordError(e, s);
   }
 

@@ -84,7 +84,7 @@ class _UserExerciseAddScreenState extends State<UserExerciseAddScreen> {
             controller: musclesController,
             buttons: [
               for (var type in ExerciseMuscles.values)
-                ButtonData(type.strName, type),
+                ButtonData(type.str, type),
             ],
           ),
         ],

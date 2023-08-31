@@ -7,12 +7,8 @@ class CourseRepository {
       return await storage.FirebaseStorage.instance
           .refFromURL(course.imageURL!)
           .getData();
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails(e.readable(), e, s);
-      return null;
     } catch (e, s) {
-      Logging.logDetails('Error getting Course Image', e, s);
-      return null;
+      throw handleException(e, s);
     }
   }
 
@@ -33,9 +29,9 @@ class CourseRepository {
           'userUIDS': firestore.FieldValue.arrayUnion([user.uid]),
         },
       );
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails(e.readable(), e, s);
-    } catch (_) {}
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> leaveCourse(Course? course, User? user) async {
@@ -49,9 +45,9 @@ class CourseRepository {
           'userUIDS': firestore.FieldValue.arrayRemove([user.uid]),
         },
       );
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails(e.readable(), e, s);
-    } catch (_) {}
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static String genId() =>
@@ -63,9 +59,9 @@ class CourseRepository {
           .collection('courses')
           .doc(course.uid)
           .set(course.toJson());
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails(e.readable(), e, s);
-    } catch (_) {}
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<String?> uploadCourseImage(
@@ -78,34 +74,30 @@ class CourseRepository {
               .putData(imageFile))
           .ref
           .getDownloadURL();
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails(e.readable(), e, s);
-    } catch (_) {}
-    return null;
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> deleteCourseImage(Course course) async {
+    if (course.imageURL == null) return;
     try {
       await storage.FirebaseStorage.instance
-          .refFromURL(
-            course.imageURL ?? '',
-          )
-          .delete()
-          .catchError((_) {});
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails(e.readable(), e, s);
-    } catch (_) {}
+          .refFromURL(course.imageURL!)
+          .delete();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> deleteCourse(Course course) async {
     try {
-      // delete course from database
       await firestore.FirebaseFirestore.instance
           .collection('courses')
           .doc(course.uid)
           .delete();
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails(e.readable(), e, s);
-    } catch (_) {}
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 }

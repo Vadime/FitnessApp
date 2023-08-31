@@ -1,82 +1,21 @@
 part of 'database.dart';
 
-extension on auth.FirebaseAuthException {
-  String readable() {
-    switch (code) {
-      case 'invalid-email':
-        return 'Die E-Mail-Adresse ist ungültig.';
-      case 'wrong-password':
-        return 'Das Passwort ist falsch.';
-      case 'user-not-found':
-        return 'Es wurde kein Benutzer mit dieser E-Mail-Adresse gefunden.';
-      case 'user-disabled':
-        return 'Dieser Benutzer wurde deaktiviert.';
-      case 'too-many-requests':
-        return 'Zu viele Anfragen. Versuchen Sie es später erneut.';
-      case 'operation-not-allowed':
-        return 'Diese Operation ist nicht erlaubt.';
-      case 'email-already-in-use':
-        return 'Es existiert bereits ein Benutzer mit dieser E-Mail-Adresse.';
-      case 'weak-password':
-        return 'Das Passwort ist zu schwach.';
-      case 'invalid-phone-number':
-        return 'Die Telefonnummer ist ungültig.';
-      case 'invalid-verification-code':
-        return 'Der Verifizierungscode ist ungültig.';
-      case 'network-request-failed':
-        return 'Netzwerkfehler. Versuchen Sie es später erneut.';
-      default:
-        return 'Ein unbekannter Fehler ist aufgetreten.';
-    }
-  }
-}
-
-// firestore Exceptions
-extension on core.FirebaseException {
-  String readable() {
-    switch (code) {
-      case 'permission-denied':
-        return 'Keine Berechtigung.';
-      case 'unavailable':
-        return 'Nicht verfügbar.';
-      case 'cancelled':
-        return 'Abgebrochen.';
-      case 'unknown':
-        return 'Ein unbekannter Fehler ist aufgetreten.';
-      default:
-        return 'Ein unbekannter Fehler ist aufgetreten.';
-    }
-  }
-}
-
 class UserRepository {
-  static auth.FirebaseAuth get _authInstance => auth.FirebaseAuth.instance;
-
-  static firestore.FirebaseFirestore get _storeInstance =>
-      firestore.FirebaseFirestore.instance;
-
-  static functions.FirebaseFunctions get _functionsInstance =>
-      functions.FirebaseFunctions.instance;
-
-  static storage.FirebaseStorage get _storageInstance =>
-      storage.FirebaseStorage.instance;
-
   // loggt den User ein
   static Future<User?> signInWithEmailAndPassword({
     required String email,
     required String password,
   }) async {
     try {
-      await _authInstance.signInWithEmailAndPassword(
+      await authInstance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      checkAuthenticationState();
-    } on auth.FirebaseAuthException catch (e) {
-      throw e.readable();
-    } catch (_) {}
-
-    return currentUser;
+      await checkAuthenticationState();
+      return currentUser;
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> loginWithPhoneNumber({
@@ -85,22 +24,19 @@ class UserRepository {
     required Function(String error) onFailed,
   }) async {
     try {
-      await _authInstance.verifyPhoneNumber(
+      await authInstance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (credential) async {
-          await _authInstance.signInWithCredential(credential);
-          checkAuthenticationState();
+          await authInstance.signInWithCredential(credential);
+          await checkAuthenticationState();
         },
-        verificationFailed: (e) {
-          Logging.log(e.toString());
-          onFailed(e.message ?? 'Unknown error');
-        },
+        verificationFailed: (e) => onFailed(handleException(e)),
         codeSent: onCodeSent,
         codeAutoRetrievalTimeout: (_) {},
       );
-    } on auth.FirebaseAuthException catch (e) {
-      throw e.readable();
-    } catch (_) {}
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> verifyPhoneCode({
@@ -112,11 +48,11 @@ class UserRepository {
         verificationId: verificationId,
         smsCode: smsCode,
       );
-      await _authInstance.signInWithCredential(credential);
-      checkAuthenticationState();
-    } on auth.FirebaseAuthException catch (e) {
-      throw e.readable();
-    } catch (_) {}
+      await authInstance.signInWithCredential(credential);
+      await checkAuthenticationState();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   // registriert den User
@@ -125,22 +61,21 @@ class UserRepository {
     required String password,
   }) async {
     try {
-      var cred = await _authInstance.createUserWithEmailAndPassword(
+      var cred = await authInstance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       // firebase function aufrufen um user role zu setzen
-      var value = await _functionsInstance.httpsCallable('addUserRole').call({
+      var value = await functionsInstance.httpsCallable('addUserRole').call({
         'uid': cred.user!.uid,
       });
       // auf fehler von firebase function prüfen
       if (value.data['error'] != null) throw Exception(value.data['error']);
-      checkAuthenticationState();
-    } on auth.FirebaseAuthException catch (e) {
-      throw e.readable();
-    } catch (_) {}
-
-    return currentUser;
+      await checkAuthenticationState();
+      return currentUser;
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   // email senden, um das Passwort zurückzusetzen
@@ -148,10 +83,10 @@ class UserRepository {
     required String email,
   }) async {
     try {
-      return await _authInstance.sendPasswordResetEmail(email: email);
-    } on auth.FirebaseAuthException catch (e) {
-      throw e.readable();
-    } catch (_) {}
+      return await authInstance.sendPasswordResetEmail(email: email);
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   // macht die role zum lesbaren String
@@ -172,9 +107,8 @@ class UserRepository {
 
   // from firebaseauth
   static User? fromFirebaseAuth(auth.User? user) {
-    if (user == null) {
-      return null;
-    }
+    if (user == null) return null;
+
     ContactMethod method;
     if (user.email != null) {
       method = ContactMethod.email(user.email!);
@@ -194,39 +128,47 @@ class UserRepository {
 
   // gibt den aktuellen User zurück
   static User? get currentUser =>
-      UserRepository.fromFirebaseAuth(_authInstance.currentUser);
+      UserRepository.fromFirebaseAuth(authInstance.currentUser);
 
   // gibt displayName zurück
-  static String? get currentUserName => _authInstance.currentUser?.displayName;
+  static String? get currentUserName => authInstance.currentUser?.displayName;
 
   // gibt email zurück
   static ContactMethod? get currentUserContact => currentUser?.contactAdress;
 
   // gibt email zurück
-  static String? get currentUserEmail => _authInstance.currentUser?.email;
+  static String? get currentUserEmail => authInstance.currentUser?.email;
 
   // gibt phone zurück
-  static String? get currentUserPhone => _authInstance.currentUser?.phoneNumber;
+  static String? get currentUserPhone => authInstance.currentUser?.phoneNumber;
 
   // gibt uid zurück
-  static String? get currentUserUID => _authInstance.currentUser?.uid;
+  static String? get currentUserUID => authInstance.currentUser?.uid;
 
   static UserRole? _userRole;
 
   static UserRole? get currentUserRole => _userRole;
 
-  static String? get currentUserImageURL => _authInstance.currentUser?.photoURL;
+  static String? get currentUserImageURL => authInstance.currentUser?.photoURL;
 
   // get claims
   static Future<Map<String, dynamic>> getCurrentUserClaims() async {
-    var res = await _authInstance.currentUser?.getIdTokenResult();
-    return res?.claims ?? {};
+    try {
+      var res = await authInstance.currentUser?.getIdTokenResult();
+      return res?.claims ?? {};
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   // gibt die Rolle des Users zurück
   static Future<void> refreshUserRole() async {
-    var claims = await getCurrentUserClaims();
-    _userRole = roleFromString(claims['role']);
+    try {
+      var claims = await getCurrentUserClaims();
+      _userRole = roleFromString(claims['role']);
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   // aktualisiert den displayName und die email
@@ -237,13 +179,13 @@ class UserRepository {
   }) async {
     try {
       if (contactType == ContactType.email) {
-        await _authInstance.currentUser?.updateEmail(contactValue);
+        await authInstance.currentUser?.updateEmail(contactValue);
       }
-      await _authInstance.currentUser?.updateDisplayName(displayName);
-      await _authInstance.currentUser?.reload();
-    } on auth.FirebaseAuthException catch (e) {
-      throw e.readable();
-    } catch (_) {}
+      await authInstance.currentUser?.updateDisplayName(displayName);
+      await authInstance.currentUser?.reload();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   // aktualisiert imageURL
@@ -251,40 +193,62 @@ class UserRepository {
     required Uint8List image,
   }) async {
     try {
-      String imageRef = 'user/${_authInstance.currentUser?.uid}/profileImage';
-      var snapshot = await _storageInstance.ref(imageRef).putData(image);
+      String imageRef = 'user/${authInstance.currentUser?.uid}/profileImage';
+      var snapshot = await storageInstance.ref(imageRef).putData(image);
       var imageURL = await snapshot.ref.getDownloadURL();
-      await _authInstance.currentUser?.updatePhotoURL(imageURL);
-      await _authInstance.currentUser?.reload();
-    } catch (e) {
-      throw e.toString().split('] ').last;
+      await authInstance.currentUser?.updatePhotoURL(imageURL);
+      await authInstance.currentUser?.reload();
+    } catch (e, s) {
+      throw handleException(e, s);
     }
   }
 
   // loggt den User aus
   static Future<void> signOutCurrentUser() async {
-    await _authInstance.signOut();
-    checkAuthenticationState();
+    try {
+      await authInstance.signOut();
+      await checkAuthenticationState();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
-  static Stream<List<String>> get currentUserFavoriteExercises =>
-      _storeInstance.collection('users').doc(currentUserUID).snapshots().map(
+  static Stream<List<String>> get currentUserFavoriteExercises {
+    try {
+      return storeInstance
+          .collection('users')
+          .doc(currentUserUID)
+          .snapshots()
+          .map(
             (event) =>
                 (event.data()?['favoriteExercises'] as List<dynamic>?)
                     ?.map((e) => e.toString())
                     .toList() ??
                 [],
           );
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
 
-  static Future<List<String>> get currentUserFavoriteExercisesAsFuture async =>
-      ((await _storeInstance.collection('users').doc(currentUserUID).get())
-              .data()?['favoriteExercises'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList() ??
-      [];
+  static Future<List<String>> get currentUserFavoriteExercisesAsFuture async {
+    try {
+      return ((await storeInstance
+                      .collection('users')
+                      .doc(currentUserUID)
+                      .get())
+                  .data()?['favoriteExercises'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [];
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
 
-  static Future<List<Exercise>> get currentUserCustomExercisesAsFuture async =>
-      (await firestore.FirebaseFirestore.instance
+  static Future<List<Exercise>> get currentUserCustomExercisesAsFuture async {
+    try {
+      return (await firestore.FirebaseFirestore.instance
               .collection('users')
               .doc(UserRepository.currentUserUID)
               .collection('exercises')
@@ -294,9 +258,14 @@ class UserRepository {
             (e) => Exercise.fromJson(e.id, e.data()),
           )
           .toList();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
 
-  static Future<List<Workout>> get currentUserCustomWorkoutsAsFuture async =>
-      (await firestore.FirebaseFirestore.instance
+  static Future<List<Workout>> get currentUserCustomWorkoutsAsFuture async {
+    try {
+      return (await firestore.FirebaseFirestore.instance
               .collection('users')
               .doc(UserRepository.currentUserUID)
               .collection('workouts')
@@ -306,218 +275,292 @@ class UserRepository {
             (e) => Workout.fromJson(e.id, e.data()),
           )
           .toList();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
 
   static Future<void> updateCurrentUserPassword(
     String oldPassword,
     String newPassword,
   ) async {
     try {
-      await _authInstance.currentUser?.reauthenticateWithCredential(
+      await authInstance.currentUser?.reauthenticateWithCredential(
         auth.EmailAuthProvider.credential(
           email: currentUserEmail ?? '',
           password: oldPassword,
         ),
       );
-      await _authInstance.currentUser?.updatePassword(newPassword);
-    } catch (e) {
-      throw e.toString().split('] ').last;
+      await authInstance.currentUser?.updatePassword(newPassword);
+    } catch (e, s) {
+      throw handleException(e, s);
     }
   }
 
   static Future<void> copyToPersonalWorkouts(Workout workout) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .collection('workouts')
-        .add(workout.toJson());
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .collection('workouts')
+          .add(workout.toJson());
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> saveWorkoutStatistics(
     WorkoutStatistic statistic,
   ) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .collection('workoutStatistics')
-        .add(statistic.toJson());
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .collection('workoutStatistics')
+          .add(statistic.toJson());
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> updateUsersWorkout(Workout workout) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .collection('workouts')
-        .doc(workout.uid)
-        .update(workout.toJson());
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .collection('workouts')
+          .doc(workout.uid)
+          .update(workout.toJson());
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> addUsersWorkout(Workout workout) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .collection('workouts')
-        .add(workout.toJson());
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .collection('workouts')
+          .add(workout.toJson());
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static deleteUser(String password) async {
-    await auth.FirebaseAuth.instance.currentUser?.reauthenticateWithCredential(
-      auth.EmailAuthProvider.credential(
-        email: currentUserEmail ?? '',
-        password: password,
-      ),
-    );
-    await auth.FirebaseAuth.instance.currentUser?.delete();
-    checkAuthenticationState();
+    try {
+      await auth.FirebaseAuth.instance.currentUser
+          ?.reauthenticateWithCredential(
+        auth.EmailAuthProvider.credential(
+          email: currentUserEmail ?? '',
+          password: password,
+        ),
+      );
+      await auth.FirebaseAuth.instance.currentUser?.delete();
+      await checkAuthenticationState();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> deleteUserWorkout(Workout workout) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .collection('workouts')
-        .doc(workout.uid)
-        .delete();
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .collection('workouts')
+          .doc(workout.uid)
+          .delete();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<List<WorkoutStatistic>> getWorkoutDatesStatistics([
     String? uid,
   ]) async {
-    uid ??= currentUserUID;
-    var res = await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .collection('workoutStatistics')
-        .get();
-    var workouts =
-        res.docs.map((e) => WorkoutStatistic.fromJson(e.id, e.data())).toList();
-    workouts.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-    return workouts;
+    try {
+      uid ??= currentUserUID;
+      var res = await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('workoutStatistics')
+          .get();
+      var workouts = res.docs
+          .map((e) => WorkoutStatistic.fromJson(e.id, e.data()))
+          .toList();
+      workouts.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+      return workouts;
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> addFavoriteExercise(String exerciseUID) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .update({
-      'favoriteExercises': firestore.FieldValue.arrayUnion([exerciseUID]),
-    });
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .update({
+        'favoriteExercises': firestore.FieldValue.arrayUnion([exerciseUID]),
+      });
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> removeFavoriteExercise(String exerciseUID) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .update({
-      'favoriteExercises': firestore.FieldValue.arrayRemove([exerciseUID]),
-    });
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .update({
+        'favoriteExercises': firestore.FieldValue.arrayRemove([exerciseUID]),
+      });
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<Friend> addFriendByEmail(String email) async {
-    Friend? friend = await functions.FirebaseFunctions.instance
-        .httpsCallable('getFriendByEmail')
-        .call({
-          'email': email,
-        })
-        .then((value) => value.data)
-        .then((map) => map == null ? null : Friend.fromJson(map));
+    try {
+      Friend? friend = await functions.FirebaseFunctions.instance
+          .httpsCallable('getFriendByEmail')
+          .call({
+            'email': email,
+          })
+          .then((value) => value.data)
+          .then((map) => map == null ? null : Friend.fromJson(map));
 
-    if (friend == null) throw 'User with $email not found 😢';
+      if (friend == null) throw 'User with $email not found 😢';
 
-    await addFriend(friend);
+      await addFriend(friend);
 
-    return friend;
+      return friend;
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<Friend> addFriendByPhone(String phone) async {
-    Friend? friend = await functions.FirebaseFunctions.instance
-        .httpsCallable('getFriendByPhone')
-        .call({
-          'phone': phone,
-        })
-        .then((value) => value.data)
-        .then((map) => map == null ? null : Friend.fromJson(map));
+    try {
+      Friend? friend = await functions.FirebaseFunctions.instance
+          .httpsCallable('getFriendByPhone')
+          .call({
+            'phone': phone,
+          })
+          .then((value) => value.data)
+          .then((map) => map == null ? null : Friend.fromJson(map));
 
-    if (friend == null) throw 'User with $phone not found 😢';
+      if (friend == null) throw 'User with $phone not found 😢';
 
-    await addFriend(friend);
+      await addFriend(friend);
 
-    return friend;
+      return friend;
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> addFriend(Friend friend) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .set(
-      {
-        'friends': firestore.FieldValue.arrayUnion([friend.uid]),
-      },
-      firestore.SetOptions(mergeFields: ['friends']),
-    );
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .set(
+        {
+          'friends': firestore.FieldValue.arrayUnion([friend.uid]),
+        },
+        firestore.SetOptions(mergeFields: ['friends']),
+      );
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> removeFriend(Friend friend) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .update({
-      'friends': firestore.FieldValue.arrayRemove([friend.uid]),
-    });
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .update({
+        'friends': firestore.FieldValue.arrayRemove([friend.uid]),
+      });
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<List<Friend>> getFriends() async {
-    var friendStrs = (await firestore.FirebaseFirestore.instance
-            .collection('users')
-            .doc(UserRepository.currentUserUID)
-            .get())
-        .data()?['friends'] as List<dynamic>?;
-    Logging.log(friendStrs);
-    if (friendStrs == null) return [];
-    List<Friend> friends = [];
-    for (String uid in friendStrs) {
-      Friend? friend;
-      try {
-        friend = await functions.FirebaseFunctions.instance
-            .httpsCallable('getFriendByUID')
-            .call({
-              'uid': uid,
-            })
-            .then((value) => value.data)
-            .then((map) => Friend.fromJson(map));
-      } catch (e, s) {
-        Logging.logDetails('Error loading Friend', e, s);
+    try {
+      var friendStrs = (await firestore.FirebaseFirestore.instance
+              .collection('users')
+              .doc(UserRepository.currentUserUID)
+              .get())
+          .data()?['friends'] as List<dynamic>?;
+      Logging.log(friendStrs);
+      if (friendStrs == null) return [];
+      List<Friend> friends = [];
+      for (String uid in friendStrs) {
+        Friend? friend;
+        try {
+          friend = await functions.FirebaseFunctions.instance
+              .httpsCallable('getFriendByUID')
+              .call({
+                'uid': uid,
+              })
+              .then((value) => value.data)
+              .then((map) => Friend.fromJson(map));
+        } catch (e, s) {
+          Logging.logDetails('Error loading Friend', e, s);
+        }
+
+        if (friend != null) friends.add(friend);
       }
 
-      if (friend != null) friends.add(friend);
+      return friends;
+    } catch (e, s) {
+      throw handleException(e, s);
     }
-
-    return friends;
   }
 
   static Future<void> checkAuthenticationState() async {
-    if (UserRepository.currentUser != null) {
-      await UserRepository.refreshUserRole();
-      AuthenticationController().login();
-    } else {
-      AuthenticationController().logout();
+    try {
+      if (UserRepository.currentUser != null) {
+        await UserRepository.refreshUserRole();
+        AuthenticationController().login();
+      } else {
+        AuthenticationController().logout();
+      }
+    } catch (e, s) {
+      throw handleException(e, s);
     }
   }
 
   static Future<void> uploadUsersExercise(Exercise exercise) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .collection('exercises')
-        .doc(exercise.uid)
-        .set(exercise.toJson());
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .collection('exercises')
+          .doc(exercise.uid)
+          .set(exercise.toJson());
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 
   static Future<void> deleteUsersExercise(Exercise exercise) async {
-    await firestore.FirebaseFirestore.instance
-        .collection('users')
-        .doc(UserRepository.currentUserUID)
-        .collection('exercises')
-        .doc(exercise.uid)
-        .delete();
+    try {
+      await firestore.FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .collection('exercises')
+          .doc(exercise.uid)
+          .delete();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 }

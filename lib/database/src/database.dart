@@ -9,7 +9,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart' as crashlytics;
 import 'package:firebase_messaging/firebase_messaging.dart' as messaging;
 import 'package:firebase_performance/firebase_performance.dart' as performance;
 import 'package:firebase_storage/firebase_storage.dart' as storage;
-import 'package:fitnessapp/database/src/messaging.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/course.dart';
 import 'package:fitnessapp/models/src/friend.dart';
@@ -19,25 +18,27 @@ import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 part 'course_repository.dart';
+part 'error_handler.dart';
 part 'exercise_repository.dart';
 part 'feedback_repository.dart';
 part 'logging.dart';
+part 'messaging.dart';
 part 'user_repository.dart';
 part 'workout_repository.dart';
 part 'workout_statistics_repository.dart';
 
-extension DateTimeExtension on String {
-  DateTime toDateTime() {
-    var arr = split('.');
-    return DateTime(int.parse(arr[2]), int.parse(arr[1]), int.parse(arr[0]));
-  }
-}
+auth.FirebaseAuth get authInstance => auth.FirebaseAuth.instance;
 
-extension StringExtension on DateTime {
-  String toDate() {
-    return '${day.toString().padLeft(2, '0')}.${month.toString().padLeft(2, '0')}.${year.toString().padLeft(4, '0')}';
-  }
-}
+firestore.FirebaseFirestore get storeInstance =>
+    firestore.FirebaseFirestore.instance;
+
+storage.FirebaseStorage get storageInstance => storage.FirebaseStorage.instance;
+
+functions.FirebaseFunctions get functionsInstance =>
+    functions.FirebaseFunctions.instance;
+
+messaging.FirebaseMessaging get messagingInstance =>
+    messaging.FirebaseMessaging.instance;
 
 class FirestoreThemeModeSaver extends ThemeModeSaver {
   @override
@@ -48,9 +49,8 @@ class FirestoreThemeModeSaver extends ThemeModeSaver {
           .doc(UserRepository.currentUserUID)
           .get();
       return ThemeMode.values[snap.data()?[key] ?? 0];
-    } catch (_) {
-      // not important (happens if offline)
-      Logging.log('Error loading ThemeMode');
+    } catch (e, s) {
+      handleException(e, s);
     }
     return null;
   }
@@ -62,14 +62,11 @@ class FirestoreThemeModeSaver extends ThemeModeSaver {
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .set(
-        {
-          key: mode.index,
-        },
+        {key: mode.index},
         firestore.SetOptions(mergeFields: [key]),
       );
-    } catch (_) {
-      // not important (happens if offline)
-      Logging.log('Error saving ThemeMode');
+    } catch (e, s) {
+      handleException(e, s);
     }
   }
 }
@@ -185,13 +182,8 @@ class Database {
       if (kIsWeb) {
         auth.FirebaseAuth.instance.setPersistence(auth.Persistence.LOCAL);
       }
-    } on auth.FirebaseAuthException catch (e, s) {
-      Logging.logDetails('FirebaseAuthException setup', e, s);
-      UserRepository.signOutCurrentUser();
-    } on core.FirebaseException catch (e, s) {
-      Logging.logDetails('FirebaseException setup', e, s);
     } catch (e, s) {
-      Logging.logDetails('Error Database setup', e, s);
+      handleException(e, s);
     }
   }
 }

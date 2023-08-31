@@ -56,8 +56,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                   await UserRepository.updateCurrentUserImage(image: image);
                   setState(() {});
                 } catch (e) {
-                  Logging.log(e);
-                  Toast.info(e.toString(), context: context);
+                  Toast.info(e, context: context);
                   return;
                 }
               },
@@ -111,7 +110,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                 contactValue: contactBloc.text,
               );
             } catch (e) {
-              return Toast.info(e.toString(), context: context);
+              return Toast.info(e, context: context);
             }
 
             Navigation.flush(

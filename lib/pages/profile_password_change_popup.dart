@@ -66,10 +66,7 @@ class _ProfilePasswordChangePopupState
               );
               Navigation.pop();
             } catch (e) {
-              Toast.info(
-                e.toString(),
-                context: context,
-              );
+              return Toast.info(e, context: context);
             }
           },
         ),

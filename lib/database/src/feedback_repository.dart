@@ -6,8 +6,9 @@ class FeedbackRepository {
           firestore.FirebaseFirestore.instance.collection('feedback');
 
   // Nimm alle Workouts aus einer Collection
-  static Stream<List<MyFeedback>> get streamFeedback =>
-      firestore.FirebaseFirestore.instance
+  static Stream<List<MyFeedback>> get streamFeedback {
+    try {
+      return firestore.FirebaseFirestore.instance
           .collection('feedback')
           .snapshots()
           .map(
@@ -15,10 +16,17 @@ class FeedbackRepository {
               return MyFeedback.fromJson(e.data());
             }).toList(),
           );
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
 
   // Nimm alle Workouts aus einer Collection
-  static Future<List<MyFeedback>> get adminFeedbackAsFuture async =>
-      (await firestore.FirebaseFirestore.instance.collection('feedback').get())
+  static Future<List<MyFeedback>> get adminFeedbackAsFuture async {
+    try {
+      return (await firestore.FirebaseFirestore.instance
+              .collection('feedback')
+              .get())
           .docs
           .map(
             (e) => MyFeedback.fromJson(
@@ -26,8 +34,16 @@ class FeedbackRepository {
             ),
           )
           .toList();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
 
   static Future<void> addFeedback(MyFeedback feedback) async {
-    await collectionReference.add(feedback.toJson());
+    try {
+      await collectionReference.add(feedback.toJson());
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
 }

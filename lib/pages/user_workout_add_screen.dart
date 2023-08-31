@@ -123,7 +123,7 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
             buttons: [
               for (var type in Schedule.values)
                 ButtonData(
-                  type.strName,
+                  type.str,
                   type,
                 ),
             ],
@@ -167,6 +167,7 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
               entry: exercisesSel.elementAt(index),
               exercisesSel: exercisesSel,
               exercisesOth: exercisesOth,
+              parentState: setState,
             ),
           ),
           const SizedBox(height: 10),
@@ -239,10 +240,7 @@ class _UserWorkoutAddScreenState extends State<UserWorkoutAddScreen> {
               }
               Navigation.flush(widget: const UserHomeScreen(initialIndex: 1));
             } catch (e) {
-              Toast.info(
-                'Error saving workout: $e',
-                context: context,
-              );
+              Toast.info(e, context: context);
             }
           },
         ),

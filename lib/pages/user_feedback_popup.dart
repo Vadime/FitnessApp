@@ -42,7 +42,7 @@ class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
               MyFeedback(
                 name: UserRepository.currentUser!.displayName,
                 feedback: _feedbackController.text,
-                date: DateTime.now().formattedDate,
+                date: DateTime.now().str,
               ),
             );
 

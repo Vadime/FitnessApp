@@ -1,5 +1,5 @@
 extension UserRoleExtension on UserRole {
-  String get strName {
+  String get str {
     switch (this) {
       case UserRole.admin:
         return 'Admin';

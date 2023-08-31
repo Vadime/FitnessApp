@@ -37,12 +37,8 @@ class AdminExerciseDeletePopup extends StatelessWidget {
                   widget.exercise!,
                 );
                 await ExerciseRepository.deleteExercise(widget.exercise!);
-              } catch (e, s) {
-                Logging.logDetails(e.toString(), s);
-                Toast.info(
-                  'Error deleting exercise: $e',
-                  context: context,
-                );
+              } catch (e) {
+                Toast.info(e, context: context);
                 Navigation.pop();
                 return;
               }

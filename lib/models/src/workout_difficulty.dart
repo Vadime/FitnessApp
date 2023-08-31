@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 extension WorkoutDifficultyExtension on WorkoutDifficulty {
-  String get strName {
+  String get str {
     switch (this) {
       case WorkoutDifficulty.easy:
         return 'Easy';

@@ -115,7 +115,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
                 ],
               ),
               TableRowWidget(
-                cells: ['Schedule', widget.workout.schedule.strName],
+                cells: ['Schedule', widget.workout.schedule.str],
               ),
             ],
           ),

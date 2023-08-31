@@ -104,7 +104,7 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                 cells: [
                   'Muscles',
                   exercise.exerciseUI.exercise.muscles
-                      .map((e) => e.strName)
+                      .map((e) => e.str)
                       .join(', '),
                 ],
               ),

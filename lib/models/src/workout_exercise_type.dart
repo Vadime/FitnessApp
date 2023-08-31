@@ -1,3 +1,5 @@
+import 'package:widgets/widgets/widgets.dart';
+
 abstract class WorkoutExerciseType {
   static const String name = 'WorkoutExerciseType';
   const WorkoutExerciseType();
@@ -30,15 +32,15 @@ class WorkoutExerciseTypeDuration extends WorkoutExerciseType {
   @override
   Map<String, dynamic> toJson() => {
         'type': name,
-        'min': min,
-        'sec': sec,
-        'weights': weights,
+        'min': min.intFormat,
+        'sec': sec.intFormat,
+        'weights': weights.intFormat,
       };
 
   WorkoutExerciseTypeDuration.fromJson(Map<String, dynamic> json)
-      : min = json['min'].toString(),
-        sec = json['sec'].toString(),
-        weights = json['weights'].toString();
+      : min = json['min'].toString().intFormat,
+        sec = json['sec'].toString().intFormat,
+        weights = json['weights'].toString().intFormat;
 }
 
 class WorkoutExerciseTypeRepetition extends WorkoutExerciseType {
@@ -55,13 +57,13 @@ class WorkoutExerciseTypeRepetition extends WorkoutExerciseType {
   @override
   Map<String, dynamic> toJson() => {
         'type': name,
-        'sets': sets,
-        'reps': reps,
-        'weights': weights,
+        'sets': sets.intFormat,
+        'reps': reps.intFormat,
+        'weights': weights.intFormat,
       };
 
   WorkoutExerciseTypeRepetition.fromJson(Map<String, dynamic> json)
-      : sets = json['sets'].toString(),
-        reps = json['reps'].toString(),
-        weights = json['weights'].toString();
+      : sets = json['sets'].toString().intFormat,
+        reps = json['reps'].toString().intFormat,
+        weights = json['weights'].toString().intFormat;
 }

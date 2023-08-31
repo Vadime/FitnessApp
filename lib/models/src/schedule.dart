@@ -1,6 +1,6 @@
 extension SchdeuleExtension on Schedule {
   // strName
-  String get strName {
+  String get str {
     switch (this) {
       case Schedule.daily:
         return 'Daily';

@@ -52,7 +52,7 @@ class _AdminCourseListPageState extends State<AdminCourseListPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              entry.course.date.toDate(),
+              entry.course.date.str,
               style: context.textTheme.labelSmall,
             ),
             const SizedBox(height: 10),

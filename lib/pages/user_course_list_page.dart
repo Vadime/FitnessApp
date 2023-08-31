@@ -76,7 +76,7 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            '${(course.course.userUIDS.length)} Personen - ${(course.course.date.toDate())}',
+            '${(course.course.userUIDS.length)} Personen - ${(course.course.date.str)}',
             style: context.textTheme.labelSmall,
           ),
           const SizedBox(height: 10),

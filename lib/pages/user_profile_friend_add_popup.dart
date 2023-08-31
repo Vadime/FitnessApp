@@ -52,10 +52,11 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                 // add friend
                 try {
                   await UserRepository.addFriendByEmail(emailController.text);
-                  Navigation.flush(widget: const UserHomeScreen(initialIndex: 3));
-                } catch (e, s) {
-                  Logging.logDetails('', e, s);
-                  Toast.info(e.toString(), context: context);
+                  Navigation.flush(
+                    widget: const UserHomeScreen(initialIndex: 3),
+                  );
+                } catch (e) {
+                  Toast.info(e, context: context);
                   return;
                 }
               } else {
@@ -69,10 +70,11 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                 // add friend
                 try {
                   await UserRepository.addFriendByPhone(phoneController.text);
-                  Navigation.flush(widget: const UserHomeScreen(initialIndex: 3));
-                } catch (e, s) {
-                  Logging.logDetails('', e, s);
-                  Toast.info(e.toString(), context: context);
+                  Navigation.flush(
+                    widget: const UserHomeScreen(initialIndex: 3),
+                  );
+                } catch (e) {
+                  Toast.info(e, context: context);
                   return;
                 }
               } else {

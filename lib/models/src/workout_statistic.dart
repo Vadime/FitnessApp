@@ -1,5 +1,5 @@
-import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
+import 'package:widgets/widgets/widgets.dart';
 
 class WorkoutStatistic {
   final String uid;
@@ -18,7 +18,7 @@ class WorkoutStatistic {
     return WorkoutStatistic(
       uid: uid,
       workoutId: data['uid'],
-      dateTime: data['date'].toString().toDateTime(),
+      dateTime: data['date'].toString().dateTime,
       difficulty: WorkoutDifficulty.values
           .firstWhere((e) => e.name == data['difficulty']),
     );
@@ -27,7 +27,7 @@ class WorkoutStatistic {
   Map<String, dynamic> toJson() => {
         'uid': workoutId,
         'difficulty': difficulty.name,
-        'date': DateTime.now().formattedDate,
+        'date': DateTime.now().str,
       };
 
   @override

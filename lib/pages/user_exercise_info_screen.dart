@@ -108,9 +108,7 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: Text(
-                        widget.exercise.muscles
-                            .map((e) => e.strName)
-                            .join(', '),
+                        widget.exercise.muscles.map((e) => e.str).join(', '),
                       ),
                     ),
                   ],

@@ -1,4 +1,4 @@
-import 'package:fitnessapp/database/database.dart';
+import 'package:widgets/widgets/widgets.dart';
 
 class Course {
   final String uid;
@@ -22,7 +22,7 @@ class Course {
   Map<String, dynamic> toJson() => {
         'name': name,
         'description': description,
-        'date': date.toDate(),
+        'date': date.str,
         'imageURL': imageURL,
         'userUIDS': userUIDS,
       };
@@ -32,7 +32,7 @@ class Course {
         uid: uid,
         name: json['name'],
         description: json['description'],
-        date: (json['date'] as String).toDateTime(),
+        date: (json['date'] as String).dateTime,
         imageURL: json['imageURL'],
         userUIDS: List<String>.from(json['userUIDS'] ?? []),
       );

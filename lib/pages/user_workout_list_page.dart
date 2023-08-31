@@ -79,7 +79,7 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            workout.schedule.strName,
+            workout.schedule.str,
             style: context.textTheme.labelSmall,
           ),
           const SizedBox(height: 10),

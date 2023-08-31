@@ -3,8 +3,8 @@ import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/schedule.dart';
 import 'package:fitnessapp/models_ui/exercise_ui.dart';
 import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
-import 'package:fitnessapp/pages/admin_workout_delete_popup.dart';
 import 'package:fitnessapp/pages/admin_home_screen.dart';
+import 'package:fitnessapp/pages/admin_workout_delete_popup.dart';
 import 'package:fitnessapp/widgets/workout_exercise_not_selected_widget.dart';
 import 'package:fitnessapp/widgets/workout_exercise_selected_widget.dart';
 import 'package:flutter/material.dart';
@@ -124,7 +124,7 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
             buttons: [
               for (var type in Schedule.values)
                 ButtonData(
-                  type.strName,
+                  type.str,
                   type,
                 ),
             ],
@@ -167,6 +167,7 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
               entry: exercisesSel.elementAt(index),
               exercisesSel: exercisesSel,
               exercisesOth: exercisesOth,
+              parentState: setState,
             ),
           ),
           const SizedBox(height: 10),
@@ -233,18 +234,11 @@ class _AdminWorkoutAddScreenState extends State<AdminWorkoutAddScreen> {
               workoutExercises:
                   exercisesSel.map((e) => e.workoutExercise).toList(),
             );
-            if (widget.workout != null) {
-              await WorkoutRepository.updateWorkout(workout);
-            } else {
-              await WorkoutRepository.addWorkout(workout);
-            }
+            await WorkoutRepository.saveWorkout(workout);
 
             Navigation.flush(widget: const AdminHomeScreen(initialIndex: 1));
           } catch (e) {
-            Toast.info(
-              'Error ${widget.workout == null ? 'adding' : 'updating'} workout: $e',
-              context: context,
-            );
+            Toast.info(e, context: context);
           }
         },
       ),
