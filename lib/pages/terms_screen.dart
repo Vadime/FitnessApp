@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
-class FooterPrivacyScreen extends StatelessWidget {
-  const FooterPrivacyScreen({super.key});
+class TermsScreen extends StatelessWidget {
+  const TermsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      extendBody: true,
       extendBodyBehindAppBar: true,
       appBar: AppBarWidget(
-        'Privacy',
+        'Terms',
       ),
       body: SingleChildScrollView(
         child: SafeArea(

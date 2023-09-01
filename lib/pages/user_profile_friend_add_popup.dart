@@ -1,6 +1,6 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/pages/user_home_screen.dart';
+import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -53,7 +53,7 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                 try {
                   await UserRepository.addFriendByEmail(emailController.text);
                   Navigation.flush(
-                    widget: const UserHomeScreen(initialIndex: 3),
+                    widget: const HomeScreen(initialIndex: 3),
                   );
                 } catch (e) {
                   emailController.setError(e.toString());
@@ -69,7 +69,7 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
                 try {
                   await UserRepository.addFriendByPhone(phoneController.text);
                   Navigation.flush(
-                    widget: const UserHomeScreen(initialIndex: 3),
+                    widget: const HomeScreen(initialIndex: 3),
                   );
                 } catch (e) {
                   phoneController.setError(e.toString());

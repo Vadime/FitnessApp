@@ -49,15 +49,18 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
         ExerciseUI exercise = exercises![index];
 
         return ListTileWidget(
-          margin: const EdgeInsets.only(bottom: 20),
-          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+          padding: const EdgeInsets.all(10),
+          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          subtitleOverflow: TextOverflow.ellipsis,
           title: exercise.exercise.name,
           trailing: exercise.image == null
               ? null
               : ImageWidget(
                   MemoryImage(exercise.image!),
-                  height: 40,
-                  width: 40,
+                  height: 50,
+                  width: 50,
+                  margin: const EdgeInsets.all(10),
                 ),
           subtitle: exercise.exercise.description,
           onTap: () => Navigation.push(

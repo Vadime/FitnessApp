@@ -6,7 +6,6 @@ import 'package:fitnessapp/pages/profile_password_change_popup.dart';
 import 'package:fitnessapp/widgets/profile_header_widget.dart';
 import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:widgets/widgets.dart';
 
 class AdminProfilePage extends StatelessWidget {
@@ -67,12 +66,8 @@ class AdminProfilePage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 20),
-        BlocBuilder<ThemeController, ThemeMode>(
-          builder: (context, state) {
-            return ThemeSelectionComponent(
-              controller: ThemeController.of(context),
-            );
-          },
+        ThemeSelectionComponent(
+          controller: ThemeController.of(context),
         ),
         const SizedBox(height: 20),
         ListTileWidget(

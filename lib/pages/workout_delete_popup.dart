@@ -1,16 +1,17 @@
-import 'package:fitnessapp/database/database.dart';
-import 'package:fitnessapp/pages/user_home_screen.dart';
-import 'package:fitnessapp/pages/user_workout_add_screen.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
-class UserWorkoutDeletePopup extends StatelessWidget {
-  const UserWorkoutDeletePopup({
+class WorkoutDeletePopup extends StatelessWidget {
+  const WorkoutDeletePopup({
     super.key,
-    required this.widget,
+    required this.workout,
+    required this.delete,
   });
 
-  final UserWorkoutAddScreen widget;
+  final Workout workout;
+  final Future Function() delete;
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +32,8 @@ class UserWorkoutDeletePopup extends StatelessWidget {
           'Delete',
           backgroundColor: context.config.errorColor,
           onPressed: () async {
-            if (widget.workout != null) {
-              UserRepository.deleteUserWorkout(widget.workout!);
-            }
-
-            Navigation.flush(widget: const UserHomeScreen(initialIndex: 1));
+            await delete();
+            Navigation.flush(widget: const HomeScreen(initialIndex: 1));
           },
         ),
       ],

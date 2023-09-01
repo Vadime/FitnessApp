@@ -1,5 +1,5 @@
 import 'package:fitnessapp/database/database.dart';
-import 'package:fitnessapp/pages/footer_terms_screen.dart';
+import 'package:fitnessapp/pages/terms_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -15,7 +15,7 @@ class LoginScreen extends StatelessWidget {
           password: password.text,
         );
       },
-      termsScreen: const FooterTermsScreen(),
+      termsScreen: const TermsScreen(),
       onEmailSignIn: (email, password) async {
         await UserRepository.signInWithEmailAndPassword(
           email: email.text,

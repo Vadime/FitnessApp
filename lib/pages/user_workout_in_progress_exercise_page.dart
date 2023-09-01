@@ -1,5 +1,4 @@
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models/src/workout_exercise_type.dart';
 import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -41,65 +40,18 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                   exercise.exerciseUI.exercise.description,
                 ],
               ),
-              if (exercise.workoutExercise.type
-                  is WorkoutExerciseTypeDuration) ...[
-                TableRowWidget(
-                  cells: [
-                    'Minuten',
-                    (exercise.workoutExercise.type
-                            as WorkoutExerciseTypeDuration)
-                        .min
-                        .toString(),
-                  ],
-                ),
-                TableRowWidget(
-                  cells: [
-                    'Sekunden',
-                    (exercise.workoutExercise.type
-                            as WorkoutExerciseTypeDuration)
-                        .sec
-                        .toString(),
-                  ],
-                ),
-                TableRowWidget(
-                  cells: [
-                    'Weights',
-                    (exercise.workoutExercise.type
-                            as WorkoutExerciseTypeDuration)
-                        .weights
-                        .toString(),
-                  ],
-                ),
-              ] else if (exercise.workoutExercise.type
-                  is WorkoutExerciseTypeRepetition) ...[
-                TableRowWidget(
-                  cells: [
-                    'Sets',
-                    (exercise.workoutExercise.type
-                            as WorkoutExerciseTypeRepetition)
-                        .sets
-                        .toString(),
-                  ],
-                ),
-                TableRowWidget(
-                  cells: [
-                    'Reps',
-                    (exercise.workoutExercise.type
-                            as WorkoutExerciseTypeRepetition)
-                        .reps
-                        .toString(),
-                  ],
-                ),
-                TableRowWidget(
-                  cells: [
-                    'Weights',
-                    (exercise.workoutExercise.type
-                            as WorkoutExerciseTypeRepetition)
-                        .weights
-                        .toString(),
-                  ],
-                ),
-              ],
+              ...exercise.workoutExercise.type
+                  .values
+                  .entries
+                  .map(
+                    (e) => TableRowWidget(
+                      cells: [
+                        e.key,
+                        e.value,
+                      ],
+                    ),
+                  )
+                  .toList(),
               TableRowWidget(
                 cells: [
                   'Muscles',

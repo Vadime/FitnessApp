@@ -1,6 +1,6 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/pages/admin_home_screen.dart';
+import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -99,7 +99,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                 await UserRepository.updateCurrentUserEmail(contactBloc.text);
                 await UserRepository.reloadCurrentUser();
                 Navigation.flush(
-                  widget: const AdminHomeScreen(
+                  widget: const HomeScreen(
                     initialIndex: 3,
                   ),
                 );
@@ -110,7 +110,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                   onCompletion: () async {
                     await UserRepository.reloadCurrentUser();
                     Navigation.flush(
-                      widget: const AdminHomeScreen(
+                      widget: const HomeScreen(
                         initialIndex: 3,
                       ),
                     );
@@ -147,7 +147,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
           );
           await UserRepository.reloadCurrentUser();
           Navigation.flush(
-            widget: const AdminHomeScreen(
+            widget: const HomeScreen(
               initialIndex: 3,
             ),
           );

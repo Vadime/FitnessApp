@@ -140,7 +140,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage> {
       ListTileWidget(
         margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         padding: const EdgeInsets.all(10),
-        contentPadding: const EdgeInsets.all(10),
+        contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         subtitleOverflow: TextOverflow.ellipsis,
         title: entry.exercise.name,
         trailing: entry.image == null

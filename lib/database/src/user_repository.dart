@@ -367,26 +367,14 @@ class UserRepository {
     }
   }
 
-  static Future<void> updateUsersWorkout(Workout workout) async {
+  static Future<void> uploadUsersWorkout(Workout workout) async {
     try {
       await firestore.FirebaseFirestore.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('workouts')
           .doc(workout.uid)
-          .update(workout.toJson());
-    } catch (e, s) {
-      throw handleException(e, s);
-    }
-  }
-
-  static Future<void> addUsersWorkout(Workout workout) async {
-    try {
-      await firestore.FirebaseFirestore.instance
-          .collection('users')
-          .doc(UserRepository.currentUserUID)
-          .collection('workouts')
-          .add(workout.toJson());
+          .set(workout.toJson(), firestore.SetOptions(merge: true));
     } catch (e, s) {
       throw handleException(e, s);
     }

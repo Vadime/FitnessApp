@@ -1,7 +1,7 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/workout_statistic.dart';
-import 'package:fitnessapp/pages/user_home_screen.dart';
+import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -47,7 +47,7 @@ class UserWorkoutInProgressFinishedPopup extends StatelessWidget {
                           ),
                         );
                         Navigation.flush(
-                          widget: const UserHomeScreen(initialIndex: 3),
+                          widget: const HomeScreen(initialIndex: 3),
                         );
                       },
                     ),

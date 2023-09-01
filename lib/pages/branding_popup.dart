@@ -1,13 +1,13 @@
-import 'package:fitnessapp/pages/footer_about_screen.dart';
-import 'package:fitnessapp/pages/footer_privacy_screen.dart';
-import 'package:fitnessapp/pages/footer_terms_screen.dart';
+import 'package:fitnessapp/pages/about_screen.dart';
+import 'package:fitnessapp/pages/privacy_screen.dart';
+import 'package:fitnessapp/pages/terms_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart'
     show FontAwesomeIcons;
 import 'package:widgets/widgets.dart';
 
-class FooterPopup extends StatelessWidget {
-  const FooterPopup({super.key});
+class BrandingPopup extends StatelessWidget {
+  const BrandingPopup({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,12 +27,12 @@ class FooterPopup extends StatelessWidget {
         ),
       ],
       buttons: [
-        FooterButtonWidget(
-          text: 'About',
-          onPressed: () => Navigation.push(widget: const FooterAboutScreen()),
+        TextButtonWidget(
+          'About',
+          onPressed: () => Navigation.push(widget: const AboutScreen()),
         ),
-        FooterButtonWidget(
-          text: 'Contact',
+        TextButtonWidget(
+          'Contact',
           onPressed: () async {
             await UrlLauncher.launchEmail(
               'traumteam@email.de',
@@ -40,13 +40,13 @@ class FooterPopup extends StatelessWidget {
             );
           },
         ),
-        FooterButtonWidget(
-          text: 'Privacy',
-          onPressed: () => Navigation.push(widget: const FooterPrivacyScreen()),
+        TextButtonWidget(
+          'Privacy',
+          onPressed: () => Navigation.push(widget: const PrivacyScreen()),
         ),
-        FooterButtonWidget(
-          text: 'Terms',
-          onPressed: () => Navigation.push(widget: const FooterTermsScreen()),
+        TextButtonWidget(
+          'Terms',
+          onPressed: () => Navigation.push(widget: const TermsScreen()),
         ),
       ],
     );

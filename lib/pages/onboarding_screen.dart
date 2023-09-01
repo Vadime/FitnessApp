@@ -8,29 +8,29 @@ class OnboardingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OnboardingPage(
-      views: const [
+      views: [
         OnboardingView(
           title: 'OB FETT',
           description: 'Pläne für jeden Fitnesslevel',
           image: 'res/logo/foreground.png',
-          backgroundColor: Colors.blue,
+          backgroundColor: context.config.primaryColor,
           foregroundColor: Colors.white,
         ),
-        OnboardingView(
+        const OnboardingView(
           title: 'DÜNN',
           description: 'Pläne für jeden Fitnesslevel',
           image: 'res/logo/foreground.png',
           backgroundColor: Colors.red,
           foregroundColor: Colors.white,
         ),
-        OnboardingView(
+        const OnboardingView(
           title: 'ODER DOOF',
           description: 'Pläne für jeden Fitnesslevel',
           image: 'res/logo/foreground.png',
           backgroundColor: Colors.green,
           foregroundColor: Colors.white,
         ),
-        OnboardingView(
+        const OnboardingView(
           title: 'DU BIST HIER RICHTIG',
           description: 'Pläne für jeden Fitnesslevel',
           image: 'res/logo/foreground.png',

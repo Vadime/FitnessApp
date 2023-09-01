@@ -1,10 +1,9 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/models/src/schedule.dart';
-import 'package:fitnessapp/models/src/workout_exercise_type.dart';
 import 'package:fitnessapp/models_ui/exercise_ui.dart';
 import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
-import 'package:fitnessapp/pages/user_home_screen.dart';
+import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:fitnessapp/pages/user_workout_add_screen.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_screen.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +55,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
         });
         await UserRepository.copyToPersonalWorkouts(widget.workout);
 
-        Navigation.flush(widget: const UserHomeScreen(initialIndex: 1));
+        Navigation.flush(widget: const HomeScreen(initialIndex: 1));
       },
     );
   }
@@ -180,62 +179,18 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
                       e.exerciseUI.exercise.description,
                     ],
                   ),
-                  if (e.workoutExercise.type
-                      is WorkoutExerciseTypeDuration) ...[
-                    TableRowWidget(
-                      cells: [
-                        'Minuten',
-                        (e.workoutExercise.type as WorkoutExerciseTypeDuration)
-                            .min
-                            .toString(),
-                      ],
-                    ),
-                    TableRowWidget(
-                      cells: [
-                        'Sekunden',
-                        (e.workoutExercise.type as WorkoutExerciseTypeDuration)
-                            .sec
-                            .toString(),
-                      ],
-                    ),
-                    TableRowWidget(
-                      cells: [
-                        'Weights',
-                        (e.workoutExercise.type as WorkoutExerciseTypeDuration)
-                            .weights
-                            .toString(),
-                      ],
-                    ),
-                  ] else if (e.workoutExercise.type
-                      is WorkoutExerciseTypeRepetition) ...[
-                    TableRowWidget(
-                      cells: [
-                        'Sets',
-                        (e.workoutExercise.type
-                                as WorkoutExerciseTypeRepetition)
-                            .sets
-                            .toString(),
-                      ],
-                    ),
-                    TableRowWidget(
-                      cells: [
-                        'Reps',
-                        (e.workoutExercise.type
-                                as WorkoutExerciseTypeRepetition)
-                            .reps
-                            .toString(),
-                      ],
-                    ),
-                    TableRowWidget(
-                      cells: [
-                        'Weights',
-                        (e.workoutExercise.type
-                                as WorkoutExerciseTypeRepetition)
-                            .weights
-                            .toString(),
-                      ],
-                    ),
-                  ],
+                  ...e.workoutExercise.type
+                      .values
+                      .entries
+                      .map(
+                        (e) => TableRowWidget(
+                          cells: [
+                            e.key,
+                            e.value,
+                          ],
+                        ),
+                      )
+                      .toList(),
                 ],
               ),
               Positioned(

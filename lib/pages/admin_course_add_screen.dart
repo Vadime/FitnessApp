@@ -4,7 +4,7 @@ import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/src/course.dart';
 import 'package:fitnessapp/models_ui/course_ui.dart';
 import 'package:fitnessapp/pages/admin_course_delete_popup.dart';
-import 'package:fitnessapp/pages/admin_home_screen.dart';
+import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:fitnessapp/widgets/upload_file.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -74,7 +74,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
               );
               await CourseRepository.uploadCourse(course);
               return Navigation.flush(
-                widget: const AdminHomeScreen(initialIndex: 0),
+                widget: const HomeScreen(initialIndex: 0),
               );
             } catch (e) {
               ToastController().show(e);
@@ -88,11 +88,14 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
         padding: const EdgeInsets.only(right: 20),
         child: IconButtonWidget(
           Icons.delete_rounded,
-          onPressed: () => Navigation.pushPopup(
-            widget: AdminCourseDeletePopup(
-              widget: widget,
-            ),
-          ),
+          onPressed: () {
+            Navigation.pushPopup(
+              widget: AdminCourseDeletePopup(
+                widget: widget,
+              ),
+            );
+            return;
+          },
         ),
       );
 

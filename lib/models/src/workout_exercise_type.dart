@@ -1,16 +1,15 @@
-import 'package:widgets/widgets/widgets.dart';
-
 abstract class WorkoutExerciseType {
-  static const String name = 'WorkoutExerciseType';
-  const WorkoutExerciseType();
+  Map<String, String> values = {};
+  String name = '';
+  WorkoutExerciseType();
 
   Map<String, dynamic> toJson();
 
   factory WorkoutExerciseType.fromJson(Map<String, dynamic> json) {
     switch (json['type']) {
-      case WorkoutExerciseTypeDuration.name:
+      case 'Duration':
         return WorkoutExerciseTypeDuration.fromJson(json);
-      case WorkoutExerciseTypeRepetition.name:
+      case 'Repetition':
         return WorkoutExerciseTypeRepetition.fromJson(json);
       default:
         throw Exception('Unknown WorkoutExerciseType');
@@ -19,51 +18,65 @@ abstract class WorkoutExerciseType {
 }
 
 class WorkoutExerciseTypeDuration extends WorkoutExerciseType {
-  static const String name = 'Duration';
-  String min;
-  String sec;
-  String weights;
   WorkoutExerciseTypeDuration(
-    this.min,
-    this.sec,
-    this.weights,
-  );
+    sets,
+    sec,
+    weights,
+  ) {
+    name = 'Duration';
+    values = {
+      'Sets': sets,
+      'Seconds': sec,
+      'Weights': weights,
+    };
+  }
+
+  WorkoutExerciseTypeDuration.empty() : this('0', '0', '0');
 
   @override
   Map<String, dynamic> toJson() => {
         'type': name,
-        'min': min.intFormat,
-        'sec': sec.intFormat,
-        'weights': weights.intFormat,
+        ...values,
       };
 
-  WorkoutExerciseTypeDuration.fromJson(Map<String, dynamic> json)
-      : min = json['min'].toString().intFormat,
-        sec = json['sec'].toString().intFormat,
-        weights = json['weights'].toString().intFormat;
+  WorkoutExerciseTypeDuration.fromJson(Map<String, dynamic> json) {
+    name = json['type'];
+    values = {
+      'Sets': json['Sets'].toString(),
+      'Seconds': json['Seconds'].toString(),
+      'Weights': json['Weights'].toString(),
+    };
+  }
 }
 
 class WorkoutExerciseTypeRepetition extends WorkoutExerciseType {
-  static const String name = 'Repetition';
-  String sets;
-  String reps;
-  String weights;
   WorkoutExerciseTypeRepetition(
-    this.sets,
-    this.reps,
-    this.weights,
-  );
+    sets,
+    reps,
+    weights,
+  ) {
+    name = 'Repetition';
+    values = {
+      'Sets': sets,
+      'Reps': reps,
+      'Weights': weights,
+    };
+  }
+
+  WorkoutExerciseTypeRepetition.empty() : this('0', '0', '0');
 
   @override
   Map<String, dynamic> toJson() => {
         'type': name,
-        'sets': sets.intFormat,
-        'reps': reps.intFormat,
-        'weights': weights.intFormat,
+        ...values,
       };
 
-  WorkoutExerciseTypeRepetition.fromJson(Map<String, dynamic> json)
-      : sets = json['sets'].toString().intFormat,
-        reps = json['reps'].toString().intFormat,
-        weights = json['weights'].toString().intFormat;
+  WorkoutExerciseTypeRepetition.fromJson(Map<String, dynamic> json) {
+    name = json['type'];
+    values = {
+      'Sets': json['Sets'].toString(),
+      'Reps': json['Reps'].toString(),
+      'Weights': json['Weights'].toString(),
+    };
+  }
 }

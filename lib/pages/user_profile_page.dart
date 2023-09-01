@@ -10,7 +10,6 @@ import 'package:fitnessapp/widgets/profile_header_widget.dart';
 import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
 import 'package:fitnessapp/widgets/user_profile_friends_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:widgets/widgets.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -45,9 +44,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
             const Spacer(),
             TextButtonWidget(
               'Hinzufügen',
-              onPressed: () => Navigation.pushPopup(
-                widget: const UserProfileFriendAddPopup(),
-              ),
+              onPressed: () {
+                Navigation.pushPopup(
+                  widget: const UserProfileFriendAddPopup(),
+                );
+                return;
+              },
             ),
           ],
         ),
@@ -100,12 +102,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ),
         ),
         const SizedBox(height: 20),
-        BlocBuilder<ThemeController, ThemeMode>(
-          builder: (context, state) {
-            return ThemeSelectionComponent(
-              controller: ThemeController.of(context),
-            );
-          },
+        ThemeSelectionComponent(
+          controller: ThemeController.of(context),
         ),
         const SizedBox(height: 20),
         CardWidget(
