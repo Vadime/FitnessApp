@@ -35,7 +35,7 @@ class UserProfileFriendsGraphPopup extends StatelessWidget {
               ),
             );
           },
-          backgroundColor: context.colorScheme.error,
+          backgroundColor: context.config.errorColor,
         ),
       ],
     );

@@ -96,7 +96,7 @@ class _WorkoutExerciseSelectedWidgetState
           subtitle: widget.entry.exerciseUI.exercise.description,
           trailing: IconButtonWidget(
             Icons.delete_rounded,
-            foregroundColor: context.colorScheme.error,
+            foregroundColor: context.config.errorColor,
             onPressed: () {
               widget.exercisesSel.removeWhere(
                 (e) =>

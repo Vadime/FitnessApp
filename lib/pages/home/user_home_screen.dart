@@ -34,6 +34,19 @@ class _UserHomeScreen extends StatelessWidget {
           action: () => Navigation.push(widget: const UserExerciseAddScreen()),
         ),
         BottomNavigationView(
+          title: 'Friends',
+          label: 'Friends',
+          view: const UserFriendListPage(),
+          icon: Icons.people_rounded,
+          actionIcon: Icons.add,
+          action: () {
+            Navigation.pushPopup(
+              widget: const UserProfileFriendAddPopup(),
+            );
+            return;
+          },
+        ),
+        BottomNavigationView(
           title: 'Profile',
           label: 'Profile',
           view: const UserProfilePage(),
