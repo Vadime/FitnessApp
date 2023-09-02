@@ -28,4 +28,11 @@ class Friend {
         'contactMethod': contactMethod.toJson(),
         'imageURL': imageURL,
       };
+
+  factory Friend.fromUser(User user) => Friend(
+        uid: user.uid,
+        displayName: user.displayName,
+        contactMethod: user.contactAdress,
+        imageURL: user.imageURL,
+      );
 }

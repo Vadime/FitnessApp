@@ -9,6 +9,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart' as crashlytics;
 import 'package:firebase_messaging/firebase_messaging.dart' as messaging;
 import 'package:firebase_performance/firebase_performance.dart' as performance;
 import 'package:firebase_storage/firebase_storage.dart' as storage;
+import 'package:fitnessapp/database/modules/database_module.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:widgets/widgets.dart';
@@ -22,12 +23,14 @@ part '../models/workout_statistics_repository.dart';
 part 'auth.dart';
 part 'error_handler.dart';
 part 'functions.dart';
-part 'logging.dart';
+part 'database_logging.dart';
 part 'messaging.dart';
 part 'storage.dart';
 part 'store.dart';
 
-class Database {
+class Database extends DatabaseModule {
+  static final Database _instance = Database._internal();
+
   static core.FirebaseOptions get _firebaseOptions {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -74,22 +77,25 @@ class Database {
     }
   }
 
-  static Future<void> initializeApp({
-    bool useEmulator = false,
-  }) async {
+  factory Database() => _instance;
+
+  @override
+  Future<void> init(bool useEmulator) async {
     try {
       await core.Firebase.initializeApp(options: _firebaseOptions);
 
-      await Auth.init(useEmulator);
-      await Store.init(useEmulator);
-      await Storage.init(useEmulator);
-      await Functions.init(useEmulator);
-      await Messaging.init(useEmulator);
-      await DatabaseLogging.init(useEmulator);
+      await Auth().init(useEmulator);
+      await Store().init(useEmulator);
+      await Storage().init(useEmulator);
+      await Functions().init(useEmulator);
+      await Messaging().init(useEmulator);
+      await DatabaseLogging().init(useEmulator);
 
       await UserRepository.checkAuthenticationState();
     } catch (e, s) {
       handleException(e, s);
     }
   }
+
+  Database._internal();
 }

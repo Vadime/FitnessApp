@@ -6,11 +6,16 @@ Future<void> _firebaseMessagingBackgroundHandler(
   Logging.log('Handling a background message ${message.messageId}');
 }
 
-class Messaging {
+class Messaging extends DatabaseModule {
+  static final Messaging _instance = Messaging._internal();
+
   static messaging.FirebaseMessaging get instance =>
       messaging.FirebaseMessaging.instance;
 
-  static Future<void> init(bool useEmulator) async {
+  factory Messaging() => _instance;
+
+  @override
+  Future<void> init(bool useEmulator) async {
     if (useEmulator) return;
     try {
       await instance.requestPermission();
@@ -25,4 +30,6 @@ class Messaging {
       throw handleException(e, s);
     }
   }
+
+  Messaging._internal();
 }

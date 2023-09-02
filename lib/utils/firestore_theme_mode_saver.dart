@@ -31,7 +31,7 @@ class FirestoreThemeModeSaver extends ThemeModeSaver {
           .doc(UserRepository.currentUserUID)
           .set(
         {key: mode.index},
-        SetOptions(mergeFields: [key]),
+        SetOptions(merge: true),
       );
     } catch (e, s) {
       handleException(e, s);

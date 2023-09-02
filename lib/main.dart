@@ -38,7 +38,7 @@ void main() {
       home: const HomeScreen(),
       login: const OnboardingScreen(),
       initialize: (BuildContext context) async {
-        await Database.initializeApp(useEmulator: true);
+        await Database().init(true);
       },
     ),
   );

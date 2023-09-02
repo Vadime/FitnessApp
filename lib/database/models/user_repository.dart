@@ -498,6 +498,22 @@ class UserRepository {
 
   static Future<void> addFriend(Friend friend) async {
     try {
+      var list = (await Store.instance
+              .collection('users')
+              .doc(UserRepository.currentUserUID)
+              .get())
+          .data()?['friends'] as List<dynamic>?;
+      if (list != null) {
+        for (var fUid in list) {
+          if (friend.uid == UserRepository.currentUserUID) {
+            throw 'You can\'t befriend yourself';
+          }
+          if (fUid == friend.uid) {
+            throw 'You already added ${friend.displayName} as a friend';
+          }
+        }
+      }
+
       await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
@@ -505,7 +521,7 @@ class UserRepository {
         {
           'friends': firestore.FieldValue.arrayUnion([friend.uid]),
         },
-        firestore.SetOptions(mergeFields: ['friends']),
+        firestore.SetOptions(merge: true),
       );
     } catch (e, s) {
       throw handleException(e, s);

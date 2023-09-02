@@ -9,7 +9,7 @@ extension on String {
 
 String handleException(Object? e, [StackTrace? s]) {
   if (e is String) {
-    return e;
+    return e.log(e, s);
   } else if (e is auth.FirebaseAuthException) {
     switch (e.code) {
       case 'invalid-email':

@@ -6,6 +6,8 @@ class WorkoutStatistic {
   final String workoutId;
   final DateTime dateTime;
   final WorkoutDifficulty difficulty;
+  /// for gamification
+  final int points = 100;
 
   const WorkoutStatistic({
     required this.uid,
