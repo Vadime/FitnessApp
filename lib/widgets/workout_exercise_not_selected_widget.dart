@@ -1,7 +1,6 @@
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models/src/workout_exercise_type.dart';
-import 'package:fitnessapp/models_ui/exercise_ui.dart';
-import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
+import 'package:fitnessapp/utils/exercise_ui.dart';
+import 'package:fitnessapp/utils/workout_exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 

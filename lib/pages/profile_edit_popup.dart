@@ -100,7 +100,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                 await UserRepository.reloadCurrentUser();
                 Navigation.flush(
                   widget: const HomeScreen(
-                    initialIndex: 3,
+                    initialIndex: 4,
                   ),
                 );
               } else if (UserRepository.currentUserContact?.type ==
@@ -111,7 +111,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                     await UserRepository.reloadCurrentUser();
                     Navigation.flush(
                       widget: const HomeScreen(
-                        initialIndex: 3,
+                        initialIndex: 4,
                       ),
                     );
                   },
@@ -148,7 +148,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
           await UserRepository.reloadCurrentUser();
           Navigation.flush(
             widget: const HomeScreen(
-              initialIndex: 3,
+              initialIndex: 4,
             ),
           );
         },

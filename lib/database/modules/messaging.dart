@@ -7,10 +7,14 @@ Future<void> _firebaseMessagingBackgroundHandler(
 }
 
 class Messaging {
-  static Future<void> init() async {
+  static messaging.FirebaseMessaging get instance =>
+      messaging.FirebaseMessaging.instance;
+
+  static Future<void> init(bool useEmulator) async {
+    if (useEmulator) return;
     try {
-      await messaging.FirebaseMessaging.instance.requestPermission();
-      await messaging.FirebaseMessaging.instance.getToken(
+      await instance.requestPermission();
+      await instance.getToken(
         vapidKey:
             'BOP3tNXjrwSmRV1CKxLxXXwVkK5MRIH9cboVCLXAN27AlsfvHdQ4B--yXmUeF8sOXRsg8Vf1P4YynehXyu2mBP8',
       );

@@ -1,4 +1,4 @@
-part of 'database.dart';
+part of '../modules/database.dart';
 
 class UserRepository {
   // loggt den User ein
@@ -7,7 +7,7 @@ class UserRepository {
     required String password,
   }) async {
     try {
-      await authInstance.signInWithEmailAndPassword(
+      await Auth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -24,10 +24,10 @@ class UserRepository {
     required Function(String error) onFailed,
   }) async {
     try {
-      await authInstance.verifyPhoneNumber(
+      await Auth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (credential) async {
-          await authInstance.signInWithCredential(credential);
+          await Auth.instance.signInWithCredential(credential);
           await checkAuthenticationState();
         },
         verificationFailed: (e) => onFailed(handleException(e)),
@@ -48,7 +48,7 @@ class UserRepository {
         verificationId: verificationId,
         smsCode: smsCode,
       );
-      await authInstance.signInWithCredential(credential);
+      await Auth.instance.signInWithCredential(credential);
       await checkAuthenticationState();
     } catch (e, s) {
       throw handleException(e, s);
@@ -64,7 +64,7 @@ class UserRepository {
         verificationId: verificationId,
         smsCode: smsCode,
       );
-      await authInstance.currentUser?.updatePhoneNumber(credential);
+      await Auth.instance.currentUser?.updatePhoneNumber(credential);
     } catch (e, s) {
       throw handleException(e, s);
     }
@@ -76,12 +76,12 @@ class UserRepository {
     required String password,
   }) async {
     try {
-      var cred = await authInstance.createUserWithEmailAndPassword(
+      var cred = await Auth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       // firebase function aufrufen um user role zu setzen
-      var value = await functionsInstance.httpsCallable('addUserRole').call({
+      var value = await Functions.instance.httpsCallable('addUserRole').call({
         'uid': cred.user!.uid,
       });
       // auf fehler von firebase function prüfen
@@ -98,7 +98,7 @@ class UserRepository {
     required String email,
   }) async {
     try {
-      return await authInstance.sendPasswordResetEmail(email: email);
+      return await Auth.instance.sendPasswordResetEmail(email: email);
     } catch (e, s) {
       throw handleException(e, s);
     }
@@ -143,34 +143,35 @@ class UserRepository {
 
   // gibt den aktuellen User zurück
   static User? get currentUser =>
-      UserRepository.fromFirebaseAuth(authInstance.currentUser);
+      UserRepository.fromFirebaseAuth(Auth.instance.currentUser);
 
   // gibt displayName zurück
-  static String? get currentUserName => authInstance.currentUser?.displayName;
+  static String? get currentUserName => Auth.instance.currentUser?.displayName;
 
   // gibt email zurück
   static ContactMethod? get currentUserContact => currentUser?.contactAdress;
 
   // gibt email zurück
-  static String? get currentUserEmail => authInstance.currentUser?.email;
+  static String? get currentUserEmail => Auth.instance.currentUser?.email;
 
   // gibt phone zurück
-  static String? get currentUserPhone => authInstance.currentUser?.phoneNumber;
+  static String? get currentUserPhone => Auth.instance.currentUser?.phoneNumber;
 
   // gibt uid zurück
-  static String? get currentUserUID => authInstance.currentUser?.uid;
+  static String? get currentUserUID => Auth.instance.currentUser?.uid;
 
   static UserRole? _userRole;
 
   static UserRole? get currentUserRole => _userRole;
 
-  static String? get currentUserImageURL => authInstance.currentUser?.photoURL;
+  static String? get currentUserImageURL => Auth.instance.currentUser?.photoURL;
 
   // get claims
   static Future<Map<String, dynamic>> getCurrentUserClaims() async {
+    if (currentUser == null) return {};
     try {
-      var res = await authInstance.currentUser?.getIdTokenResult();
-      return res?.claims ?? {};
+      var res = await Auth.instance.currentUser!.getIdTokenResult();
+      return res.claims ?? {};
     } catch (e, s) {
       throw handleException(e, s);
     }
@@ -178,6 +179,7 @@ class UserRepository {
 
   // gibt die Rolle des Users zurück
   static Future<void> refreshUserRole() async {
+    if (currentUser == null) return;
     try {
       var claims = await getCurrentUserClaims();
       _userRole = roleFromString(claims['role']);
@@ -188,7 +190,7 @@ class UserRepository {
 
   static Future<void> updateCurrentUserEmail(String email) async {
     try {
-      await authInstance.currentUser?.updateEmail(email);
+      await Auth.instance.currentUser?.updateEmail(email);
     } catch (e, s) {
       throw handleException(e, s);
     }
@@ -201,10 +203,10 @@ class UserRepository {
     required Function(String error) onFailed,
   }) async {
     try {
-      await authInstance.verifyPhoneNumber(
+      await Auth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (credential) async {
-          await authInstance.currentUser?.updatePhoneNumber(credential);
+          await Auth.instance.currentUser?.updatePhoneNumber(credential);
           await onCompletion();
         },
         verificationFailed: (e) => onFailed(handleException(e)),
@@ -218,7 +220,7 @@ class UserRepository {
 
   static Future<void> updateCurrentUserName(String? displayName) async {
     try {
-      await authInstance.currentUser?.updateDisplayName(displayName);
+      await Auth.instance.currentUser?.updateDisplayName(displayName);
     } catch (e, s) {
       throw handleException(e, s);
     }
@@ -226,7 +228,7 @@ class UserRepository {
 
   static Future<void> reloadCurrentUser() async {
     try {
-      await authInstance.currentUser?.reload();
+      await Auth.instance.currentUser?.reload();
     } catch (e, s) {
       throw handleException(e, s);
     }
@@ -237,11 +239,11 @@ class UserRepository {
     required Uint8List image,
   }) async {
     try {
-      String imageRef = 'user/${authInstance.currentUser?.uid}/profileImage';
-      var snapshot = await storageInstance.ref(imageRef).putData(image);
+      String imageRef = 'user/${Auth.instance.currentUser?.uid}/profileImage';
+      var snapshot = await Storage.instance.ref(imageRef).putData(image);
       var imageURL = await snapshot.ref.getDownloadURL();
-      await authInstance.currentUser?.updatePhotoURL(imageURL);
-      await authInstance.currentUser?.reload();
+      await Auth.instance.currentUser?.updatePhotoURL(imageURL);
+      await Auth.instance.currentUser?.reload();
     } catch (e, s) {
       throw handleException(e, s);
     }
@@ -250,7 +252,7 @@ class UserRepository {
   // loggt den User aus
   static Future<void> signOutCurrentUser() async {
     try {
-      await authInstance.signOut();
+      await Auth.instance.signOut();
       await checkAuthenticationState();
     } catch (e, s) {
       throw handleException(e, s);
@@ -259,7 +261,7 @@ class UserRepository {
 
   static Stream<List<String>> get currentUserFavoriteExercises {
     try {
-      return storeInstance
+      return Store.instance
           .collection('users')
           .doc(currentUserUID)
           .snapshots()
@@ -277,7 +279,7 @@ class UserRepository {
 
   static Future<List<String>> get currentUserFavoriteExercisesAsFuture async {
     try {
-      return ((await storeInstance
+      return ((await Store.instance
                       .collection('users')
                       .doc(currentUserUID)
                       .get())
@@ -292,7 +294,7 @@ class UserRepository {
 
   static Future<List<Exercise>> get currentUserCustomExercisesAsFuture async {
     try {
-      return (await firestore.FirebaseFirestore.instance
+      return (await Store.instance
               .collection('users')
               .doc(UserRepository.currentUserUID)
               .collection('exercises')
@@ -309,7 +311,7 @@ class UserRepository {
 
   static Future<List<Workout>> get currentUserCustomWorkoutsAsFuture async {
     try {
-      return (await firestore.FirebaseFirestore.instance
+      return (await Store.instance
               .collection('users')
               .doc(UserRepository.currentUserUID)
               .collection('workouts')
@@ -329,13 +331,13 @@ class UserRepository {
     String newPassword,
   ) async {
     try {
-      await authInstance.currentUser?.reauthenticateWithCredential(
+      await Auth.instance.currentUser?.reauthenticateWithCredential(
         auth.EmailAuthProvider.credential(
           email: currentUserEmail ?? '',
           password: oldPassword,
         ),
       );
-      await authInstance.currentUser?.updatePassword(newPassword);
+      await Auth.instance.currentUser?.updatePassword(newPassword);
     } catch (e, s) {
       throw handleException(e, s);
     }
@@ -343,7 +345,7 @@ class UserRepository {
 
   static Future<void> copyToPersonalWorkouts(Workout workout) async {
     try {
-      await firestore.FirebaseFirestore.instance
+      await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('workouts')
@@ -357,7 +359,7 @@ class UserRepository {
     WorkoutStatistic statistic,
   ) async {
     try {
-      await firestore.FirebaseFirestore.instance
+      await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('workoutStatistics')
@@ -369,7 +371,7 @@ class UserRepository {
 
   static Future<void> uploadUsersWorkout(Workout workout) async {
     try {
-      await firestore.FirebaseFirestore.instance
+      await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('workouts')
@@ -382,14 +384,13 @@ class UserRepository {
 
   static deleteUser(String password) async {
     try {
-      await auth.FirebaseAuth.instance.currentUser
-          ?.reauthenticateWithCredential(
+      await Auth.instance.currentUser?.reauthenticateWithCredential(
         auth.EmailAuthProvider.credential(
           email: currentUserEmail ?? '',
           password: password,
         ),
       );
-      await auth.FirebaseAuth.instance.currentUser?.delete();
+      await Auth.instance.currentUser?.delete();
       await checkAuthenticationState();
     } catch (e, s) {
       throw handleException(e, s);
@@ -398,7 +399,7 @@ class UserRepository {
 
   static Future<void> deleteUserWorkout(Workout workout) async {
     try {
-      await firestore.FirebaseFirestore.instance
+      await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('workouts')
@@ -414,7 +415,7 @@ class UserRepository {
   ]) async {
     try {
       uid ??= currentUserUID;
-      var res = await firestore.FirebaseFirestore.instance
+      var res = await Store.instance
           .collection('users')
           .doc(uid)
           .collection('workoutStatistics')
@@ -431,7 +432,7 @@ class UserRepository {
 
   static Future<void> addFavoriteExercise(String exerciseUID) async {
     try {
-      await firestore.FirebaseFirestore.instance
+      await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .update({
@@ -444,7 +445,7 @@ class UserRepository {
 
   static Future<void> removeFavoriteExercise(String exerciseUID) async {
     try {
-      await firestore.FirebaseFirestore.instance
+      await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .update({
@@ -457,7 +458,7 @@ class UserRepository {
 
   static Future<Friend> addFriendByEmail(String email) async {
     try {
-      Friend? friend = await functions.FirebaseFunctions.instance
+      Friend? friend = await Functions.instance
           .httpsCallable('getFriendByEmail')
           .call({
             'email': email,
@@ -477,7 +478,7 @@ class UserRepository {
 
   static Future<Friend> addFriendByPhone(String phone) async {
     try {
-      Friend? friend = await functions.FirebaseFunctions.instance
+      Friend? friend = await Functions.instance
           .httpsCallable('getFriendByPhone')
           .call({
             'phone': phone,
@@ -497,7 +498,7 @@ class UserRepository {
 
   static Future<void> addFriend(Friend friend) async {
     try {
-      await firestore.FirebaseFirestore.instance
+      await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .set(
@@ -513,7 +514,7 @@ class UserRepository {
 
   static Future<void> removeFriend(Friend friend) async {
     try {
-      await firestore.FirebaseFirestore.instance
+      await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .update({
@@ -526,7 +527,7 @@ class UserRepository {
 
   static Future<List<Friend>> getFriends() async {
     try {
-      var friendStrs = (await firestore.FirebaseFirestore.instance
+      var friendStrs = (await Store.instance
               .collection('users')
               .doc(UserRepository.currentUserUID)
               .get())
@@ -537,7 +538,7 @@ class UserRepository {
       for (String uid in friendStrs) {
         Friend? friend;
         try {
-          friend = await functions.FirebaseFunctions.instance
+          friend = await Functions.instance
               .httpsCallable('getFriendByUID')
               .call({
                 'uid': uid,
@@ -572,7 +573,7 @@ class UserRepository {
 
   static Future<void> uploadUsersExercise(Exercise exercise) async {
     try {
-      await firestore.FirebaseFirestore.instance
+      await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('exercises')
@@ -585,7 +586,7 @@ class UserRepository {
 
   static Future<void> deleteUsersExercise(Exercise exercise) async {
     try {
-      await firestore.FirebaseFirestore.instance
+      await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('exercises')

@@ -1,5 +1,5 @@
 import 'package:fitnessapp/database/database.dart';
-import 'package:fitnessapp/models_ui/exercise_ui.dart';
+import 'package:fitnessapp/utils/exercise_ui.dart';
 import 'package:fitnessapp/pages/user_exercise_add_screen.dart';
 import 'package:fitnessapp/pages/user_exercise_info_screen.dart';
 import 'package:flutter/material.dart';

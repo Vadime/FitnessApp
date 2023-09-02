@@ -1,11 +1,9 @@
-part of 'database.dart';
+part of '../modules/database.dart';
 
 class WorkoutStatisticsRepository {
   static Future<List<WorkoutStatistic>> getWorkoutDatesStatistics() async {
     try {
-      var res = await firestore.FirebaseFirestore.instance
-          .collectionGroup('workoutStatistics')
-          .get();
+      var res = await Store.instance.collectionGroup('workoutStatistics').get();
       var workouts = res.docs
           .map((e) => WorkoutStatistic.fromJson(e.id, e.data()))
           .toList();

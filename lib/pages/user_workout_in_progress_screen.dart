@@ -1,5 +1,5 @@
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
+import 'package:fitnessapp/utils/workout_exercise_ui.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_exercise_page.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_finished_popup.dart';
 import 'package:flutter/material.dart';

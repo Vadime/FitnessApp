@@ -1,7 +1,7 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models_ui/exercise_ui.dart';
 import 'package:fitnessapp/pages/admin_exercise_add_screen.dart';
+import 'package:fitnessapp/utils/exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 

@@ -1,5 +1,6 @@
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models_ui/exercise_ui.dart';
+
+import 'exercise_ui.dart';
 
 class WorkoutExerciseUI {
   final ExerciseUI exerciseUI;

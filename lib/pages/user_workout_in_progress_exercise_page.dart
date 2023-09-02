@@ -1,5 +1,5 @@
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
+import 'package:fitnessapp/utils/workout_exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -40,9 +40,7 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                   exercise.exerciseUI.exercise.description,
                 ],
               ),
-              ...exercise.workoutExercise.type
-                  .values
-                  .entries
+              ...exercise.workoutExercise.type.values.entries
                   .map(
                     (e) => TableRowWidget(
                       cells: [

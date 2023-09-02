@@ -47,7 +47,7 @@ class UserWorkoutInProgressFinishedPopup extends StatelessWidget {
                           ),
                         );
                         Navigation.flush(
-                          widget: const HomeScreen(initialIndex: 3),
+                          widget: const HomeScreen(initialIndex: 4),
                         );
                       },
                     ),

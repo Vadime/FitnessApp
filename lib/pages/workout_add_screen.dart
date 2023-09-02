@@ -1,10 +1,9 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models/src/schedule.dart';
-import 'package:fitnessapp/models_ui/exercise_ui.dart';
-import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
 import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:fitnessapp/pages/workout_delete_popup.dart';
+import 'package:fitnessapp/utils/exercise_ui.dart';
+import 'package:fitnessapp/utils/workout_exercise_ui.dart';
 import 'package:fitnessapp/widgets/workout_exercise_not_selected_widget.dart';
 import 'package:fitnessapp/widgets/workout_exercise_selected_widget.dart';
 import 'package:flutter/material.dart';

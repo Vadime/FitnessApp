@@ -1,17 +1,13 @@
-part of 'database.dart';
+part of '../modules/database.dart';
 
 class WorkoutRepository {
   static firestore.CollectionReference<Map<String, dynamic>>
-      get collectionReference =>
-          firestore.FirebaseFirestore.instance.collection('workouts');
+      get collectionReference => Store.instance.collection('workouts');
 
   // Nimm alle Workouts aus einer Collection
   static Stream<List<Workout>> get streamWorkouts {
     try {
-      return firestore.FirebaseFirestore.instance
-          .collection('workouts')
-          .snapshots()
-          .map(
+      return Store.instance.collection('workouts').snapshots().map(
             (event) => event.docs.map((e) {
               return Workout.fromJson(e.id, e.data());
             }).toList(),
@@ -24,9 +20,7 @@ class WorkoutRepository {
   // Nimm alle Workouts aus einer Collection
   static Future<List<Workout>> get adminWorkoutsAsFuture async {
     try {
-      return (await firestore.FirebaseFirestore.instance
-              .collection('workouts')
-              .get())
+      return (await Store.instance.collection('workouts').get())
           .docs
           .map(
             (e) => Workout.fromJson(

@@ -1,11 +1,10 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models/src/schedule.dart';
-import 'package:fitnessapp/models_ui/exercise_ui.dart';
-import 'package:fitnessapp/models_ui/workout_exercise_ui.dart';
 import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:fitnessapp/pages/user_workout_add_screen.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_screen.dart';
+import 'package:fitnessapp/utils/exercise_ui.dart';
+import 'package:fitnessapp/utils/workout_exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -179,9 +178,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
                       e.exerciseUI.exercise.description,
                     ],
                   ),
-                  ...e.workoutExercise.type
-                      .values
-                      .entries
+                  ...e.workoutExercise.type.values.entries
                       .map(
                         (e) => TableRowWidget(
                           cells: [

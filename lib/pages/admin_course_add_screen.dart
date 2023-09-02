@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/src/course.dart';
-import 'package:fitnessapp/models_ui/course_ui.dart';
+import 'package:fitnessapp/utils/course_ui.dart';
 import 'package:fitnessapp/pages/admin_course_delete_popup.dart';
 import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:fitnessapp/widgets/upload_file.dart';

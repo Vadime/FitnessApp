@@ -1,7 +1,6 @@
+import 'package:fitnessapp/database/database.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
-
-import '../database/src/database.dart';
 
 class UserAccountDeletePopup extends StatefulWidget {
   const UserAccountDeletePopup({super.key});

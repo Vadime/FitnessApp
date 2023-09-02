@@ -1,6 +1,6 @@
 import 'package:fitnessapp/database/database.dart';
-import 'package:fitnessapp/models_ui/course_ui.dart';
 import 'package:fitnessapp/pages/admin_course_add_screen.dart';
+import 'package:fitnessapp/utils/course_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 

@@ -1,17 +1,13 @@
-part of 'database.dart';
+part of '../modules/database.dart';
 
 class FeedbackRepository {
   static firestore.CollectionReference<Map<String, dynamic>>
-      get collectionReference =>
-          firestore.FirebaseFirestore.instance.collection('feedback');
+      get collectionReference => Store.instance.collection('feedback');
 
   // Nimm alle Workouts aus einer Collection
   static Stream<List<MyFeedback>> get streamFeedback {
     try {
-      return firestore.FirebaseFirestore.instance
-          .collection('feedback')
-          .snapshots()
-          .map(
+      return Store.instance.collection('feedback').snapshots().map(
             (event) => event.docs.map((e) {
               return MyFeedback.fromJson(e.data());
             }).toList(),
@@ -24,9 +20,7 @@ class FeedbackRepository {
   // Nimm alle Workouts aus einer Collection
   static Future<List<MyFeedback>> get adminFeedbackAsFuture async {
     try {
-      return (await firestore.FirebaseFirestore.instance
-              .collection('feedback')
-              .get())
+      return (await Store.instance.collection('feedback').get())
           .docs
           .map(
             (e) => MyFeedback.fromJson(

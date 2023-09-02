@@ -16,7 +16,6 @@ class UserProfileFriendsGraphPopup extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ProfileUserStatsGraph(
           interpretation: '${friend.displayName}\'s workout statistics',
@@ -24,18 +23,20 @@ class UserProfileFriendsGraphPopup extends StatelessWidget {
             friend.uid,
           ),
         ),
-        const SizedBox(height: 20),
-        ElevatedButtonWidget(
-          'Remove Friend',
-          onPressed: () async {
-            await UserRepository.removeFriend(friend);
-            Navigation.flush(
-              widget: const HomeScreen(
-                initialIndex: 3,
-              ),
-            );
-          },
-          backgroundColor: context.config.errorColor,
+        Align(
+          alignment: AlignmentDirectional.centerEnd,
+          child: TextButtonWidget(
+            'Remove Friend',
+            onPressed: () async {
+              await UserRepository.removeFriend(friend);
+              Navigation.flush(
+                widget: const HomeScreen(
+                  initialIndex: 3,
+                ),
+              );
+            },
+            foregroundColor: context.config.errorColor,
+          ),
         ),
       ],
     );
