@@ -94,17 +94,15 @@ class _UserFriendListPageState extends State<UserFriendListPage> {
               title: friends![i].friend.displayName,
               subtitle: 'Score: ${friends![i].score}',
               // friends![i].friend.contactMethod.value,
-              onTap: () => UserRepository.currentUser!.uid ==
-                      friends![i].friend.uid
-                  ? () {
-                      Provider.of<PageController>(context, listen: false).go(4);
-                      //Placeholder
-                    }()
-                  : Navigation.pushPopup(
-                      widget: UserProfileFriendsGraphPopup(
-                        friend: friends![i].friend,
-                      ),
-                    ),
+              // from the changenotifier provider in the bottomnavigationpage
+              onTap: () =>
+                  UserRepository.currentUser!.uid == friends![i].friend.uid
+                      ? context.read<PageController>().go(4)
+                      : Navigation.pushPopup(
+                          widget: UserProfileFriendsGraphPopup(
+                            friend: friends![i].friend,
+                          ),
+                        ),
               leading: TextWidget(
                 (i + 1).toString(),
                 color: context.config.neutralColor,

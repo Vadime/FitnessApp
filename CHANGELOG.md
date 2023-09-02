@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Bug fixes and ui consitancy (1)
+- started work on ranking (2)
 
 ### Changed
 

@@ -1,5 +1,4 @@
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models/src/workout_statistic.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -54,7 +53,7 @@ class ProfileUserStatsGraph extends StatelessWidget {
               .entries
               .map(
                 (e) => ChartWidgetBarGroup(
-                  title: '${e.value.key.day}.${e.value.key.month}',
+                  title: e.value.key.strNotYear,
                   x: e.key,
                   rods: e.value.value
                       .asMap()

@@ -38,7 +38,7 @@ void main() {
       home: const HomeScreen(),
       login: const OnboardingScreen(),
       initialize: (BuildContext context) async {
-        await Database().init(true);
+        await Database().init(false);
       },
     ),
   );
