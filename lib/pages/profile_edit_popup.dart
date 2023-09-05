@@ -98,22 +98,14 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
                   ContactType.email) {
                 await UserRepository.updateCurrentUserEmail(contactBloc.text);
                 await UserRepository.reloadCurrentUser();
-                Navigation.flush(
-                  widget: const HomeScreen(
-                    initialIndex: 4,
-                  ),
-                );
+                navigate();
               } else if (UserRepository.currentUserContact?.type ==
                   ContactType.phone) {
                 await UserRepository.updateCurrentUserPhone(
                   phoneNumber: contactBloc.text,
                   onCompletion: () async {
                     await UserRepository.reloadCurrentUser();
-                    Navigation.flush(
-                      widget: const HomeScreen(
-                        initialIndex: 4,
-                      ),
-                    );
+                    navigate();
                   },
                   onCodeSent: onPhoneVerifyCode,
                   onFailed: (error) {
@@ -146,13 +138,15 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
             smsCode: code.text,
           );
           await UserRepository.reloadCurrentUser();
-          Navigation.flush(
-            widget: const HomeScreen(
-              initialIndex: 4,
-            ),
-          );
+          navigate();
         },
       ),
     );
   }
+
+  navigate() => Navigation.flush(
+        widget: const HomeScreen(
+          initialIndex: 4,
+        ),
+      );
 }

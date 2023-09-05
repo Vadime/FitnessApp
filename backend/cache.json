@@ -1,0 +1,84 @@
+{"users": [
+{
+  "localId": "Av0cHin17LO3MQ5ATN6ME7H2QB53",
+  "email": "admin@email.com",
+  "emailVerified": false,
+  "passwordHash": "badKv3vk6gU1WXT7tUU3IRuiCL6k3gnEqLuUk+oKUJbGwUnWE124l0MflloWSAwrHLPrtBRfPLBWHVE9pVtPdg==",
+  "salt": "dM+VS52T2hK59g==",
+  "displayName": "Felix Weber",
+  "photoUrl": "https://firebasestorage.googleapis.com/v0/b/fitnessapp-9dd39.appspot.com/o/user%2FAv0cHin17LO3MQ5ATN6ME7H2QB53%2FprofileImage?alt=media&token=dff2d0a3-07cd-4606-b9eb-3bd7e9cd5d25",
+  "lastSignedInAt": "1693632741908",
+  "createdAt": "1691578294364",
+  "disabled": false,
+  "customAttributes": "{\"role\":\"admin\"}",
+  "providerUserInfo": []
+},
+{
+  "localId": "CBodgT4u8Of9l41KQuQpbVqQB8T2",
+  "displayName": "Frankeinstein",
+  "photoUrl": "https://firebasestorage.googleapis.com/v0/b/fitnessapp-9dd39.appspot.com/o/user%2FCBodgT4u8Of9l41KQuQpbVqQB8T2%2FprofileImage?alt=media&token=e523d2a9-5b6c-469d-b5ff-c1909f83ec81",
+  "lastSignedInAt": "1693473052227",
+  "createdAt": "1693246919868",
+  "phoneNumber": "+4917622580878",
+  "providerUserInfo": []
+},
+{
+  "localId": "DcX0ycWPKONG3sd9lUir5g88nU32",
+  "email": "rh.rh569@gmail.com",
+  "emailVerified": false,
+  "passwordHash": "PZoYUkJuulTLqyQ9ExLdL/FRN14sHeZyguGgP25mEA8sEAJKqBaMJxif8tpVoJc7xCErSnixMjImCCNf28atHA==",
+  "salt": "yYmt4eYQR1jgpg==",
+  "displayName": "Robert ",
+  "lastSignedInAt": "1693301850494",
+  "createdAt": "1692193966928",
+  "customAttributes": "{\"role\":\"user\"}",
+  "providerUserInfo": []
+},
+{
+  "localId": "ghtGoGi7XsSkRs4arjfwuIjG4jB2",
+  "email": "vadime.novikau@icloud.com",
+  "emailVerified": false,
+  "passwordHash": "EnH+bxmckiTjzHfrPxrexliEnFUZJCNwpDT0aXOZBOFZF1SwYN3+5UPGQIG3LGi9byBq19Wco29qrGxHbwBpug==",
+  "salt": "V2/HkLSMktc6ew==",
+  "displayName": "Vadime Novikau",
+  "photoUrl": "https://firebasestorage.googleapis.com/v0/b/fitnessapp-9dd39.appspot.com/o/user%2FghtGoGi7XsSkRs4arjfwuIjG4jB2%2FprofileImage?alt=media&token=9ad19698-ab62-4363-8982-fe047a2cf867",
+  "lastSignedInAt": "1693632767481",
+  "createdAt": "1691583623995",
+  "customAttributes": "{\"role\":\"user\"}",
+  "providerUserInfo": []
+},
+{
+  "localId": "k2sB7j5eTGOefAoVuewlSLPPQoV2",
+  "email": "lennard.steinecke@gmx.de",
+  "emailVerified": false,
+  "passwordHash": "xxD3aewSjrJq/4NSjccqN1Q/Fy5PxmyZ9eSEhi5Pt9vVHeUHDYvTmuQWFBNkNmQmoMLe9F1XBGhl9VSZTyfvoA==",
+  "salt": "i/XNA4grYPrdQw==",
+  "displayName": "Lennard Steinecke",
+  "photoUrl": "https://firebasestorage.googleapis.com/v0/b/fitnessapp-9dd39.appspot.com/o/user%2Fk2sB7j5eTGOefAoVuewlSLPPQoV2%2FprofileImage?alt=media&token=d04f8801-5075-4470-acc6-8b7d8b4e495d",
+  "lastSignedInAt": "1692009374556",
+  "createdAt": "1692009374556",
+  "customAttributes": "{\"role\":\"user\"}",
+  "providerUserInfo": []
+},
+{
+  "localId": "qL2cSKWXv7ddiCqENJuNnnAKeZU2",
+  "email": "user1@email.com",
+  "emailVerified": false,
+  "passwordHash": "BpYExTkKwB8R+3vGS4W4C1uLdJxYuRMJzM22OTCIhbrcUlx4sOhSe0NcijYJ/E+Bwa398n1r6MZTTZwT6d/3ng==",
+  "salt": "3cSeWl0/8J7sqw==",
+  "displayName": "Lennnard Steinecke",
+  "photoUrl": "https://firebasestorage.googleapis.com/v0/b/fitnessapp-9dd39.appspot.com/o/user%2FqL2cSKWXv7ddiCqENJuNnnAKeZU2%2FprofileImage?alt=media&token=a187a6cc-59b3-4889-95e9-7c0880ba9e61",
+  "lastSignedInAt": "1691846693676",
+  "createdAt": "1691846693676",
+  "customAttributes": "{\"role\":\"user\"}",
+  "providerUserInfo": []
+},
+{
+  "localId": "yk29XgZF2pQr74sW5MhhTViRV563",
+  "displayName": "Megatron",
+  "photoUrl": "https://firebasestorage.googleapis.com/v0/b/fitnessapp-9dd39.appspot.com/o/user%2Fyk29XgZF2pQr74sW5MhhTViRV563%2FprofileImage?alt=media&token=92397d18-cf40-4397-99c4-ba021be8cc35",
+  "lastSignedInAt": "1693485844569",
+  "createdAt": "1693485746898",
+  "phoneNumber": "+4915170625485",
+  "providerUserInfo": []
+}]}

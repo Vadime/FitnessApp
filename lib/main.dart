@@ -36,11 +36,11 @@ void main() {
       ),
       themeModeSaver: FirestoreThemeModeSaver(),
       home: const HomeScreen(
-        initialIndex: 3,
+        initialIndex: 0,
       ),
       login: const OnboardingScreen(),
       initialize: (BuildContext context) async {
-        await Database().init(true);
+        await Database().init(false);
       },
     ),
   );

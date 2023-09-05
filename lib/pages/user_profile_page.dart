@@ -57,8 +57,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
               trailing: const Icon(
                 Icons.edit_rounded,
               ),
-              onTap: () =>
-                  Navigation.pushPopup(widget: const ProfileEditPopup()),
+              onTap: () async {
+                await Navigation.pushPopup(
+                  widget: const ProfileEditPopup(),
+                  c: context,
+                );
+              },
             ),
             ListTileWidget(
               padding: const EdgeInsets.all(20),

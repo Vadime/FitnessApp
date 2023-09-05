@@ -37,9 +37,9 @@ class _UploadFileState extends State<UploadFile> {
             height: 200,
             width: double.infinity,
           ),
-          SizedBox(height: context.config.paddingH),
           TextButtonWidget(
             'Upload Image',
+            margin: EdgeInsets.only(top: context.config.paddingH),
             onPressed: () async {
               var file = await FilePicking.pickImage();
               if (file == null) {

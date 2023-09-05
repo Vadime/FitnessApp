@@ -49,6 +49,7 @@ class ProfileUserStatsGraph extends StatelessWidget {
 
           List<ChartWidgetBarGroup> barGroups = workoutCount.entries
               .toList()
+              .sublist(workoutCount.length - 7, workoutCount.length)
               .asMap()
               .entries
               .map(

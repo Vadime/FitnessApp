@@ -179,7 +179,9 @@ class _UserFriendListPageState extends State<UserFriendListPage> {
                             // from the changenotifier provider in the bottomnavigationpage
                             onTap: () => UserRepository.currentUser!.uid ==
                                     friends![i].friend.uid
-                                ? context.read<PageController>().go(4)
+                                ? Provider.of<PageController>(context,
+                                        listen: false)
+                                    .go(4)
                                 : Navigation.pushPopup(
                                     widget: UserProfileFriendsGraphPopup(
                                       friend: friends![i].friend,
