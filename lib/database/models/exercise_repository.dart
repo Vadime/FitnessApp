@@ -7,21 +7,21 @@ class ExerciseRepository {
   static Future<List<Exercise>> getExercises() async {
     try {
       var doc = await collectionReference.get();
-
       return doc.docs.map((e) => Exercise.fromJson(e.id, e.data())).toList();
     } catch (e, s) {
-      throw handleException(e, s);
+      handleException(e, s);
+      return [];
     }
   }
 
-  static Future<Exercise> getExercise(String uid) async {
+  static Future<Exercise?> getExercise(String uid) async {
     try {
       var doc = await collectionReference.doc(uid).get();
-      if (doc.data() == null) throw 'Exercise not found';
+      if (doc.data() == null) return null;
       return Exercise.fromJson(doc.id, doc.data()!);
     } catch (e, s) {
       handleException(e, s);
-      return Exercise.emptyExercise;
+      return null;
     }
   }
 
@@ -44,10 +44,10 @@ class ExerciseRepository {
     }
   }
 
-  static Future<Uint8List?> getExerciseImage(Exercise exercise) async {
-    if (exercise.imageURL == null) return null;
+  static Future<Uint8List?> getExerciseImage(Exercise? exercise) async {
+    if (exercise?.imageURL == null) return null;
     try {
-      return await Storage.instance.refFromURL(exercise.imageURL!).getData();
+      return await Storage.instance.refFromURL(exercise!.imageURL!).getData();
     } catch (e, s) {
       handleException(e, s);
       return null;

@@ -146,7 +146,7 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
               height: 100,
               child: Center(
                 child: Text(
-                  'No exercises this workout yet',
+                  'No exercises in this workout yet',
                   style: context.textTheme.labelSmall,
                 ),
               ),

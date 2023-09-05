@@ -148,7 +148,9 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
     for (WorkoutExercise w in widget.workout.workoutExercises) {
       var exercise = await ExerciseRepository.getExercise(w.exerciseUID);
       var image = await ExerciseRepository.getExerciseImage(exercise);
-      exercises!.add(WorkoutExerciseUI(ExerciseUI(exercise, image), w));
+      if (exercise != null) {
+        exercises!.add(WorkoutExerciseUI(ExerciseUI(exercise, image), w));
+      }
       if (context.mounted) setState(() {});
     }
   }

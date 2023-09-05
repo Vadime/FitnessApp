@@ -106,14 +106,14 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
     for (int i = 0; i < yourExerciseList.length; i++) {
       var image =
           await ExerciseRepository.getExerciseImage(yourExerciseList[i]);
-      if (!mounted) return;
       yourExercises!.add(ExerciseUI(yourExerciseList[i], image));
-      if (mounted) setState(() {});
+      setState(() {});
     }
-
+    Logging.log('Hier 1');
     var favoriteUIDS =
         await UserRepository.currentUserFavoriteExercisesAsFuture;
     var otherExerciseList = await ExerciseRepository.getExercises();
+    Logging.log('Hier 2');
 
     // sortieren damit favoriten oben sind und gleichmäßig geladen werden
     otherExerciseList.sort(
@@ -125,20 +125,26 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
               ? 1
               : 0,
     );
+    Logging.log('Hier 3');
+
     favoriteExercises ??= [];
     otherExercises ??= [];
     for (int i = 0; i < otherExerciseList.length; i++) {
       var image =
           await ExerciseRepository.getExerciseImage(otherExerciseList[i]);
-      if (!mounted) return;
+      Logging.log('Hier 4');
+
       bool isFavorite = favoriteUIDS.contains(otherExerciseList[i].uid);
       if (isFavorite) {
         favoriteExercises!.add(ExerciseUI(otherExerciseList[i], image));
       } else {
         otherExercises!.add(ExerciseUI(otherExerciseList[i], image));
       }
-      if (mounted) setState(() {});
+      Logging.log('Hier 5');
+
+      setState(() {});
     }
+    setState(() {});
   }
 
   Widget exerciseListTile(ExerciseUI entry, bool isFavorite, bool editable) =>

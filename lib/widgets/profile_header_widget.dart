@@ -24,6 +24,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                   : NetworkImage(currentUser!.imageURL!),
               width: 100,
               height: 100,
+              radius: 50,
             ),
           ),
           const SizedBox(width: 20),

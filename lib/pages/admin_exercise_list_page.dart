@@ -24,12 +24,13 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage>
 
   loadExercises() async {
     var exerciseList = await ExerciseRepository.getExercises();
+    exercises ??= [];
     for (Exercise exercise in exerciseList) {
-      if (!mounted) return;
       var image = await ExerciseRepository.getExerciseImage(exercise);
-      (exercises ??= []).add(ExerciseUI(exercise, image));
-      if (mounted) setState(() {});
+      exercises!.add(ExerciseUI(exercise, image));
+      setState(() {});
     }
+    setState(() {});
   }
 
   @override

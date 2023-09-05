@@ -59,13 +59,15 @@ class _AdminCourseListPageState extends State<AdminCourseListPage>
             ),
             const SizedBox(height: 10),
             ListTileWidget(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(10),
+              contentPadding: const EdgeInsets.all(10),
               title: entry.course.name,
               subtitle: entry.course.description,
               trailing: ImageWidget(
                 entry.image == null ? null : MemoryImage(entry.image!),
                 height: 50,
                 width: 50,
+                margin: const EdgeInsets.only(right: 10),
               ),
               onTap: () {
                 Navigation.push(
