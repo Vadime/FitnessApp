@@ -10,7 +10,8 @@ class UserCourseListPage extends StatefulWidget {
   State<UserCourseListPage> createState() => _UserCourseListPageState();
 }
 
-class _UserCourseListPageState extends State<UserCourseListPage> {
+class _UserCourseListPageState extends State<UserCourseListPage>
+    with AutomaticKeepAliveClientMixin {
   List<CourseUI>? enteredCourses;
   List<CourseUI>? notEnteredCourses;
 
@@ -22,6 +23,8 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return ListView(
       padding: const EdgeInsets.all(20).add(context.safeArea),
       children: [
@@ -87,7 +90,8 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
           ),
           const SizedBox(height: 10),
           ListTileWidget(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(10),
+            contentPadding: const EdgeInsets.all(10),
             title: course.course.name,
             subtitle: course.course.description,
             trailing: course.image == null
@@ -96,6 +100,7 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
                     MemoryImage(course.image!),
                     height: 50,
                     width: 50,
+                    margin: const EdgeInsets.only(right: 10),
                   ),
             onTap: () => Navigation.pushPopup(
               widget: Column(
@@ -149,4 +154,7 @@ class _UserCourseListPageState extends State<UserCourseListPage> {
           const SizedBox(height: 10),
         ],
       );
+
+  @override
+  bool get wantKeepAlive => true;
 }

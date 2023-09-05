@@ -11,7 +11,8 @@ class AdminCourseListPage extends StatefulWidget {
   State<AdminCourseListPage> createState() => _AdminCourseListPageState();
 }
 
-class _AdminCourseListPageState extends State<AdminCourseListPage> {
+class _AdminCourseListPageState extends State<AdminCourseListPage>
+    with AutomaticKeepAliveClientMixin {
   List<CourseUI>? courses;
 
   @override
@@ -33,6 +34,7 @@ class _AdminCourseListPageState extends State<AdminCourseListPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (courses == null) {
       return const LoadingWidget();
     }
@@ -62,8 +64,8 @@ class _AdminCourseListPageState extends State<AdminCourseListPage> {
               subtitle: entry.course.description,
               trailing: ImageWidget(
                 entry.image == null ? null : MemoryImage(entry.image!),
-                height: 40,
-                width: 40,
+                height: 50,
+                width: 50,
               ),
               onTap: () {
                 Navigation.push(
@@ -79,4 +81,7 @@ class _AdminCourseListPageState extends State<AdminCourseListPage> {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

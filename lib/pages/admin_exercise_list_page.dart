@@ -12,7 +12,8 @@ class AdminExerciseListPage extends StatefulWidget {
   State<AdminExerciseListPage> createState() => _AdminExerciseListPageState();
 }
 
-class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
+class _AdminExerciseListPageState extends State<AdminExerciseListPage>
+    with AutomaticKeepAliveClientMixin {
   List<ExerciseUI>? exercises;
 
   @override
@@ -33,6 +34,7 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (exercises == null) {
       return const LoadingWidget();
     }
@@ -73,4 +75,7 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage> {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

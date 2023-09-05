@@ -1,20 +1,21 @@
+import 'dart:math';
+
 import 'package:fitnessapp/models/models.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class ProfileUserStatsGraph extends StatelessWidget {
   final Future<List<WorkoutStatistic>> loader;
-  final String interpretation;
   const ProfileUserStatsGraph({
     required this.loader,
-    this.interpretation = 'Trainings per Day',
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 240,
+      height: 140,
       child: FutureBuilder<List<WorkoutStatistic>>(
         future: loader,
         builder: (context, snapshot) {
@@ -47,39 +48,73 @@ class ProfileUserStatsGraph extends StatelessWidget {
             return max;
           }
 
-          List<ChartWidgetBarGroup> barGroups = workoutCount.entries
+          List<BarChartGroupData> barGroups = workoutCount.entries
               .toList()
-              .sublist(workoutCount.length - 7, workoutCount.length)
+              .sublist(max(workoutCount.length - 7, 0), workoutCount.length)
               .asMap()
               .entries
               .map(
-                (e) => ChartWidgetBarGroup(
-                  title: e.value.key.strNotYear,
+                (e) => BarChartGroupData(
                   x: e.key,
-                  rods: e.value.value
+                  groupVertically: true,
+                  barRods: e.value.value
                       .asMap()
                       .entries
                       .map(
-                        (e) => ChartWidgetBarRod(
-                          e.key.toDouble(),
+                        (e) => BarChartRodData(
+                          fromY: e.key.toDouble() + 0.05,
+                          toY: e.key.toDouble() + 0.95,
                           color: e.value.difficulty.getColor(context),
+                          borderRadius:
+                              BorderRadius.circular(context.config.radius),
                         ),
                       )
                       .toList(),
                 ),
               )
               .toList();
-          return BarChartWidget(
-            maxY: findMax(workoutCount).toDouble(),
-            barGroups: barGroups,
-            topAxis: const ChartWidgetAxis(
-              axisNameSpace: 40,
-              axisName: BarChartWidgetLegend(),
-            ),
-            bottomAxis: ChartWidgetAxis(
-              axisName: Text(interpretation),
-              axisNameSpace: 40,
-              axisTitles: barGroups.map((e) => e.title).toList(),
+          return BarChart(
+            BarChartData(
+              alignment: BarChartAlignment.spaceEvenly,
+              maxY: findMax(workoutCount).toDouble(),
+              minY: 0,
+              barTouchData: BarTouchData(enabled: false),
+              barGroups: barGroups,
+              borderData: FlBorderData(show: false),
+              gridData: const FlGridData(show: false),
+              titlesData: FlTitlesData(
+                show: true,
+                leftTitles: const AxisTitles(),
+                rightTitles: const AxisTitles(),
+                topTitles: const AxisTitles(
+                  axisNameSize: 40,
+                  axisNameWidget: BarChartWidgetLegend(),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 30,
+                    getTitlesWidget: (i, m) => Align(
+                      alignment: Alignment.bottomCenter,
+                      child: TextWidget(
+                        workoutCount.entries
+                            .toList()
+                            .sublist(
+                              max(workoutCount.length - 7, 0),
+                              workoutCount.length,
+                            )
+                            .asMap()
+                            .entries
+                            .toList()[i.toInt()]
+                            .value
+                            .key
+                            .strNotYear,
+                        align: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           );
         },

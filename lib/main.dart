@@ -35,9 +35,7 @@ void main() {
         opacity: 0.8,
       ),
       themeModeSaver: FirestoreThemeModeSaver(),
-      home: const HomeScreen(
-        initialIndex: 0,
-      ),
+      home: const HomeScreen(initialIndex: 0),
       login: const OnboardingScreen(),
       initialize: (BuildContext context) async {
         await Database().init(false);

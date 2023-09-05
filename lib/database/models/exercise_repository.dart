@@ -6,7 +6,7 @@ class ExerciseRepository {
 
   static Future<List<Exercise>> getExercises() async {
     try {
-      var doc = await Store.instance.collection('exercises').get();
+      var doc = await collectionReference.get();
 
       return doc.docs.map((e) => Exercise.fromJson(e.id, e.data())).toList();
     } catch (e, s) {
@@ -16,7 +16,7 @@ class ExerciseRepository {
 
   static Future<Exercise> getExercise(String uid) async {
     try {
-      var doc = await Store.instance.collection('exercises').doc(uid).get();
+      var doc = await collectionReference.doc(uid).get();
       if (doc.data() == null) throw 'Exercise not found';
       return Exercise.fromJson(doc.id, doc.data()!);
     } catch (e, s) {
@@ -57,7 +57,7 @@ class ExerciseRepository {
   // Nimm alle Exercises aus einer Collection
   static Stream<List<Exercise>> get streamExercises {
     try {
-      return Store.instance.collection('exercises').snapshots().map(
+      return collectionReference.snapshots().map(
             (event) => event.docs
                 .map((e) => Exercise.fromJson(e.id, e.data()))
                 .toList(),

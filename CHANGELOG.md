@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bug fixes and ui consitancy (1)
 - started work on ranking (2)
+- friends list and ranking (3)
 
 ### Changed
 

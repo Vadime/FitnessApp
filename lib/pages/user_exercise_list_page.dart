@@ -1,7 +1,7 @@
 import 'package:fitnessapp/database/database.dart';
-import 'package:fitnessapp/utils/exercise_ui.dart';
 import 'package:fitnessapp/pages/user_exercise_add_screen.dart';
 import 'package:fitnessapp/pages/user_exercise_info_screen.dart';
+import 'package:fitnessapp/utils/exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -12,7 +12,8 @@ class UserExerciseListPage extends StatefulWidget {
   State<UserExerciseListPage> createState() => _UserExerciseListPageState();
 }
 
-class _UserExerciseListPageState extends State<UserExerciseListPage> {
+class _UserExerciseListPageState extends State<UserExerciseListPage>
+    with AutomaticKeepAliveClientMixin {
   List<ExerciseUI>? favoriteExercises;
   List<ExerciseUI>? yourExercises;
   List<ExerciseUI>? otherExercises;
@@ -24,7 +25,11 @@ class _UserExerciseListPageState extends State<UserExerciseListPage> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ListView(
       padding: const EdgeInsets.all(20).add(context.safeArea),
       children: [

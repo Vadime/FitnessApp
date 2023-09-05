@@ -1,8 +1,9 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/widgets/user_profile_friends_widget.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:widgets/widgets.dart';
 
 class FriendUI {
@@ -36,7 +37,8 @@ class UserFriendListPage extends StatefulWidget {
   State<UserFriendListPage> createState() => _UserFriendListPageState();
 }
 
-class _UserFriendListPageState extends State<UserFriendListPage> {
+class _UserFriendListPageState extends State<UserFriendListPage>
+    with AutomaticKeepAliveClientMixin {
   List<FriendUI>? friends;
 
   @override
@@ -63,51 +65,43 @@ class _UserFriendListPageState extends State<UserFriendListPage> {
     setState(() {});
   }
 
-  List<ChartWidgetBarGroup> bars() {
-    List<ChartWidgetBarGroup> bars = List<ChartWidgetBarGroup>.generate(
-      3,
-      (index) => ChartWidgetBarGroup(
-        title: '',
-        x: index,
-        rods: [
-          ChartWidgetBarRodStd(
-            0,
-            color: context.config.primaryColor.withOpacity(0.2),
-            width: 60,
-          ),
-        ],
-      ),
-    );
+  List<BarChartGroupData> bars() {
+    List<BarChartGroupData> bars = [];
 
     for (int i = 0; i < 3; i++) {
-      bars[i] = ChartWidgetBarGroup(
-        title: friends![i].friend.displayName,
-        x: i == 0
-            ? 1
-            : i == 1
-                ? 0
-                : i,
-        rods: [
-          ChartWidgetBarRodStd(
-            friends![i].score.toDouble(),
-            color: i == 0
-                ? context.config.primaryColor.withOpacity(0.8)
-                : i == 1
-                    ? context.config.primaryColor.withOpacity(0.6)
-                    : context.config.primaryColor.withOpacity(0.4),
-            width: 60,
-          ),
-        ],
+      bars.add(
+        BarChartGroupData(
+          x: i,
+          barRods: [
+            BarChartRodData(
+              fromY: 0,
+              toY: friends![i].score.toDouble(),
+              color: barColors(context)[i],
+              width: context.mediaQuery.size.width / 10,
+              borderRadius: BorderRadius.circular(context.config.radius),
+            ),
+          ],
+        ),
       );
     }
-    var f = bars.first;
-    bars[0] = bars[1];
-    bars[1] = f;
     return bars;
   }
 
+  List<Icon> barIcons = [
+    const Icon(Icons.star_rounded),
+    const Icon(Icons.star_half_rounded),
+    const Icon(Icons.star_border_rounded),
+  ];
+
+  List<Color> barColors(BuildContext context) => [
+        context.config.primaryColor.withOpacity(0.9),
+        context.config.primaryColor.withOpacity(0.7),
+        context.config.primaryColor.withOpacity(0.5),
+      ];
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (friends == null) {
       return const SizedBox(
         height: 100,
@@ -123,37 +117,50 @@ class _UserFriendListPageState extends State<UserFriendListPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
             if (friends?.first.score != 0)
               SizedBox(
                 height: 200,
-                child: Stack(
-                  children: [
-                    BarChartWidget(
-                      maxY: friends?.first.score.toDouble() ?? 0,
-                      bottomAxis: ChartWidgetAxis(
-                        axisTitles: bars().map((e) => e.title).toList(),
+                child: BarChart(
+                  BarChartData(
+                    alignment: BarChartAlignment.spaceEvenly,
+                    maxY: friends?.first.score.toDouble() ?? 0,
+                    minY: 0,
+                    barTouchData: BarTouchData(enabled: false),
+                    borderData: FlBorderData(show: false),
+                    gridData: const FlGridData(show: false),
+                    titlesData: FlTitlesData(
+                      show: true,
+                      leftTitles: const AxisTitles(),
+                      rightTitles: const AxisTitles(),
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (i, m) => barIcons[i.toInt()],
+                          reservedSize: 40,
+                        ),
                       ),
-                      barGroups: bars(),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 120,
-                      child: Icon(
-                        Icons.star_rounded,
-                        color: context.colorScheme.secondary,
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 30,
+                          getTitlesWidget: (i, m) => Align(
+                            alignment: Alignment.bottomCenter,
+                            child: SizedBox(
+                              width: context.mediaQuery.size.width / 3 -
+                                  context.config.paddingH,
+                              child: TextWidget(
+                                friends![i.toInt()].friend.displayName,
+                                align: TextAlign.center,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    Positioned(
-                      left: context.mediaQuery.size.width / 3 - 60,
-                      top: 120,
-                      child: Icon(
-                        Icons.star_half_rounded,
-                        color: context.colorScheme.secondary,
-                      ),
-                    ),
-                  ],
+                    barGroups: bars(),
+                  ),
                 ),
               ),
             Flexible(
@@ -171,20 +178,26 @@ class _UserFriendListPageState extends State<UserFriendListPage> {
                             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                             selectedColor: UserRepository.currentUser!.uid ==
                                     friends![i].friend.uid
-                                ? context.config.primaryColor.withOpacity(0.2)
+                                ? context.config.primaryColor.withOpacity(0.05)
                                 : null,
-                            title: friends![i].friend.displayName,
+                            title: friends![i].friend.displayName +
+                                (UserRepository.currentUser!.uid ==
+                                        friends![i].friend.uid
+                                    ? ' - You'
+                                    : ''),
                             subtitle: 'Score: ${friends![i].score}',
                             // friends![i].friend.contactMethod.value,
                             // from the changenotifier provider in the bottomnavigationpage
                             onTap: () => UserRepository.currentUser!.uid ==
                                     friends![i].friend.uid
-                                ? Provider.of<PageController>(context,
-                                        listen: false)
+                                ? BlocProvider.of<
+                                        BottomNavigationPageController>(context)
+                                    .controller
                                     .go(4)
                                 : Navigation.pushPopup(
                                     widget: UserProfileFriendsGraphPopup(
                                       friend: friends![i].friend,
+                                      loader: (() async => friends![i].stats)(),
                                     ),
                                   ),
                             leading: TextWidget(
@@ -194,8 +207,8 @@ class _UserFriendListPageState extends State<UserFriendListPage> {
                             ),
                             trailing: ImageWidget(
                               NetworkImage(friends![i].friend.imageURL ?? ''),
-                              width: 40,
-                              height: 40,
+                              width: 50,
+                              height: 50,
                             ),
                           ),
                       ],
@@ -217,4 +230,7 @@ class _UserFriendListPageState extends State<UserFriendListPage> {
       );
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

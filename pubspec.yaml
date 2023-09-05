@@ -1,5 +1,5 @@
 name: fitnessapp
-version: 0.0.7+2
+version: 0.0.7+3
 description: Fitness App for Android and iOS
 homepage: https://github.com/Vadime/FitnessApp
 repository: https://github.com/Vadime/FitnessApp
@@ -28,6 +28,7 @@ dependencies:
   widgets: 
     path: ../FlutterPackages/widgets
   provider: ^6.0.5
+  fl_chart: ^0.63.0
     # git: 
     #   url: https://github.com/Vadime/FlutterPackages.git
     #   ref: development

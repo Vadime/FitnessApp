@@ -16,9 +16,11 @@ class UserProfilePage extends StatefulWidget {
   State<UserProfilePage> createState() => _UserProfilePageState();
 }
 
-class _UserProfilePageState extends State<UserProfilePage> {
+class _UserProfilePageState extends State<UserProfilePage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     User? currentUser = UserRepository.currentUser;
 
     return ListView(
@@ -100,4 +102,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
