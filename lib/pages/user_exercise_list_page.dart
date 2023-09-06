@@ -109,11 +109,9 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
       yourExercises!.add(ExerciseUI(yourExerciseList[i], image));
       setState(() {});
     }
-    Logging.log('Hier 1');
     var favoriteUIDS =
         await UserRepository.currentUserFavoriteExercisesAsFuture;
     var otherExerciseList = await ExerciseRepository.getExercises();
-    Logging.log('Hier 2');
 
     // sortieren damit favoriten oben sind und gleichmäßig geladen werden
     otherExerciseList.sort(
@@ -125,14 +123,12 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
               ? 1
               : 0,
     );
-    Logging.log('Hier 3');
 
     favoriteExercises ??= [];
     otherExercises ??= [];
     for (int i = 0; i < otherExerciseList.length; i++) {
       var image =
           await ExerciseRepository.getExerciseImage(otherExerciseList[i]);
-      Logging.log('Hier 4');
 
       bool isFavorite = favoriteUIDS.contains(otherExerciseList[i].uid);
       if (isFavorite) {
@@ -140,7 +136,6 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
       } else {
         otherExercises!.add(ExerciseUI(otherExerciseList[i], image));
       }
-      Logging.log('Hier 5');
 
       setState(() {});
     }

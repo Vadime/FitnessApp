@@ -125,12 +125,12 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
           if (exercises == null)
             const SizedBox(
               height: 100,
-              child: FailWidget("Couldn't load exercises"),
+              child: LoadingWidget(),
             )
           else if (exercises!.isEmpty)
             const SizedBox(
               height: 100,
-              child: LoadingWidget(),
+              child: FailWidget('No Exercises found'),
             )
           else
             for (WorkoutExerciseUI e in exercises!) exerciseListTile(e),
@@ -151,8 +151,9 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
       if (exercise != null) {
         exercises!.add(WorkoutExerciseUI(ExerciseUI(exercise, image), w));
       }
-      if (context.mounted) setState(() {});
+      setState(() {});
     }
+    setState(() {});
   }
 
   Widget exerciseListTile(

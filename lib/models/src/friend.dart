@@ -35,4 +35,11 @@ class Friend {
         contactMethod: user.contactAdress,
         imageURL: user.imageURL,
       );
+
+  factory Friend.empty() => const Friend(
+        uid: '',
+        displayName: '',
+        contactMethod: ContactMethod.unknown(),
+        imageURL: null,
+      );
 }

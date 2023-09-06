@@ -12,6 +12,36 @@ class ProfileUserStatsGraph extends StatelessWidget {
     super.key,
   });
 
+  List<MapEntry<DateTime, List<WorkoutStatistic>>> sortStatisticsByDate(
+    List<WorkoutStatistic> stats,
+  ) {
+    Map<DateTime, List<WorkoutStatistic>> map = {};
+    // count number of workouts done in one day
+    for (WorkoutStatistic stat in stats) {
+      if (map.containsKey(stat.dateTime)) {
+        map[stat.dateTime]!.add(stat);
+      } else {
+        map.putIfAbsent(stat.dateTime, () => [stat]);
+      }
+    }
+    return map.entries.toList().sublist(
+          max(map.length - 7, 0),
+          map.length,
+        );
+  }
+
+  int findMostWorkoutsOnDate(
+    List<MapEntry<DateTime, List<WorkoutStatistic>>> map,
+  ) {
+    var max = 0;
+    for (var stat in map) {
+      if (stat.value.length > max) {
+        max = stat.value.length;
+      }
+    }
+    return max;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -28,58 +58,34 @@ class ProfileUserStatsGraph extends StatelessWidget {
             return const FailWidget('No workouts done yet');
           }
 
-          Map<DateTime, List<WorkoutStatistic>> workoutCount = {};
-          // count number of workouts done in one day
-          for (WorkoutStatistic stat in stats) {
-            if (workoutCount.containsKey(stat.dateTime)) {
-              workoutCount[stat.dateTime]!.add(stat);
-            } else {
-              workoutCount.putIfAbsent(stat.dateTime, () => [stat]);
-            }
-          }
+          List<MapEntry<DateTime, List<WorkoutStatistic>>> workoutCount =
+              sortStatisticsByDate(stats);
 
-          findMax(Map<DateTime, List<WorkoutStatistic>> map) {
-            var max = 0;
-            for (var stat in map.values) {
-              if (stat.length > max) {
-                max = stat.length;
-              }
-            }
-            return max;
-          }
-
-          List<BarChartGroupData> barGroups = workoutCount.entries
-              .toList()
-              .sublist(max(workoutCount.length - 7, 0), workoutCount.length)
-              .asMap()
-              .entries
-              .map(
-                (e) => BarChartGroupData(
-                  x: e.key,
-                  groupVertically: true,
-                  barRods: e.value.value
-                      .asMap()
-                      .entries
-                      .map(
-                        (e) => BarChartRodData(
-                          fromY: e.key.toDouble() + 0.05,
-                          toY: e.key.toDouble() + 0.95,
-                          color: e.value.difficulty.getColor(context),
-                          borderRadius:
-                              BorderRadius.circular(context.config.radius),
-                        ),
-                      )
-                      .toList(),
-                ),
-              )
-              .toList();
           return BarChart(
             BarChartData(
               alignment: BarChartAlignment.spaceEvenly,
-              maxY: findMax(workoutCount).toDouble(),
+              maxY: findMostWorkoutsOnDate(workoutCount).toDouble(),
               minY: 0,
               barTouchData: BarTouchData(enabled: false),
-              barGroups: barGroups,
+              barGroups: List.generate(workoutCount.length, (dayIndex) {
+                List<WorkoutStatistic> workoutsPerDay =
+                    workoutCount[dayIndex].value;
+                return BarChartGroupData(
+                  x: dayIndex,
+                  groupVertically: true,
+                  barRods: List.generate(workoutsPerDay.length, (workoutIndex) {
+                    WorkoutStatistic workout = workoutsPerDay[workoutIndex];
+                    return BarChartRodData(
+                      fromY: workoutIndex.toDouble() + 0.05,
+                      toY: workoutIndex.toDouble() + 0.95,
+                      color: workout.difficulty.getColor(context),
+                      borderRadius: BorderRadius.circular(
+                        context.config.radius,
+                      ),
+                    );
+                  }),
+                );
+              }),
               borderData: FlBorderData(show: false),
               gridData: const FlGridData(show: false),
               titlesData: FlTitlesData(
@@ -97,18 +103,7 @@ class ProfileUserStatsGraph extends StatelessWidget {
                     getTitlesWidget: (i, m) => Align(
                       alignment: Alignment.bottomCenter,
                       child: TextWidget(
-                        workoutCount.entries
-                            .toList()
-                            .sublist(
-                              max(workoutCount.length - 7, 0),
-                              workoutCount.length,
-                            )
-                            .asMap()
-                            .entries
-                            .toList()[i.toInt()]
-                            .value
-                            .key
-                            .strNotYear,
+                        workoutCount[i.toInt()].key.strNotYear,
                         align: TextAlign.center,
                       ),
                     ),
