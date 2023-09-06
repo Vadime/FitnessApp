@@ -61,7 +61,7 @@ class _UserProfilePageState extends State<UserProfilePage>
               ),
               onTap: () async {
                 await Navigation.pushPopup(
-                  widget: const ProfileEditPopup(),
+                  widget: const ProfileEditPopup(4),
                   c: context,
                 );
               },

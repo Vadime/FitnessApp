@@ -53,10 +53,11 @@ class FriendStatsGraph extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
                   width: context.mediaQuery.size.width / 3 -
-                      context.config.paddingH,
+                      context.config.padding,
                   child: TextWidget(
                     friendsCopy[i.toInt()].friend.displayName,
                     align: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
                 ),

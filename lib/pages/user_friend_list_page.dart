@@ -135,6 +135,10 @@ class _UserFriendListPageState extends State<UserFriendListPage>
                               : Theme(
                                   data: Theme.of(context).copyWith(
                                     dividerColor: Colors.transparent,
+                                    dividerTheme: const DividerThemeData(
+                                      thickness: 0,
+                                      space: 0,
+                                    ),
                                   ),
                                   child: ExpansionTile(
                                     title: Text(

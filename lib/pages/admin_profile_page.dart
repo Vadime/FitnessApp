@@ -57,7 +57,7 @@ class _AdminProfilePageState extends State<AdminProfilePage>
                 Icons.edit_rounded,
               ),
               onTap: () =>
-                  Navigation.pushPopup(widget: const ProfileEditPopup()),
+                  Navigation.pushPopup(widget: const ProfileEditPopup(3)),
             ),
             ListTileWidget(
               title: 'Change Password',

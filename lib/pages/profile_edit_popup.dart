@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class ProfileEditPopup extends StatefulWidget {
-  const ProfileEditPopup({super.key});
+  final int initialHomeIndex;
+  const ProfileEditPopup(this.initialHomeIndex, {super.key});
 
   @override
   State<ProfileEditPopup> createState() => _ProfileEditPopupState();
@@ -146,8 +147,8 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
   }
 
   navigate() => Navigation.flush(
-        widget: const HomeScreen(
-          initialIndex: 4,
+        widget: HomeScreen(
+          initialIndex: widget.initialHomeIndex,
         ),
       );
 }
