@@ -1,1 +1,17 @@
-{}
+{
+  "@@locale": "de",
+  "courses": "Kurse",
+  "course": "Kurs",
+  "exercise": "Übung",
+  "friends": "Freunde",
+  "helloWorld": "Hallo Welt",
+  "profile": "Profil",
+  "workout": "Trainingsplan",
+  "skip_button": "Überspringen",
+  "next_button": "Weiter",
+  "get_started_button": "Los geht''s",
+  "sign_in": "Einloggen",
+  "sign_out": "Ausloggen",
+  "sign_up": "Registrieren",
+  "send_password": "Passwort senden"
+}

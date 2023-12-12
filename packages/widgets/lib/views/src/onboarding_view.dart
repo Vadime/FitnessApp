@@ -6,6 +6,7 @@ class OnboardingView extends StatelessWidget {
   final String description;
   final String image;
   final Color? backgroundColor;
+  final Color? imageBackgroundColor;
   final Gradient? backgroundGradient;
   final Color? foregroundColor;
   final double? padding;
@@ -14,6 +15,7 @@ class OnboardingView extends StatelessWidget {
     required this.title,
     required this.description,
     required this.image,
+    this.imageBackgroundColor,
     this.backgroundColor,
     this.backgroundGradient,
     this.foregroundColor,
@@ -38,7 +40,8 @@ class OnboardingView extends StatelessWidget {
           ImageWidget(AssetImage(image),
               width: context.mediaQuery.size.shortestSide / 2,
               height: context.mediaQuery.size.shortestSide / 2,
-              radius: radius),
+              backgroundColor: imageBackgroundColor,
+              radius: context.mediaQuery.size.shortestSide / 4),
           const Spacer(),
           TextWidget(
             title,

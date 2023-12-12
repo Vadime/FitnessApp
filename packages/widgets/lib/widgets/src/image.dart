@@ -9,6 +9,7 @@ class ImageWidget extends StatelessWidget {
   final EdgeInsets margin;
   final double? radius;
   final Function()? onTap;
+  final Color? backgroundColor;
   const ImageWidget(
     this.image, {
     this.fit = BoxFit.cover,
@@ -17,6 +18,7 @@ class ImageWidget extends StatelessWidget {
     this.height,
     this.width,
     this.onTap,
+    this.backgroundColor,
     super.key,
   });
 
@@ -34,20 +36,24 @@ class ImageWidget extends StatelessWidget {
         },
         child: ClipRRect(
           borderRadius: BorderRadius.circular(radius ?? context.config.radius),
-          child: image == null
-              ? buildWidget(context)
-              : Image(
-                  image: image!,
-                  fit: fit,
-                  width: width,
-                  height: height,
-                  errorBuilder: (context, error, stackTrace) =>
-                      buildWidget(context),
-                  frameBuilder:
-                      (context, child, frame, wasSynchronouslyLoaded) => child,
-                  loadingBuilder: (context, child, loadingProgress) =>
-                      loadingProgress == null ? child : buildWidget(context),
-                ),
+          child: Container(
+            color: backgroundColor,
+            child: image == null
+                ? buildWidget(context)
+                : Image(
+                    image: image!,
+                    fit: fit,
+                    width: width,
+                    height: height,
+                    errorBuilder: (context, error, stackTrace) =>
+                        buildWidget(context),
+                    frameBuilder:
+                        (context, child, frame, wasSynchronouslyLoaded) =>
+                            child,
+                    loadingBuilder: (context, child, loadingProgress) =>
+                        loadingProgress == null ? child : buildWidget(context),
+                  ),
+          ),
         ),
       ),
     );

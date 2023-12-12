@@ -15,6 +15,7 @@ class OnboardingScreen extends StatelessWidget {
           image: 'res/logo/foreground.png',
           backgroundColor: context.config.primaryColor,
           foregroundColor: Colors.white,
+          imageBackgroundColor: Colors.white,
         ),
         const OnboardingView(
           title: 'DÜNN',
@@ -22,6 +23,7 @@ class OnboardingScreen extends StatelessWidget {
           image: 'res/logo/foreground.png',
           backgroundColor: Colors.grey,
           foregroundColor: Colors.white,
+          imageBackgroundColor: Colors.white,
         ),
         OnboardingView(
           title: 'ODER DOOF',
@@ -29,6 +31,7 @@ class OnboardingScreen extends StatelessWidget {
           image: 'res/logo/foreground.png',
           backgroundColor: context.config.primaryColor,
           foregroundColor: Colors.white,
+          imageBackgroundColor: Colors.white,
         ),
         const OnboardingView(
           title: 'DU BIST HIER RICHTIG',
@@ -36,6 +39,7 @@ class OnboardingScreen extends StatelessWidget {
           image: 'res/logo/foreground.png',
           backgroundColor: Colors.grey,
           foregroundColor: Colors.white,
+          imageBackgroundColor: Colors.white,
         ),
       ],
       onDone: () => Navigation.flush(

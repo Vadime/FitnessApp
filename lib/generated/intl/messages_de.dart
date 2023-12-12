@@ -21,5 +21,22 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'de';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{};
+  static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "course": MessageLookupByLibrary.simpleMessage("Kurs"),
+        "courses": MessageLookupByLibrary.simpleMessage("Kurse"),
+        "exercise": MessageLookupByLibrary.simpleMessage("Übung"),
+        "friends": MessageLookupByLibrary.simpleMessage("Freunde"),
+        "get_started_button":
+            MessageLookupByLibrary.simpleMessage("Los geht\'\'s"),
+        "helloWorld": MessageLookupByLibrary.simpleMessage("Hallo Welt"),
+        "next_button": MessageLookupByLibrary.simpleMessage("Weiter"),
+        "profile": MessageLookupByLibrary.simpleMessage("Profil"),
+        "send_password":
+            MessageLookupByLibrary.simpleMessage("Passwort senden"),
+        "sign_in": MessageLookupByLibrary.simpleMessage("Einloggen"),
+        "sign_out": MessageLookupByLibrary.simpleMessage("Ausloggen"),
+        "sign_up": MessageLookupByLibrary.simpleMessage("Registrieren"),
+        "skip_button": MessageLookupByLibrary.simpleMessage("Überspringen"),
+        "workout": MessageLookupByLibrary.simpleMessage("Trainingsplan")
+      };
 }
