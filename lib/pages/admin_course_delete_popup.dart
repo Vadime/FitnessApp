@@ -18,12 +18,12 @@ class AdminCourseDeletePopup extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
+        TextWidget(
           'Delete Course',
           style: context.textTheme.titleLarge,
         ),
         const SizedBox(height: 10),
-        const Text(
+        const TextWidget(
           'Are you sure you want to delete this course?',
         ),
         const SizedBox(height: 20),

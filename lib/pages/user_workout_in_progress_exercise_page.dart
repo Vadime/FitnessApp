@@ -14,7 +14,14 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20),
-      child: Column(
+      child: OrientationBuilderWidget(
+        portraitBuilder: smallExercise,
+        landscapeBuilder: mediumExercise,
+      ),
+    );
+  }
+
+  Widget smallExercise(context) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ImageWidget(
@@ -36,7 +43,7 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
               ),
               TableRowWidget(
                 cells: [
-                  'Description',
+                  'Beschreibung',
                   exercise.exerciseUI.exercise.description,
                 ],
               ),
@@ -52,7 +59,7 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
                   .toList(),
               TableRowWidget(
                 cells: [
-                  'Muscles',
+                  'Muskelgruppen',
                   exercise.exerciseUI.exercise.muscles
                       .map((e) => e.str)
                       .join(', '),
@@ -62,7 +69,63 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
           ),
           const Spacer(),
         ],
-      ),
-    );
-  }
+      );
+
+  Widget mediumExercise(context) => Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: ImageWidget(
+              exercise.exerciseUI.image == null
+                  ? null
+                  : MemoryImage(exercise.exerciseUI.image!),
+              height: 200,
+            ),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: SingleChildScrollView(
+              child: TableWidget(
+                columnWidths: const {
+                  0: FlexColumnWidth(1),
+                  1: FlexColumnWidth(2),
+                },
+                rows: [
+                  TableRowWidget(
+                    cells: [
+                      'Name',
+                      exercise.exerciseUI.exercise.name,
+                    ],
+                  ),
+                  TableRowWidget(
+                    cells: [
+                      'Beschreibung',
+                      exercise.exerciseUI.exercise.description,
+                    ],
+                  ),
+                  ...exercise.workoutExercise.type.values.entries
+                      .map(
+                        (e) => TableRowWidget(
+                          cells: [
+                            e.key,
+                            e.value,
+                          ],
+                        ),
+                      )
+                      .toList(),
+                  TableRowWidget(
+                    cells: [
+                      'Muskelgruppen',
+                      exercise.exerciseUI.exercise.muscles
+                          .map((e) => e.str)
+                          .join(', '),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
 }

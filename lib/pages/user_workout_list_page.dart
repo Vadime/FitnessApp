@@ -33,11 +33,11 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView(
-      padding: const EdgeInsets.all(20).add(context.safeArea),
+    return ScrollViewWidget(
+      maxInnerWidth: 600,
       children: [
         const TextWidget(
-          'Your Workouts',
+          'Deine Trainingspläne',
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
         if (userWorkouts == null)
@@ -49,13 +49,13 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage>
           const SizedBox(
             height: 100,
             child: FailWidget(
-              'No favorites yet',
+              'Noch keine Favoriten',
             ),
           )
         else
           for (var u in userWorkouts!) workoutListTile(u, true),
         const TextWidget(
-          'All Workouts',
+          'Alle Trainingspläne',
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
         if (adminWorkouts == null)
@@ -67,7 +67,7 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage>
           const SizedBox(
             height: 100,
             child: FailWidget(
-              'No favorites yet',
+              'Noch keine Trainingspläne',
             ),
           )
         else
@@ -79,7 +79,7 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage>
   Widget workoutListTile(Workout workout, bool userWorkout) => Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(
+          TextWidget(
             workout.schedule.str,
             style: context.textTheme.labelSmall,
           ),

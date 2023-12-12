@@ -6,47 +6,53 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart'
     show FontAwesomeIcons;
 import 'package:widgets/widgets.dart';
 
-class BrandingPopup extends StatelessWidget {
-  const BrandingPopup({super.key});
+class BrandingWidget extends StatelessWidget {
+  const BrandingWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
     return FooterWidget(
-      commercialText: '© 2023 Traumteam',
       socials: [
         IconButtonWidget(
           FontAwesomeIcons.instagram,
-          onPressed: () async =>
-              await UrlLauncher.launchBrowser('instagram.com'),
+          onPressed: () {
+            UrlLauncher.launchBrowser('instagram.com');
+          },
           foregroundColor: Colors.pink,
         ),
         IconButtonWidget(
           FontAwesomeIcons.twitter,
-          onPressed: () async => await UrlLauncher.launchBrowser('twitter.com'),
+          onPressed: () {
+            UrlLauncher.launchBrowser('twitter.com');
+          },
           foregroundColor: Colors.blue,
         ),
       ],
       buttons: [
         TextButtonWidget(
-          'About',
+          'Über uns',
           onPressed: () => Navigation.push(widget: const AboutScreen()),
         ),
         TextButtonWidget(
-          'Contact',
-          onPressed: () async {
-            await UrlLauncher.launchEmail(
+          'Kontakt',
+          onPressed: () {
+            UrlLauncher.launchEmail(
               'traumteam@email.de',
               'Angelegenheit',
             );
           },
         ),
         TextButtonWidget(
-          'Privacy',
-          onPressed: () => Navigation.push(widget: const PrivacyScreen()),
+          'Datenschutz',
+          onPressed: () {
+            Navigation.push(widget: const PrivacyScreen());
+          },
         ),
         TextButtonWidget(
-          'Terms',
-          onPressed: () => Navigation.push(widget: const TermsScreen()),
+          'Nutzungsbedingungen',
+          onPressed: () {
+            Navigation.push(widget: const TermsScreen());
+          },
         ),
       ],
     );

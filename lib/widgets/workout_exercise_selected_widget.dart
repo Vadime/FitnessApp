@@ -64,7 +64,7 @@ class _WorkoutExerciseSelectedWidgetState
               style: context.textTheme.labelMedium,
             ),
             TextButtonWidget(
-              'Change',
+              'Ändern',
               onPressed: () {
                 // change exercise type
                 if (widget.entry.workoutExercise.type

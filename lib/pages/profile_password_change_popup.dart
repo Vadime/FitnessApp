@@ -13,10 +13,10 @@ class ProfilePasswordChangePopup extends StatefulWidget {
 class _ProfilePasswordChangePopupState
     extends State<ProfilePasswordChangePopup> {
   TextFieldController oldPasswordBloc = TextFieldController.password(
-    labelText: 'Old Password',
+    labelText: 'Altes Passwort',
   );
   TextFieldController newPasswordBloc = TextFieldController.password(
-    labelText: 'New Password',
+    labelText: 'Neues Passwort',
   );
 
   @override
@@ -25,7 +25,7 @@ class _ProfilePasswordChangePopupState
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Change Password', style: context.textTheme.titleLarge),
+        TextWidget('Passwort ändern', style: context.textTheme.titleLarge),
         const SizedBox(height: 20),
         CardWidget(
           children: [
@@ -42,7 +42,7 @@ class _ProfilePasswordChangePopupState
         const SizedBox(height: 20),
         // save changes
         ElevatedButtonWidget(
-          'Change Password',
+          'Passwort ändern',
           onPressed: () async {
             // check if there is an error in password
             if (!oldPasswordBloc.isValid()) return;

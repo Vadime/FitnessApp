@@ -1,10 +1,7 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:fitnessapp/widgets/friend_stats_graph.dart';
-import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:widgets/widgets.dart';
 
 class FriendUI {
@@ -86,128 +83,40 @@ class _UserFriendListPageState extends State<UserFriendListPage>
         child: FailWidget('You have no friends'),
       );
     } else {
-      return SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 20),
-            if (friends?.first.score != 0)
-              SizedBox(
-                height: 200,
-                child: FriendStatsGraph(friends!),
-              ),
-            Flexible(
-              child: CardWidget.single(
-                margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: Flexible(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(context.config.radius),
-                    child: ListView(
-                      shrinkWrap: true,
-                      physics: const ScrollPhysics(),
-                      children: [
-                        for (int i = 0; i < friends!.length; i++)
-                          friendIsUser(friends![i])
-                              ? ListTileWidget(
-                                  title: 'You',
-                                  subtitle: 'Score: ${friends![i].score}',
-                                  padding:
-                                      const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                  leading: TextWidget(
-                                    (i + 1).toString(),
-                                    color: context.config.neutralColor,
-                                    margin: const EdgeInsets.only(right: 20),
-                                  ),
-                                  trailing: ImageWidget(
-                                    NetworkImage(
-                                      friends![i].friend.imageURL ?? '',
-                                    ),
-                                    width: 50,
-                                    height: 50,
-                                  ),
-                                  selectedColor: context.config.primaryColor
-                                      .withOpacity(0.05),
-                                  onTap: () => BlocProvider.of<
-                                      BottomNavigationPageController>(
-                                    context,
-                                  ).controller.go(4),
-                                )
-                              : Theme(
-                                  data: Theme.of(context).copyWith(
-                                    dividerColor: Colors.transparent,
-                                    dividerTheme: const DividerThemeData(
-                                      thickness: 0,
-                                      space: 0,
-                                    ),
-                                  ),
-                                  child: ExpansionTile(
-                                    title: Text(
-                                      friends![i].friend.displayName,
-                                    ),
-                                    subtitle:
-                                        Text('Score: ${friends![i].score}'),
-                                    tilePadding:
-                                        const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                    childrenPadding: const EdgeInsets.fromLTRB(
-                                      20,
-                                      0,
-                                      20,
-                                      10,
-                                    ),
-                                    leading: TextWidget(
-                                      (i + 1).toString(),
-                                      color: context.config.neutralColor,
-                                      margin: const EdgeInsets.only(right: 20),
-                                    ),
-                                    trailing: ImageWidget(
-                                      NetworkImage(
-                                        friends![i].friend.imageURL ?? '',
-                                      ),
-                                      width: 50,
-                                      height: 50,
-                                    ),
-                                    children: [
-                                      ProfileUserStatsGraph(
-                                        loader:
-                                            (() async => friends![i].stats)(),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: TextButtonWidget(
-                                          'Remove Friend',
-                                          onPressed: () async {
-                                            await UserRepository.removeFriend(
-                                              friends![i].friend,
-                                            );
-                                            Navigation.flush(
-                                              widget: const HomeScreen(
-                                                initialIndex: 3,
-                                              ),
-                                            );
-                                          },
-                                          foregroundColor:
-                                              context.config.errorColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+      return ScrollViewWidget(
+        maxInnerWidth: 600,
+        children: [
+          if (friends?.first.score != 0)
+            SizedBox(
+              height: 200,
+              child: FriendStatsGraph(friends!),
             ),
-            const SizedBox(height: 10),
-            // if (friends != null)
-            //   TextWidget(
-            //     '${friends!.first.friend.displayName} hat zurzeit den größten yarak und\n${friends!.last.friend.displayName} ist ein Hurensohn!',
-            //     align: TextAlign.center,
-            //     color: context.config.neutralColor,
-            //   ),
-            const SizedBox(height: 10),
-          ],
-        ),
+          const SizedBox(height: 20),
+          for (int i = 0; i < friends!.length; i++)
+            //if (friendIsUser(friends![i]))
+            ListTileWidget(
+              title: friends![i].friend.displayName,
+              subtitle: 'Score: ${friends![i].score}',
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+              margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+              leading: TextWidget(
+                (i + 1).toString(),
+                color: context.config.neutralColor,
+                margin: const EdgeInsets.only(right: 20),
+              ),
+              trailing: ImageWidget(
+                NetworkImage(
+                  friends![i].friend.imageURL ?? '',
+                ),
+                width: 50,
+                height: 50,
+                radius: 25,
+              ),
+              selectedColor: friendIsUser(friends![i])
+                  ? context.config.primaryColor.withOpacity(0.05)
+                  : null,
+            ),
+        ],
       );
     }
   }

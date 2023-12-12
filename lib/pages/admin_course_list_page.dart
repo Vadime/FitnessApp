@@ -53,7 +53,7 @@ class _AdminCourseListPageState extends State<AdminCourseListPage>
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
+            TextWidget(
               entry.course.date.str,
               style: context.textTheme.labelSmall,
             ),

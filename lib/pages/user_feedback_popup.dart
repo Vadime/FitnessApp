@@ -19,7 +19,7 @@ class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('User Feedback', style: context.textTheme.titleLarge),
+        TextWidget('Nutzer Feedback', style: context.textTheme.titleLarge),
         const SizedBox(height: 20),
         TextFieldWidget(
           controller: _feedbackController,
@@ -27,7 +27,7 @@ class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
         ),
         const SizedBox(height: 20),
         ElevatedButtonWidget(
-          'Send',
+          'Senden',
           onPressed: () async {
             // check if feedback is empty
             if (!_feedbackController.isValid()) return;

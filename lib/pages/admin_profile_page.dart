@@ -1,6 +1,7 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/admin_user_feedback_screen.dart';
+import 'package:fitnessapp/pages/branding_popup.dart';
 import 'package:fitnessapp/pages/profile_edit_popup.dart';
 import 'package:fitnessapp/pages/profile_password_change_popup.dart';
 import 'package:fitnessapp/widgets/profile_header_widget.dart';
@@ -22,13 +23,9 @@ class _AdminProfilePageState extends State<AdminProfilePage>
     super.build(context);
 
     User? currentUser = UserRepository.currentUser;
-    return ListView(
-      padding: const EdgeInsets.all(20),
+    return ScrollViewWidget(
+      maxInnerWidth: 600,
       children: [
-        const SafeArea(
-          bottom: false,
-          child: SizedBox(height: 0),
-        ),
         ProfileHeaderWidget(currentUser: currentUser),
         const SizedBox(height: 20),
         ProfileUserStatsGraph(
@@ -36,7 +33,7 @@ class _AdminProfilePageState extends State<AdminProfilePage>
         ),
         const SizedBox(height: 20),
         ListTileWidget(
-          title: 'User Feedback',
+          title: 'Nutzer Feedback',
           padding: const EdgeInsets.all(20),
           trailing: const Icon(
             Icons.feedback_rounded,
@@ -46,12 +43,12 @@ class _AdminProfilePageState extends State<AdminProfilePage>
           ),
         ),
         const SizedBox(height: 20),
-        Text('Settings', style: context.textTheme.bodyMedium),
+        TextWidget('Einstellungen', style: context.textTheme.bodyMedium),
         const SizedBox(height: 20),
         CardWidget(
           children: [
             ListTileWidget(
-              title: 'Edit Profile',
+              title: 'Profil bearbeiten',
               padding: const EdgeInsets.all(20),
               trailing: const Icon(
                 Icons.edit_rounded,
@@ -60,7 +57,7 @@ class _AdminProfilePageState extends State<AdminProfilePage>
                   Navigation.pushPopup(widget: const ProfileEditPopup(3)),
             ),
             ListTileWidget(
-              title: 'Change Password',
+              title: 'Passwort ändern',
               padding: const EdgeInsets.all(20),
 
               trailing: const Icon(
@@ -79,7 +76,7 @@ class _AdminProfilePageState extends State<AdminProfilePage>
         ),
         const SizedBox(height: 20),
         ListTileWidget(
-          title: 'Sign Out',
+          title: 'Ausloggen',
           padding: const EdgeInsets.all(20),
           trailing: Icon(
             Icons.logout_rounded,
@@ -88,9 +85,9 @@ class _AdminProfilePageState extends State<AdminProfilePage>
           // sign out user from firebase auth
           onTap: () => UserRepository.signOutCurrentUser(),
         ),
-        const SafeArea(
-          top: false,
-          child: SizedBox(height: 0),
+        const SizedBox(height: 20),
+        CardWidget.single(
+          child: const BrandingWidget(),
         ),
       ],
     );

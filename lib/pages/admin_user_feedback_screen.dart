@@ -27,20 +27,17 @@ class _AdminUserFeedbackScreenState extends State<AdminUserFeedbackScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: const AppBarWidget(
-        'User Feedback',
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
+    return ScaffoldWidget(
+      title: 'Nutzer Feedback',
+      body: ScrollViewWidget(
+        maxInnerWidth: 600,
         children: [
           const SafeArea(bottom: false, child: SizedBox()),
           for (int index = 0; index < feedbacks.length; index++)
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
+                TextWidget(
                   feedbacks[index].date,
                   style: context.textTheme.labelSmall,
                 ),

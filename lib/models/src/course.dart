@@ -1,4 +1,4 @@
-import 'package:widgets/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class Course {
   final String uid;

@@ -1,5 +1,5 @@
 
-import 'package:widgets/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class MyFeedback {
   final String name;

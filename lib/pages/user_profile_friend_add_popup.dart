@@ -24,10 +24,13 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
       children: [
         Row(
           children: [
-            Text('Add Friend', style: context.textTheme.titleMedium),
+            TextWidget(
+              'Freund hinzufügen',
+              style: context.textTheme.titleMedium,
+            ),
             const Spacer(),
             TextButtonWidget(
-              'Switch to ${type == ContactType.email ? ContactType.phone.str : ContactType.email.str}',
+              'Ändern auf ${type == ContactType.email ? ContactType.phone.str : ContactType.email.str}',
               onPressed: () => setState(
                 () => type == ContactType.email
                     ? type = ContactType.phone
@@ -44,7 +47,7 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
         ),
         const SizedBox(height: 20),
         ElevatedButtonWidget(
-          'Add Friend',
+          'Freund hinzufügen',
           onPressed: () async {
             // check if there is an error in email
             if (type == ContactType.email) {

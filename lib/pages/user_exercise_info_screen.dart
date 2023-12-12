@@ -32,11 +32,10 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBarWidget(
-        widget.exercise.name,
-        action: IconButtonWidget(
+    return ScaffoldWidget(
+      title: widget.exercise.name,
+      actions: [
+        IconButtonWidget(
           !isFavorite ? Icons.favorite_border_rounded : Icons.favorite_rounded,
           onPressed: () async {
             // add or remove this exercise to favorites in firestore in user collection
@@ -60,11 +59,10 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
             );
           },
         ),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20).add(context.safeArea),
+      ],
+      body: ScrollViewWidget(
+        maxInnerWidth: 600,
         children: [
-          SizedBox(height: context.topInset),
           Container(
             height: 200,
             decoration: BoxDecoration(
@@ -91,11 +89,11 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.all(10),
-                      child: Text('Description'),
+                      child: TextWidget('Beschreibung'),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Text(widget.exercise.description),
+                      child: TextWidget(widget.exercise.description),
                     ),
                   ],
                 ),
@@ -103,11 +101,11 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.all(10),
-                      child: Text('Muscles'),
+                      child: TextWidget('Muskelgruppen'),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
-                      child: Text(
+                      child: TextWidget(
                         widget.exercise.muscles.map((e) => e.str).join(', '),
                       ),
                     ),

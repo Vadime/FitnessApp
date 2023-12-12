@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitnessapp/database/database.dart';
 import 'package:flutter/material.dart';
-import 'package:widgets/controllers/theme_controller.dart';
+import 'package:widgets/controllers/controllers.dart';
 
 /// This class is seperate, because it doesnt make sense to intertwine the logik for saving the thememode with the current user or database,
 /// i may change the behavior later on some other logic that has nothing to do with the user or firestore

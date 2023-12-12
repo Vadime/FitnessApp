@@ -1,5 +1,6 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/pages/branding_popup.dart';
 import 'package:fitnessapp/pages/profile_edit_popup.dart';
 import 'package:fitnessapp/pages/profile_password_change_popup.dart';
 import 'package:fitnessapp/pages/user_accunt_delete_popup.dart';
@@ -23,22 +24,17 @@ class _UserProfilePageState extends State<UserProfilePage>
     super.build(context);
     User? currentUser = UserRepository.currentUser;
 
-    return ListView(
-      padding: const EdgeInsets.all(20).add(context.safeArea),
+    return ScrollViewWidget(
+      maxInnerWidth: 600,
       children: [
         ProfileHeaderWidget(currentUser: currentUser),
-        //const SizedBox(height: 40),
-        //Text('Statistics', style: context.textTheme.bodyMedium),
         const SizedBox(height: 20),
         ProfileUserStatsGraph(
           loader: UserRepository.getWorkoutDatesStatistics(),
         ),
         const SizedBox(height: 20),
-        Text('Settings', style: context.textTheme.bodyMedium),
-        const SizedBox(height: 20),
         ListTileWidget(
-          padding: const EdgeInsets.all(20),
-          title: 'User Feedback',
+          title: 'Nutzer Feedback',
           trailing: const Icon(
             Icons.feedback_rounded,
           ),
@@ -54,8 +50,7 @@ class _UserProfilePageState extends State<UserProfilePage>
         CardWidget(
           children: [
             ListTileWidget(
-              padding: const EdgeInsets.all(20),
-              title: 'Edit Profile',
+              title: 'Profil bearbeiten',
               trailing: const Icon(
                 Icons.edit_rounded,
               ),
@@ -67,8 +62,7 @@ class _UserProfilePageState extends State<UserProfilePage>
               },
             ),
             ListTileWidget(
-              padding: const EdgeInsets.all(20),
-              title: 'Change Password',
+              title: 'Passwort ändern',
               trailing: const Icon(
                 Icons.password_rounded,
               ),
@@ -77,8 +71,7 @@ class _UserProfilePageState extends State<UserProfilePage>
               ),
             ),
             ListTileWidget(
-              padding: const EdgeInsets.all(20),
-              title: 'Sign Out',
+              title: 'Ausloggen',
               trailing: const Icon(
                 Icons.logout_rounded,
               ),
@@ -88,16 +81,21 @@ class _UserProfilePageState extends State<UserProfilePage>
         ),
         const SizedBox(height: 20),
         ListTileWidget(
-          title: 'Delete Account',
-          padding: const EdgeInsets.all(20),
+          title: 'Account löschen',
           trailing: Icon(
             Icons.delete_rounded,
             color: context.config.errorColor,
           ),
           onTap: () {
             // delete user from firebase auth
-            Navigation.pushPopup(widget: const UserAccountDeletePopup());
+            Navigation.pushPopup(
+              widget: const UserAccountDeletePopup(),
+            );
           },
+        ),
+        const SizedBox(height: 20),
+        CardWidget.single(
+          child: const BrandingWidget(),
         ),
       ],
     );

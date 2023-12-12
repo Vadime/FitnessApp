@@ -2,9 +2,9 @@ import 'dart:typed_data';
 
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/src/course.dart';
-import 'package:fitnessapp/utils/course_ui.dart';
 import 'package:fitnessapp/pages/admin_course_delete_popup.dart';
 import 'package:fitnessapp/pages/home/home_screen.dart';
+import 'package:fitnessapp/utils/course_ui.dart';
 import 'package:fitnessapp/widgets/upload_file.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -35,7 +35,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
 
     nameBloc = TextFieldController.name(text: widget.entry?.course.name ?? '');
     descriptionBloc = TextFieldController(
-      'Description',
+      'Beschreibung',
       text: widget.entry?.course.description ?? '',
     );
     selectedDate = widget.entry?.course.date ?? DateTime.now();
@@ -101,29 +101,15 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      appBar: const AppBarWidget(
-        'Add Course',
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Row(
-          children: [
-            const SizedBox(width: 30),
-            if (widget.entry?.course != null) deleteCourseButton(),
-            saveCourseButton(),
-            const SizedBox(width: 30),
-          ],
-        ),
-      ),
-      body: ListView(
+    return ScaffoldWidget(
+      title: 'Add Course',
+      actions: [
+        if (widget.entry?.course != null) deleteCourseButton(),
+        saveCourseButton(),
+      ],
+      body: ScrollViewWidget(
+        maxInnerWidth: 600,
         children: [
-          const SafeArea(
-            bottom: false,
-            child: SizedBox(),
-          ),
           UploadFile(
             imageFile: imageFile,
             onChanged: (file) {
@@ -149,16 +135,15 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
             margin: const EdgeInsets.all(20),
             child: Row(
               children: [
-                const Text('Datum'),
+                const TextWidget('Datum'),
                 const Spacer(),
                 TextButtonWidget(
                   selectedDate.str,
                   onPressed: () {
                     Navigation.pushDatePicker(
-                      firstDate:
-                          selectedDate.subtract(const Duration(days: 100)),
-                      lastDate: DateTime.now().add(const Duration(days: 100)),
-                      initialDate: selectedDate,
+                      first: selectedDate.subtract(const Duration(days: 100)),
+                      last: DateTime.now().add(const Duration(days: 100)),
+                      initial: selectedDate,
                       onChanged: (date) {
                         setState(() {
                           selectedDate = date;
@@ -169,11 +154,6 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 20),
-          const SafeArea(
-            top: false,
-            child: SizedBox(),
           ),
         ],
       ),

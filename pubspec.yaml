@@ -24,15 +24,15 @@ dependencies:
   firebase_messaging: ^14.6.7
 
   flutter_native_splash: ^2.3.1
-  
-  widgets: 
-    path: ../FlutterPackages/widgets
+
+  widgets:
+    path: packages/widgets
   provider: ^6.0.5
   fl_chart: ^0.63.0
-    # git: 
-    #   url: https://github.com/Vadime/FlutterPackages.git
-    #   ref: development
-    #   path: widgets
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.18.1
+  intl_translation: ^0.18.2
 
 dev_dependencies:
   flutter_test:
@@ -48,25 +48,19 @@ dev_dependencies:
       ref: master
 
 # dependency_overrides:
-
 environment:
   sdk: '>=3.0.5 <4.0.0'
 
 # executables:
-
 # platforms: [android, ios]
-
-publish_to: 'none' 
+publish_to: 'none'
 
 # funding: []
-
 # false_secrets: 
-
 # screenshots:
-
 # topics: [fitness,workout,health,sport,app]
-
 flutter:
+  generate: true
   uses-material-design: true
 
   assets:
@@ -82,15 +76,18 @@ flutter_launcher_icons:
   image_path: "res/logo/foreground.png"
 
   android: true
-  adaptive_icon_background: "#FF9800"
+  adaptive_icon_background: "#EEEEEE"
   adaptive_icon_foreground: "res/logo/foreground.png"
   min_sdk_android: 23
 
   ios: true
   remove_alpha_ios: true
-  background_color_ios: "#FF9800"
-  
+  background_color_ios: "#EEEEEE"
+
 # dart run flutter_native_splash:create
 flutter_native_splash:
-  color: "#FF9800"
+  color: "#EEEEEE"
   image: res/logo/foreground.png
+  
+flutter_intl:
+  enabled: true

@@ -1,7 +1,7 @@
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/utils/workout_exercise_ui.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_exercise_page.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_finished_popup.dart';
+import 'package:fitnessapp/utils/workout_exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -33,57 +33,59 @@ class _UserWorkoutInProgressScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWidget(
-        widget.workout.name,
-      ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: LinearProgressWidget(
-                  stepValue * currentPageIndex + stepValue,
-                ),
-              ),
-              Expanded(
-                child: PageView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: pageController,
-                  children: widget.exercises
-                      .map(
-                        (e) => UserWorkoutInProgressExercisePage(
-                          exercise: e,
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
-              Row(
+    return ScaffoldWidget(
+      title: widget.workout.name,
+      body: widget.exercises.isEmpty
+          ? const FailWidget('Keine Informationen konnten geladen werden')
+          : SafeArea(
+              child: Stack(
                 children: [
-                  const SizedBox(width: 30),
-                  previousButton(),
-                  const SizedBox(width: 20),
-                  nextButton(),
-                  const SizedBox(width: 30),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                        child: LinearProgressWidget(
+                          stepValue * currentPageIndex + stepValue,
+                        ),
+                      ),
+                      Expanded(
+                        child: PageView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: pageController,
+                          children: widget.exercises
+                              .map(
+                                (e) => UserWorkoutInProgressExercisePage(
+                                  exercise: e,
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const SizedBox(width: 30),
+                          previousButton(),
+                          const SizedBox(width: 20),
+                          nextButton(),
+                          const SizedBox(width: 30),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      const SafeArea(
+                        top: false,
+                        child: SizedBox(),
+                      ),
+                    ],
+                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: PartyWidget(
+                      controller: confettiController,
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 10),
-              const SafeArea(
-                top: false,
-                child: SizedBox(),
-              ),
-            ],
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: PartyWidget(
-              controller: confettiController,
             ),
-          ),
-        ],
-      ),
     );
   }
 

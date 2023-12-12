@@ -41,7 +41,7 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
       text: widget.exercise?.name,
     );
     descriptionBloc = TextFieldController(
-      'Description',
+      'Beschreibung',
       text: widget.exercise?.description,
     );
 
@@ -51,89 +51,72 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      extendBodyBehindAppBar: true,
-      appBar: AppBarWidget(
-        '${widget.exercise != null ? 'Update' : 'Add'} Exercise',
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Row(
-          children: [
-            const SizedBox(width: 30),
-            // delete button
-            if (widget.exercise != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 20),
-                child: IconButtonWidget(
-                  Icons.delete_rounded,
-                  onPressed: () {
-                    // delete exercise
-                    Navigation.pushPopup(
-                      widget: ExerciseDeletePopup(
-                        exercise: widget.exercise,
-                        delete: widget.delete!,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            // add and update button
-            Expanded(
-              child: ElevatedButtonWidget(
-                'Save Exercise',
-                onPressed: () async {
-                  if (!nameBloc.isValid()) return;
-                  if (!descriptionBloc.isValid()) return;
+    return ScaffoldWidget(
+      title: 'Übung ${widget.exercise != null ? 'ändern' : 'speichern'}',
+      primaryButton: ElevatedButtonWidget(
+        'Übung speichern',
+        onPressed: () async {
+          if (!nameBloc.isValid()) return;
+          if (!descriptionBloc.isValid()) return;
 
-                  if (musclesController.state.isEmpty) {
-                    return ToastController().show(
-                      'Please select at least one muscle group',
-                    );
-                  }
+          if (musclesController.state.isEmpty) {
+            return ToastController().show(
+              'Bitte wähle mindestens eine Muskelgruppe aus',
+            );
+          }
 
-                  if (imageFile == null) {
-                    return ToastController().show('Please select an image');
-                  }
-                  // generate id, for storage and firestore
-                  String id;
-                  if (widget.exercise == null) {
-                    id = ExerciseRepository.collectionReference.doc().id;
-                  } else {
-                    id = widget.exercise!.uid;
-                  }
+          if (imageFile == null) {
+            return ToastController().show('Bitte wähle ein Bild aus');
+          }
+          // generate id, for storage and firestore
+          String id;
+          if (widget.exercise == null) {
+            id = ExerciseRepository.collectionReference.doc().id;
+          } else {
+            id = widget.exercise!.uid;
+          }
 
-                  // create exercise
-                  var exercise = Exercise(
-                    uid: id,
-                    name: nameBloc.text,
-                    description: descriptionBloc.text,
-                    muscles: musclesController.state,
-                    imageURL: await ExerciseRepository.uploadExerciseImage(
-                      id,
-                      imageFile!,
-                    ),
-                  );
-
-                  try {
-                    await widget.upload(exercise);
-
-                    Navigation.flush(
-                      widget: const HomeScreen(initialIndex: 2),
-                    );
-                  } catch (e) {
-                    ToastController().show(e);
-                    return;
-                  }
-                },
-              ),
+          // create exercise
+          var exercise = Exercise(
+            uid: id,
+            name: nameBloc.text,
+            description: descriptionBloc.text,
+            muscles: musclesController.state,
+            imageURL: await ExerciseRepository.uploadExerciseImage(
+              id,
+              imageFile!,
             ),
-            const SizedBox(width: 30),
-          ],
-        ),
+          );
+
+          try {
+            await widget.upload(exercise);
+
+            Navigation.flush(
+              widget: const HomeScreen(initialIndex: 2),
+            );
+          } catch (e) {
+            ToastController().show(e);
+            return;
+          }
+        },
       ),
-      body: ListView(
+      actions: [
+        if (widget.exercise != null)
+          IconButtonWidget(
+            Icons.delete_rounded,
+            onPressed: () {
+              // delete exercise
+              Navigation.pushPopup(
+                widget: ExerciseDeletePopup(
+                  exercise: widget.exercise,
+                  delete: widget.delete!,
+                ),
+              );
+            },
+          ),
+      ],
+      body: ScrollViewWidget(
+        maxInnerWidth: 600,
         children: [
           UploadFile(
             imageFile: imageFile,
@@ -141,8 +124,8 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
               imageFile = file;
             },
           ),
+          const SizedBox(height: 20),
           CardWidget(
-            margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             children: [
               TextFieldWidget(
                 controller: nameBloc,
@@ -152,8 +135,8 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
               ),
             ],
           ),
+          const SizedBox(height: 20),
           MultiSelectionButton(
-            margin: const EdgeInsets.all(20),
             controller: musclesController,
             buttons: [
               for (var type in ExerciseMuscles.values)

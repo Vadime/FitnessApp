@@ -1,6 +1,5 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/models/src/workout_statistic.dart';
 import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -20,12 +19,12 @@ class UserWorkoutInProgressFinishedPopup extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextWidget(
-          'Congratulations!',
+          'Glückwunsch!',
           style: context.textTheme.titleMedium,
         ),
         const SizedBox(height: 10),
         const TextWidget(
-          'You have finished your workout! How was it?',
+          'Du hast das Workout erfolgreich abgeschlossen. Wie schwer war es für dich?',
         ),
         const SizedBox(height: 10),
         CardWidget.single(

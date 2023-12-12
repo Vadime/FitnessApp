@@ -18,9 +18,9 @@ class _UserAccountDeletePopupState extends State<UserAccountDeletePopup> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text('Delete Account', style: context.textTheme.titleLarge),
+        TextWidget('Delete Account', style: context.textTheme.titleLarge),
         const SizedBox(height: 10),
-        const Text('Are you sure you want to delete your account?'),
+        const TextWidget('Are you sure you want to delete your account?'),
         const SizedBox(height: 20),
         TextFieldWidget(
           controller: passwordBloc,

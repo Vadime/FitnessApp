@@ -25,8 +25,8 @@ class _UserCourseListPageState extends State<UserCourseListPage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return ListView(
-      padding: const EdgeInsets.all(20).add(context.safeArea),
+    return ScrollViewWidget(
+      maxInnerWidth: 600,
       children: [
         const TextWidget(
           'Deine Kurse',
@@ -84,12 +84,61 @@ class _UserCourseListPageState extends State<UserCourseListPage>
   Widget courseListTile(CourseUI course, bool entered) => Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(
+          TextWidget(
             '${(course.course.userUIDS.length)} Personen - ${(course.course.date.str)}',
             style: context.textTheme.labelSmall,
           ),
           const SizedBox(height: 10),
           ListTileWidget(
+            slideMenuItems: [
+              if (entered)
+                SlideMenuItem(
+                  color: context.config.errorColor,
+                  child: const FittedBox(
+                    child: TextWidget(
+                      'Verlassen',
+                      color: Colors.white,
+                      weight: FontWeight.bold,
+                    ),
+                  ),
+                  onTap: () async {
+                    await CourseRepository.leaveCourse(
+                      course.course,
+                      UserRepository.currentUser,
+                    );
+                    course.course.userUIDS
+                        .remove(UserRepository.currentUser!.uid);
+
+                    enteredCourses!.remove(course);
+                    notEnteredCourses!.add(course);
+
+                    setState(() {});
+                  },
+                )
+              else
+                SlideMenuItem(
+                  color: context.config.primaryColor,
+                  child: const FittedBox(
+                    child: TextWidget(
+                      'Beitreten',
+                      color: Colors.white,
+                      weight: FontWeight.bold,
+                    ),
+                  ),
+                  onTap: () async {
+                    await CourseRepository.enterCourse(
+                      course.course,
+                      UserRepository.currentUser,
+                    );
+                    course.course.userUIDS.add(UserRepository.currentUser!.uid);
+
+                    enteredCourses!.add(course);
+                    notEnteredCourses!.remove(course);
+
+                    setState(() {});
+                  },
+                ),
+            ],
             padding: const EdgeInsets.all(10),
             contentPadding: const EdgeInsets.all(10),
             title: course.course.name,
@@ -102,54 +151,6 @@ class _UserCourseListPageState extends State<UserCourseListPage>
                     width: 50,
                     margin: const EdgeInsets.only(right: 10),
                   ),
-            onTap: () => Navigation.pushPopup(
-              widget: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    !entered
-                        ? 'Möchtest du dem Kurs "${course.course.name}" wirklich beitreten?'
-                        : 'Möchtest du den Kurs ${course.course.name} wirklich verlassen?',
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButtonWidget(
-                    !entered ? 'Beitreten' : 'Verlassen',
-                    onPressed: () async {
-                      if (entered) {
-                        await CourseRepository.leaveCourse(
-                          course.course,
-                          UserRepository.currentUser,
-                        );
-                        course.course.userUIDS
-                            .remove(UserRepository.currentUser!.uid);
-                      } else {
-                        await CourseRepository.enterCourse(
-                          course.course,
-                          UserRepository.currentUser,
-                        );
-                        course.course.userUIDS
-                            .add(UserRepository.currentUser!.uid);
-                      }
-
-                      if (entered) {
-                        enteredCourses!.remove(course);
-                        notEnteredCourses!.add(course);
-                      } else {
-                        enteredCourses!.add(course);
-                        notEnteredCourses!.remove(course);
-                      }
-
-                      setState(() {});
-                      Navigation.pop();
-                    },
-                    backgroundColor: !entered
-                        ? context.theme.primaryColor
-                        : context.config.errorColor,
-                  ),
-                ],
-              ),
-            ),
           ),
           const SizedBox(height: 10),
         ],

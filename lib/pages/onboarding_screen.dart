@@ -10,31 +10,31 @@ class OnboardingScreen extends StatelessWidget {
     return OnboardingPage(
       views: [
         OnboardingView(
-          title: 'OB FETT',
-          description: 'Pläne für jeden Fitnesslevel',
+          title: 'OB DICK',
+          description: 'Pläne für jedes Fitnesslevel',
           image: 'res/logo/foreground.png',
           backgroundColor: context.config.primaryColor,
           foregroundColor: Colors.white,
         ),
         const OnboardingView(
           title: 'DÜNN',
-          description: 'Pläne für jeden Fitnesslevel',
+          description: 'Pläne für jedes Fitnesslevel',
           image: 'res/logo/foreground.png',
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.grey,
           foregroundColor: Colors.white,
         ),
-        const OnboardingView(
+        OnboardingView(
           title: 'ODER DOOF',
-          description: 'Pläne für jeden Fitnesslevel',
+          description: 'Pläne für jedes Fitnesslevel',
           image: 'res/logo/foreground.png',
-          backgroundColor: Colors.green,
+          backgroundColor: context.config.primaryColor,
           foregroundColor: Colors.white,
         ),
         const OnboardingView(
           title: 'DU BIST HIER RICHTIG',
-          description: 'Pläne für jeden Fitnesslevel',
+          description: 'Pläne für jedes Fitnesslevel',
           image: 'res/logo/foreground.png',
-          backgroundColor: Colors.amber,
+          backgroundColor: Colors.grey,
           foregroundColor: Colors.white,
         ),
       ],

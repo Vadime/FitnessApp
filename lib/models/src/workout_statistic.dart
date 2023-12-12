@@ -1,5 +1,5 @@
 import 'package:fitnessapp/models/models.dart';
-import 'package:widgets/widgets/widgets.dart';
+import 'package:widgets/widgets.dart';
 
 class WorkoutStatistic {
   final String uid;

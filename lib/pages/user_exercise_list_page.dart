@@ -30,12 +30,12 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView(
-      padding: const EdgeInsets.all(20).add(context.safeArea),
+    return ScrollViewWidget(
+      maxInnerWidth: 600,
       children: [
         // Favoriten (Angezeigt wenn es welche gibt)
         const TextWidget(
-          'Favorite Exercises',
+          'Lieblingsübungen',
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
         if (favoriteExercises == null)
@@ -47,7 +47,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
           const SizedBox(
             height: 100,
             child: FailWidget(
-              'No favorites yet',
+              'Keine Lieblingsübungen',
             ),
           )
         else
@@ -56,7 +56,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
 
         // Eigene Übungen (Angezeigt wenn es welche gibt)
         const TextWidget(
-          'Your Exercises',
+          'Deine Übungen',
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
         if (yourExercises == null)
@@ -68,7 +68,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
           const SizedBox(
             height: 100,
             child: FailWidget(
-              'No extra Exercises added',
+              'Noch keine Übungen erstellt',
             ),
           )
         else
@@ -77,7 +77,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
 
         // Übungen vom Administrator (Angezeigt wenn es welche gibt)
         const TextWidget(
-          'Other Exercises',
+          'Andere Übungen',
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
         if (otherExercises == null)
@@ -89,7 +89,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
           const SizedBox(
             height: 100,
             child: FailWidget(
-              'No extra Exercises added',
+              'Noch keine Übungen erstellt',
             ),
           )
         else

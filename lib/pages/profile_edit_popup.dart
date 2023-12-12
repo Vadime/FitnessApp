@@ -40,7 +40,7 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Edit Profile', style: context.textTheme.titleLarge),
+        TextWidget('Edit Profile', style: context.textTheme.titleLarge),
         const SizedBox(height: 20),
         Row(
           children: [

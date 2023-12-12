@@ -60,40 +60,35 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
   }
 
   Widget startWorkoutButton() {
-    return SafeArea(
-      top: false,
-      child: ElevatedButtonWidget(
-        'Start Workout',
-        margin: const EdgeInsets.fromLTRB(30, 0, 30, 10),
-        onPressed: () {
-          if (exercises == null) {
-            return;
-          }
-          Navigation.push(
-            widget: UserWorkoutInProgressScreen(
-              workout: widget.workout,
-              exercises: exercises!,
-            ),
-          );
-        },
-      ),
+    return ElevatedButtonWidget(
+      'Start Workout',
+      onPressed: () {
+        if (exercises == null) {
+          return;
+        }
+        Navigation.push(
+          widget: UserWorkoutInProgressScreen(
+            workout: widget.workout,
+            exercises: exercises!,
+          ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      extendBodyBehindAppBar: true,
-      appBar: AppBarWidget(
-        widget.workout.name,
-        action: (widget.isAlreadyCopied)
-            ? editWorkoutButton()
-            : copyWorkoutButton(),
-      ),
-      bottomNavigationBar: startWorkoutButton(),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
+    return ScaffoldWidget(
+      title: widget.workout.name,
+      actions: [
+        if (widget.isAlreadyCopied)
+          editWorkoutButton()
+        else
+          copyWorkoutButton(),
+      ],
+      primaryButton: startWorkoutButton(),
+      body: ScrollViewWidget(
+        maxInnerWidth: 600,
         children: [
           const SafeArea(
             bottom: false,
@@ -108,17 +103,17 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
             rows: [
               TableRowWidget(
                 cells: [
-                  'Description',
+                  'Beschreibung',
                   widget.workout.description,
                 ],
               ),
               TableRowWidget(
-                cells: ['Schedule', widget.workout.schedule.str],
+                cells: ['Zeitplan', widget.workout.schedule.str],
               ),
             ],
           ),
           const SizedBox(height: 20),
-          const Text('Exercises'),
+          const TextWidget('Übungen'),
           const SizedBox(height: 10),
 
           // workout exercises
@@ -130,7 +125,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
           else if (exercises!.isEmpty)
             const SizedBox(
               height: 100,
-              child: FailWidget('No Exercises found'),
+              child: FailWidget('Keine Übungen vorhanden'),
             )
           else
             for (WorkoutExerciseUI e in exercises!) exerciseListTile(e),
@@ -177,7 +172,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
                 rows: [
                   TableRowWidget(
                     cells: [
-                      'Description',
+                      'Beschreibung',
                       e.exerciseUI.exercise.description,
                     ],
                   ),

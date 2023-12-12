@@ -2,25 +2,25 @@ extension ExerciseMusclesExtension on ExerciseMuscles {
   String get str {
     switch (this) {
       case ExerciseMuscles.chest:
-        return 'Chest';
+        return 'Brust';
       case ExerciseMuscles.back:
-        return 'Back';
+        return 'Rücken';
       case ExerciseMuscles.shoulders:
-        return 'Shoulders';
+        return 'Schultern';
       case ExerciseMuscles.biceps:
-        return 'Biceps';
+        return 'Bizeps';
       case ExerciseMuscles.triceps:
-        return 'Triceps';
+        return 'Trizeps';
       case ExerciseMuscles.legs:
-        return 'Legs';
+        return 'Beine';
       case ExerciseMuscles.abs:
-        return 'Abs';
+        return 'Bauch';
       case ExerciseMuscles.cardio:
         return 'Cardio';
       case ExerciseMuscles.fullBody:
-        return 'Full Body';
+        return 'Ganzkörper';
       case ExerciseMuscles.other:
-        return 'Other';
+        return 'Sonstiges';
     }
   }
 }

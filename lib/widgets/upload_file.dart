@@ -6,9 +6,11 @@ import 'package:widgets/widgets.dart';
 class UploadFile extends StatefulWidget {
   final Uint8List? imageFile;
   final Function(Uint8List? image)? onChanged;
+  final EdgeInsets margin;
   const UploadFile({
     this.imageFile,
     this.onChanged,
+    this.margin = EdgeInsets.zero,
     super.key,
   });
 
@@ -28,7 +30,7 @@ class _UploadFileState extends State<UploadFile> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(context.config.padding),
+      padding: widget.margin,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -38,7 +40,7 @@ class _UploadFileState extends State<UploadFile> {
             width: double.infinity,
           ),
           TextButtonWidget(
-            'Upload Image',
+            'Bild hochladen',
             margin: EdgeInsets.only(top: context.config.paddingH),
             onPressed: () async {
               var file = await FilePicking.pickImage();

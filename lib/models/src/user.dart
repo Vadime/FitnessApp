@@ -1,5 +1,4 @@
 import 'package:fitnessapp/models/models.dart';
-import 'package:flutter/material.dart';
 
 extension ContactTypeExtension on ContactType {
   get str {
@@ -7,9 +6,9 @@ extension ContactTypeExtension on ContactType {
       case ContactType.email:
         return 'Email';
       case ContactType.phone:
-        return 'Phone';
+        return 'Telefon';
       default:
-        return 'Unknown';
+        return 'Unbekannt';
     }
   }
 
@@ -79,6 +78,4 @@ class User {
   final String displayName;
   final UserRole userRole;
   final String? imageURL;
-
-  
 }

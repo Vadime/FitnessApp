@@ -39,7 +39,7 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
       text: widget.workout?.name,
     );
     descriptionBloc = TextFieldController(
-      'Description',
+      'Beschreibung',
       text: widget.workout?.description,
     );
     scheduleController = SingleSelectionController(
@@ -47,6 +47,7 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
           ? widget.workout!.schedule
           : Schedule.daily,
     );
+    //UserRepository.currentUserCustomExercisesAsFuture.then((value) => null);
     ExerciseRepository.getExercises().then(
       (exercises) async {
         var selectedExercises = (widget.workout?.workoutExercises
@@ -83,32 +84,15 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      extendBodyBehindAppBar: true,
-      appBar: const AppBarWidget(
-        'Add Workout',
-      ),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Row(
-          children: [
-            const SizedBox(width: 30),
-            if (widget.workout != null) deleteButton(),
-            addUpdateButton(),
-            const SizedBox(width: 30),
-          ],
-        ),
-      ),
-      body: ListView(
-        physics: const ScrollPhysics(),
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+    return ScaffoldWidget(
+      title: 'Trainingsplan erstellen',
+      actions: [
+        if (widget.workout != null) deleteButton(),
+      ],
+      primaryButton: addUpdateButton(),
+      body: ScrollViewWidget(
+        maxInnerWidth: 600,
         children: [
-          const SafeArea(
-            bottom: false,
-            child: SizedBox(),
-          ),
-          // name and description
           CardWidget(
             children: [
               TextFieldWidget(
@@ -120,8 +104,8 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
             ],
           ),
           const SizedBox(height: 20),
-          Text(
-            'Schedule',
+          TextWidget(
+            'Zeitplan',
             style: context.textTheme.bodyMedium,
           ),
           const SizedBox(height: 20),
@@ -136,8 +120,8 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
             controller: scheduleController,
           ),
           const SizedBox(height: 20),
-          Text(
-            'Exercises',
+          TextWidget(
+            'Übungen',
             style: context.textTheme.bodyMedium,
           ),
           const SizedBox(height: 10),
@@ -145,8 +129,8 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
             SizedBox(
               height: 100,
               child: Center(
-                child: Text(
-                  'No exercises in this workout yet',
+                child: TextWidget(
+                  'Keine Übungen ausgewählt',
                   style: context.textTheme.labelSmall,
                 ),
               ),
@@ -168,7 +152,9 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
               setState(() {});
             },
             itemBuilder: (context, index) => WorkoutExerciseSelectedWidget(
-              key: Key(exercisesSel.elementAt(index).exerciseUI.exercise.uid),
+              key: Key(
+                exercisesSel.elementAt(index).exerciseUI.exercise.uid,
+              ),
               entry: exercisesSel.elementAt(index),
               exercisesSel: exercisesSel,
               exercisesOth: exercisesOth,
@@ -176,8 +162,8 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          Text(
-            'Other exercises',
+          TextWidget(
+            'Weitere Übungen',
             style: context.textTheme.bodyMedium,
           ),
           const SizedBox(height: 10),
@@ -185,8 +171,8 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
             SizedBox(
               height: 100,
               child: Center(
-                child: Text(
-                  'No exercises left to add',
+                child: TextWidget(
+                  'Keine weiteren Übungen vorhanden',
                   style: context.textTheme.labelSmall,
                 ),
               ),
@@ -198,10 +184,6 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
               exercisesOth: exercisesOth,
               setState: setState,
             ),
-          const SafeArea(
-            top: false,
-            child: SizedBox(height: 0),
-          ),
         ],
       ),
     );
@@ -210,7 +192,7 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
   Widget addUpdateButton() {
     return Expanded(
       child: ElevatedButtonWidget(
-        'Save Workout',
+        'Trainingsplan speichern',
         onPressed: () async {
           if (!nameBloc.isValid()) return;
           if (!descriptionBloc.isValid()) return;
@@ -239,20 +221,17 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
     );
   }
 
-  Widget deleteButton() => Padding(
-        padding: const EdgeInsets.only(right: 20),
-        child: IconButtonWidget(
-          Icons.delete_rounded,
-          onPressed: () {
-            // Needs to return void not future because of Loadingscreen
-            Navigation.pushPopup(
-              widget: WorkoutDeletePopup(
-                workout: widget.workout!,
-                delete: widget.delete!,
-              ),
-            );
-            return;
-          },
-        ),
+  Widget deleteButton() => IconButtonWidget(
+        Icons.delete_rounded,
+        onPressed: () {
+          // Needs to return void not future because of Loadingscreen
+          Navigation.pushPopup(
+            widget: WorkoutDeletePopup(
+              workout: widget.workout!,
+              delete: widget.delete!,
+            ),
+          );
+          return;
+        },
       );
 }

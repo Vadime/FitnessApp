@@ -3,21 +3,21 @@ extension SchdeuleExtension on Schedule {
   String get str {
     switch (this) {
       case Schedule.daily:
-        return 'Daily';
+        return 'Täglich';
       case Schedule.twoDaysAWeek:
-        return '2x a week';
+        return '2x die Woche';
       case Schedule.threeDaysAWeek:
-        return '3x a Week';
+        return '3x die Woche';
       case Schedule.fourDaysAWeek:
-        return '4x a Week';
+        return '4x die Woche';
       case Schedule.weekly:
-        return 'Weekly';
+        return 'Wöchentlich';
       case Schedule.monthly:
-        return 'Monthly';
+        return 'Monatlich';
       case Schedule.none:
-        return 'None';
+        return 'Keins';
       default:
-        return 'None';
+        return 'Keins';
     }
   }
 }

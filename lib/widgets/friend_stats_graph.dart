@@ -26,60 +26,62 @@ class FriendStatsGraph extends StatelessWidget {
       const Icon(Icons.star_border_rounded),
     ];
 
-    return BarChart(
-      BarChartData(
-        alignment: BarChartAlignment.spaceEvenly,
-        maxY: friendsCopy.first.score.toDouble(),
-        minY: 0,
-        barTouchData: BarTouchData(enabled: false),
-        borderData: FlBorderData(show: false),
-        gridData: const FlGridData(show: false),
-        titlesData: FlTitlesData(
-          show: true,
-          leftTitles: const AxisTitles(),
-          rightTitles: const AxisTitles(),
-          topTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              getTitlesWidget: (i, m) => barIcons[i.toInt()],
-              reservedSize: 40,
+    return LayoutBuilder(
+      builder: (context, cnstrnts) => BarChart(
+        BarChartData(
+          alignment: BarChartAlignment.spaceEvenly,
+          maxY: friendsCopy.first.score.toDouble(),
+          minY: 0,
+          barTouchData: BarTouchData(enabled: false),
+          borderData: FlBorderData(show: false),
+          gridData: const FlGridData(show: false),
+          titlesData: FlTitlesData(
+            show: true,
+            leftTitles: const AxisTitles(),
+            rightTitles: const AxisTitles(),
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (i, m) => barIcons[i.toInt()],
+                reservedSize: 40,
+              ),
             ),
-          ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 30,
-              getTitlesWidget: (i, m) => Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: context.mediaQuery.size.width / 3 -
-                      context.config.padding,
-                  child: TextWidget(
-                    friendsCopy[i.toInt()].friend.displayName,
-                    align: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 30,
+                interval: 1,
+                getTitlesWidget: (i, m) => SizedBox(
+                  width: cnstrnts.maxWidth / 3 - context.config.paddingD,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: TextWidget(
+                      friendsCopy[i.toInt()].friend.displayName,
+                      align: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
+          barGroups: [
+            for (int i = 0; i < 3; i++)
+              BarChartGroupData(
+                x: i,
+                barRods: [
+                  BarChartRodData(
+                    fromY: 0,
+                    toY: friendsCopy[i].score.toDouble(),
+                    color: context.config.primaryColor,
+                    width: context.mediaQuery.size.width / 10,
+                    borderRadius: BorderRadius.circular(context.config.radius),
+                  ),
+                ],
+              ),
+          ],
         ),
-        barGroups: [
-          for (int i = 0; i < 3; i++)
-            BarChartGroupData(
-              x: i,
-              barRods: [
-                BarChartRodData(
-                  fromY: 0,
-                  toY: friendsCopy[i].score.toDouble(),
-                  color: context.config.primaryColor,
-                  width: context.mediaQuery.size.width / 10,
-                  borderRadius: BorderRadius.circular(context.config.radius),
-                ),
-              ],
-            ),
-        ],
       ),
     );
   }

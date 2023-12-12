@@ -5,11 +5,11 @@ extension WorkoutDifficultyExtension on WorkoutDifficulty {
   String get str {
     switch (this) {
       case WorkoutDifficulty.easy:
-        return 'Easy';
+        return 'Einfach';
       case WorkoutDifficulty.medium:
         return 'Medium';
       case WorkoutDifficulty.hard:
-        return 'Hard';
+        return 'Hart';
       default:
         return '';
     }
