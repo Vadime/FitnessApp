@@ -15,6 +15,17 @@ abstract class WorkoutExerciseType {
         throw Exception('Unknown WorkoutExerciseType');
     }
   }
+
+  WorkoutExerciseType copy() {
+    switch (name) {
+      case 'Duration':
+        return WorkoutExerciseTypeDuration.fromJson(toJson());
+      case 'Repetition':
+        return WorkoutExerciseTypeRepetition.fromJson(toJson());
+      default:
+        throw Exception('Unknown WorkoutExerciseType');
+    }
+  }
 }
 
 class WorkoutExerciseTypeDuration extends WorkoutExerciseType {

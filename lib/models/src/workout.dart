@@ -34,4 +34,14 @@ class Workout {
             .map((e) => WorkoutExercise.fromJson(e))
             .toList(),
       );
+
+  Workout copy() {
+    return Workout(
+      uid: uid,
+      name: name,
+      description: description,
+      schedule: schedule,
+      workoutExercises: workoutExercises.map((e) => e.copy()).toList(),
+    );
+  }
 }

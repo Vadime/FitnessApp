@@ -13,21 +13,41 @@ class UserWorkoutListPage extends StatefulWidget {
 
 class _UserWorkoutListPageState extends State<UserWorkoutListPage>
     with AutomaticKeepAliveClientMixin {
+  List<Workout>? filteredUserWorkouts;
   List<Workout>? userWorkouts;
+  List<Workout>? filteredAdminWorkouts;
   List<Workout>? adminWorkouts;
+  TextFieldController searchController =
+      TextFieldController('Suche nach Trainingsplänen');
 
   @override
   void initState() {
     super.initState();
+    searchController.addListener(() {
+      filterWorkouts(searchController);
+      setState(() {});
+    });
     loadWorkouts();
   }
 
   loadWorkouts() async {
     if (!mounted) return;
     userWorkouts = await UserRepository.currentUserCustomWorkoutsAsFuture;
+    filteredUserWorkouts = userWorkouts?.map((w) => w.copy()).toList();
     if (mounted) setState(() {});
     adminWorkouts = await WorkoutRepository.adminWorkoutsAsFuture;
+    filteredAdminWorkouts = adminWorkouts?.map((w) => w.copy()).toList();
     if (mounted) setState(() {});
+  }
+
+  filterWorkouts(TextFieldController controller) {
+    filteredUserWorkouts = userWorkouts
+        ?.where((w) => w.name.toLowerCase().contains(controller.text))
+        .toList();
+
+    filteredAdminWorkouts = adminWorkouts
+        ?.where((w) => w.name.toLowerCase().contains(controller.text))
+        .toList();
   }
 
   @override
@@ -36,16 +56,21 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage>
     return ScrollViewWidget(
       maxInnerWidth: 600,
       children: [
+        // search bar
+        // TextFieldWidget(
+        //   controller: searchController,
+        //   margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+        // ),
         const TextWidget(
           'Deine Trainingspläne',
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
-        if (userWorkouts == null)
+        if (filteredUserWorkouts == null)
           const SizedBox(
             height: 100,
             child: LoadingWidget(),
           )
-        else if (userWorkouts!.isEmpty)
+        else if (filteredUserWorkouts!.isEmpty)
           const SizedBox(
             height: 100,
             child: FailWidget(
@@ -53,17 +78,17 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage>
             ),
           )
         else
-          for (var u in userWorkouts!) workoutListTile(u, true),
+          for (var u in filteredUserWorkouts!) workoutListTile(u, true),
         const TextWidget(
           'Alle Trainingspläne',
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
-        if (adminWorkouts == null)
+        if (filteredAdminWorkouts == null)
           const SizedBox(
             height: 100,
             child: LoadingWidget(),
           )
-        else if (adminWorkouts!.isEmpty)
+        else if (filteredAdminWorkouts!.isEmpty)
           const SizedBox(
             height: 100,
             child: FailWidget(
@@ -71,7 +96,7 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage>
             ),
           )
         else
-          for (var u in adminWorkouts!) workoutListTile(u, false),
+          for (var u in filteredAdminWorkouts!) workoutListTile(u, false),
       ],
     );
   }

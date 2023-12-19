@@ -30,4 +30,12 @@ class WorkoutExercise {
         index: json['index'] ?? -1,
         type: WorkoutExerciseType.fromJson(json['type']),
       );
+
+  WorkoutExercise copy() {
+    return WorkoutExercise(
+      exerciseUID: exerciseUID,
+      index: index,
+      type: type.copy(),
+    );
+  }
 }
