@@ -5,6 +5,7 @@ import 'package:fitnessapp/pages/profile_edit_popup.dart';
 import 'package:fitnessapp/pages/profile_password_change_popup.dart';
 import 'package:fitnessapp/pages/user_accunt_delete_popup.dart';
 import 'package:fitnessapp/pages/user_feedback_popup.dart';
+import 'package:fitnessapp/pages/user_help_screen.dart';
 import 'package:fitnessapp/widgets/profile_header_widget.dart';
 import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
 import 'package:flutter/material.dart';
@@ -80,23 +81,38 @@ class _UserProfilePageState extends State<UserProfilePage>
           ],
         ),
         const SizedBox(height: 20),
-        ListTileWidget(
-          title: 'Account löschen',
-          trailing: Icon(
-            Icons.delete_rounded,
-            color: context.config.errorColor,
-          ),
-          onTap: () {
-            // delete user from firebase auth
-            Navigation.pushPopup(
-              widget: const UserAccountDeletePopup(),
-            );
-          },
+        CardWidget(
+          children: [
+            ListTileWidget(
+              title: 'Help Center',
+              trailing: Icon(
+                Icons.help_center_rounded,
+                color: context.config.primaryColor,
+              ),
+              onTap: () {
+                // delete user from firebase auth
+                Navigation.push(
+                  widget: const UserHelpScreen(),
+                );
+              },
+            ),
+            ListTileWidget(
+              title: 'Account löschen',
+              trailing: Icon(
+                Icons.delete_rounded,
+                color: context.config.errorColor,
+              ),
+              onTap: () {
+                // delete user from firebase auth
+                Navigation.pushPopup(
+                  widget: const UserAccountDeletePopup(),
+                );
+              },
+            ),
+          ],
         ),
         const SizedBox(height: 20),
-        CardWidget.single(
-          child: const BrandingWidget(),
-        ),
+        const BrandingWidget(),
       ],
     );
   }

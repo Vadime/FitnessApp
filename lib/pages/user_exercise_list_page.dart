@@ -15,12 +15,23 @@ class UserExerciseListPage extends StatefulWidget {
 class _UserExerciseListPageState extends State<UserExerciseListPage>
     with AutomaticKeepAliveClientMixin {
   List<ExerciseUI>? favoriteExercises;
+  List<ExerciseUI>? filteredFavoriteExercises;
   List<ExerciseUI>? yourExercises;
+  List<ExerciseUI>? filteredYourExercises;
   List<ExerciseUI>? otherExercises;
+  List<ExerciseUI>? filteredOtherExercises;
+
+  TextFieldController searchController =
+      TextFieldController('Suche nach Übungen');
 
   @override
   void initState() {
     super.initState();
+    searchController.addListener(() {
+      //filter exercises
+      filterExercises(searchController);
+      setState(() {});
+    });
     loadExercises();
   }
 
@@ -33,17 +44,24 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
     return ScrollViewWidget(
       maxInnerWidth: 600,
       children: [
+        // search bar
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+          child: TextFieldWidget(
+            controller: searchController,
+          ),
+        ),
         // Favoriten (Angezeigt wenn es welche gibt)
         const TextWidget(
           'Lieblingsübungen',
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
-        if (favoriteExercises == null)
+        if (filteredFavoriteExercises == null)
           const SizedBox(
             height: 100,
             child: LoadingWidget(),
           )
-        else if (favoriteExercises!.isEmpty)
+        else if (filteredFavoriteExercises!.isEmpty)
           const SizedBox(
             height: 100,
             child: FailWidget(
@@ -51,7 +69,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
             ),
           )
         else
-          for (var entry in favoriteExercises!)
+          for (var entry in filteredFavoriteExercises!)
             exerciseListTile(entry, true, false),
 
         // Eigene Übungen (Angezeigt wenn es welche gibt)
@@ -59,12 +77,12 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
           'Deine Übungen',
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
-        if (yourExercises == null)
+        if (filteredYourExercises == null)
           const SizedBox(
             height: 100,
             child: LoadingWidget(),
           )
-        else if (yourExercises!.isEmpty)
+        else if (filteredYourExercises!.isEmpty)
           const SizedBox(
             height: 100,
             child: FailWidget(
@@ -72,7 +90,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
             ),
           )
         else
-          for (var entry in yourExercises!)
+          for (var entry in filteredYourExercises!)
             exerciseListTile(entry, false, true),
 
         // Übungen vom Administrator (Angezeigt wenn es welche gibt)
@@ -80,12 +98,12 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
           'Andere Übungen',
           margin: EdgeInsets.symmetric(vertical: 10),
         ),
-        if (otherExercises == null)
+        if (filteredOtherExercises == null)
           const SizedBox(
             height: 100,
             child: LoadingWidget(),
           )
-        else if (otherExercises!.isEmpty)
+        else if (filteredOtherExercises!.isEmpty)
           const SizedBox(
             height: 100,
             child: FailWidget(
@@ -93,20 +111,44 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
             ),
           )
         else
-          for (var entry in otherExercises!)
+          for (var entry in filteredOtherExercises!)
             exerciseListTile(entry, false, false),
       ],
     );
+  }
+
+  void filterExercises(searchController) {
+    // Get the search query from the searchController
+    String searchQuery = searchController.text.toLowerCase();
+
+    // Filter favorite exercises
+    filteredFavoriteExercises = favoriteExercises?.where((exercise) {
+      return exercise.exercise.name.toLowerCase().contains(searchQuery);
+    }).toList();
+
+    // Filter your exercises
+    filteredYourExercises = yourExercises?.where((exercise) {
+      return exercise.exercise.name.toLowerCase().contains(searchQuery);
+    }).toList();
+
+    // Filter other exercises
+    filteredOtherExercises = otherExercises?.where((exercise) {
+      return exercise.exercise.name.toLowerCase().contains(searchQuery);
+    }).toList();
+
+    setState(() {});
   }
 
   loadExercises() async {
     var yourExerciseList =
         await UserRepository.currentUserCustomExercisesAsFuture;
     yourExercises ??= [];
+    filteredYourExercises ??= [];
     for (int i = 0; i < yourExerciseList.length; i++) {
       var image =
           await ExerciseRepository.getExerciseImage(yourExerciseList[i]);
       yourExercises!.add(ExerciseUI(yourExerciseList[i], image));
+      filteredYourExercises!.add(ExerciseUI(yourExerciseList[i], image));
       setState(() {});
     }
     var favoriteUIDS =
@@ -125,7 +167,9 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
     );
 
     favoriteExercises ??= [];
+    filteredFavoriteExercises ??= [];
     otherExercises ??= [];
+    filteredOtherExercises ??= [];
     for (int i = 0; i < otherExerciseList.length; i++) {
       var image =
           await ExerciseRepository.getExerciseImage(otherExerciseList[i]);
@@ -133,8 +177,10 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
       bool isFavorite = favoriteUIDS.contains(otherExerciseList[i].uid);
       if (isFavorite) {
         favoriteExercises!.add(ExerciseUI(otherExerciseList[i], image));
+        filteredFavoriteExercises!.add(ExerciseUI(otherExerciseList[i], image));
       } else {
         otherExercises!.add(ExerciseUI(otherExerciseList[i], image));
+        filteredOtherExercises!.add(ExerciseUI(otherExerciseList[i], image));
       }
 
       setState(() {});

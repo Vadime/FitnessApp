@@ -9,11 +9,11 @@ class _UserHomeScreen extends StatelessWidget {
     return BottomNavigationPage(
       initialIndex: initialIndex,
       views: [
-        BottomNavigationView(
-          title: AppLocalizations.of(context)!.courses,
-          view: const UserCourseListPage(),
-          icon: Icons.home_rounded,
-        ),
+        // BottomNavigationView(
+        //   title: AppLocalizations.of(context)!.courses,
+        //   view: const UserCourseListPage(),
+        //   icon: Icons.home_rounded,
+        // ),
         BottomNavigationView(
           title: 'Trainingspläne',
           view: const UserWorkoutListPage(),

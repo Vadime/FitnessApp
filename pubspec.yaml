@@ -26,7 +26,8 @@ dependencies:
   flutter_native_splash: ^2.3.1
 
   widgets:
-    path: packages/widgets
+    path: ./packages/widgets
+
   provider: ^6.0.5
   fl_chart: ^0.63.0
   flutter_localizations:

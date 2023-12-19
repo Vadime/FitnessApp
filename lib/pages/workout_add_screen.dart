@@ -31,6 +31,10 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
 
   List<WorkoutExerciseUI> exercisesSel = [];
   List<ExerciseUI> exercisesOth = [];
+  List<ExerciseUI> filteredExercisesOth = [];
+
+  TextFieldController searchController =
+      TextFieldController('Suche nach Übungen');
 
   @override
   void initState() {
@@ -47,7 +51,13 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
           ? widget.workout!.schedule
           : Schedule.daily,
     );
+    searchController.addListener(() {
+      //filter exercises
+      filterExercises(searchController);
+      setState(() {});
+    });
     //UserRepository.currentUserCustomExercisesAsFuture.then((value) => null);
+
     ExerciseRepository.getExercises().then(
       (exercises) async {
         var selectedExercises = (widget.workout?.workoutExercises
@@ -67,12 +77,15 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
               WorkoutExerciseUI(ExerciseUI(exercise, image), workoutExercise),
             );
           } else {
+            filteredExercisesOth.add(ExerciseUI(exercise, image));
             exercisesOth.add(ExerciseUI(exercise, image));
           }
           exercisesSel.sort(
             (a, b) =>
                 a.workoutExercise.index.compareTo(b.workoutExercise.index),
           );
+          filteredExercisesOth
+              .sort((a, b) => a.exercise.name.compareTo(b.exercise.name));
           exercisesOth
               .sort((a, b) => a.exercise.name.compareTo(b.exercise.name));
 
@@ -80,6 +93,16 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
         }
       },
     );
+  }
+
+  void filterExercises(searchController) {
+    // Get the search query from the searchController
+    String searchQuery = searchController.text.toLowerCase();
+
+    // Filter favorite exercises
+    filteredExercisesOth = exercisesOth.where((exercise) {
+      return exercise.exercise.name.toLowerCase().contains(searchQuery);
+    }).toList();
   }
 
   @override
@@ -120,6 +143,7 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
             controller: scheduleController,
           ),
           const SizedBox(height: 20),
+
           TextWidget(
             'Übungen',
             style: context.textTheme.bodyMedium,
@@ -157,7 +181,7 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
               ),
               entry: exercisesSel.elementAt(index),
               exercisesSel: exercisesSel,
-              exercisesOth: exercisesOth,
+              exercisesOth: filteredExercisesOth,
               parentState: setState,
             ),
           ),
@@ -167,7 +191,14 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
             style: context.textTheme.bodyMedium,
           ),
           const SizedBox(height: 10),
-          if (exercisesOth.isEmpty)
+
+          // search bar
+          TextFieldWidget(
+            controller: searchController,
+          ),
+
+          const SizedBox(height: 10),
+          if (filteredExercisesOth.isEmpty)
             SizedBox(
               height: 100,
               child: Center(
@@ -177,11 +208,11 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
                 ),
               ),
             ),
-          for (var e in exercisesOth)
+          for (var e in filteredExercisesOth)
             WorkoutExerciseNotSelectedWidget(
               entry: e,
               exercisesSel: exercisesSel,
-              exercisesOth: exercisesOth,
+              exercisesOth: filteredExercisesOth,
               setState: setState,
             ),
         ],

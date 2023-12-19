@@ -20,18 +20,18 @@ class _AdminHomeScreen extends StatelessWidget {
         ),
       ],
       views: [
-        BottomNavigationView(
-          title: AppLocalizations.of(context)!.courses,
-          view: const AdminCourseListPage(),
-          icon: Icons.home_rounded,
-          actions: [
-            IconButtonWidget(
-              Icons.add_rounded,
-              onPressed: () =>
-                  Navigation.push(widget: const AdminCourseAddScreen()),
-            ),
-          ],
-        ),
+        // BottomNavigationView(
+        //   title: AppLocalizations.of(context)!.courses,
+        //   view: const AdminCourseListPage(),
+        //   icon: Icons.home_rounded,
+        //   actions: [
+        //     IconButtonWidget(
+        //       Icons.add_rounded,
+        //       onPressed: () =>
+        //           Navigation.push(widget: const AdminCourseAddScreen()),
+        //     ),
+        //   ],
+        // ),
         BottomNavigationView(
           title: 'Trainingspläne',
           view: const AdminWorkoutListPage(),

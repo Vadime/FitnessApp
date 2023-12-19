@@ -86,9 +86,7 @@ class _AdminProfilePageState extends State<AdminProfilePage>
           onTap: () => UserRepository.signOutCurrentUser(),
         ),
         const SizedBox(height: 20),
-        CardWidget.single(
-          child: const BrandingWidget(),
-        ),
+        const BrandingWidget(),
       ],
     );
   }
