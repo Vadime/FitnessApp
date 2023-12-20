@@ -45,7 +45,9 @@ class LinearProgressWidget extends StatelessWidget {
               value: progress == null ? null : value,
               minHeight: thickness,
               color: foregroundColor ?? Theme.of(context).primaryColor,
-              backgroundColor: backgroundColor,
+              backgroundColor: backgroundColor ?? Colors.grey.shade300,
+              borderRadius:
+                  BorderRadius.circular(radius ?? context.config.radius),
             ),
           ),
         ),

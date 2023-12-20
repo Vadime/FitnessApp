@@ -11,6 +11,7 @@ import 'package:fitnessapp/pages/user_course_list_page.dart';
 import 'package:fitnessapp/pages/user_exercise_add_screen.dart';
 import 'package:fitnessapp/pages/user_exercise_list_page.dart';
 import 'package:fitnessapp/pages/user_friend_list_page.dart';
+import 'package:fitnessapp/pages/user_health_page.dart';
 import 'package:fitnessapp/pages/user_profile_friend_add_popup.dart';
 import 'package:fitnessapp/pages/user_profile_page.dart';
 import 'package:fitnessapp/pages/user_workout_add_screen.dart';

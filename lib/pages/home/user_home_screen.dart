@@ -39,6 +39,28 @@ class _UserHomeScreen extends StatelessWidget {
           ],
         ),
         BottomNavigationView(
+          title: 'Health',
+          view: const UserHealthPage(),
+          icon: Icons.apple_rounded,
+          primaryButton: ElevatedButtonWidget(
+            'Produkt hinzufügen',
+            onPressed: () {
+              Navigation.push(
+                widget: const UserHealthPage(),
+              );
+              return;
+            },
+          ),
+          actions: [
+            IconButtonWidget(
+              Icons.edit_rounded,
+              onPressed: () {
+                ToastController().show('In Arbeit');
+              },
+            ),
+          ],
+        ),
+        BottomNavigationView(
           title: 'Freunde',
           view: const UserFriendListPage(),
           icon: Icons.people_rounded,
