@@ -36,9 +36,9 @@ class WorkoutExerciseTypeDuration extends WorkoutExerciseType {
   ) {
     name = 'Duration';
     values = {
-      'Sätze': sets,
-      'Sekunden': sec,
-      'Gewichte': weights,
+      'Sets': sets,
+      'Seconds': sec,
+      'Weights': weights,
     };
   }
 
@@ -53,9 +53,9 @@ class WorkoutExerciseTypeDuration extends WorkoutExerciseType {
   WorkoutExerciseTypeDuration.fromJson(Map<String, dynamic> json) {
     name = json['type'];
     values = {
-      'Sätze': json['Sets'].toString(),
-      'Sekunden': json['Seconds'].toString(),
-      'Gewichte': json['Weights'].toString(),
+      'Sets': json['Sets'].toString(),
+      'Seconds': json['Seconds'].toString(),
+      'Weights': json['Weights'].toString(),
     };
   }
 }
@@ -68,9 +68,9 @@ class WorkoutExerciseTypeRepetition extends WorkoutExerciseType {
   ) {
     name = 'Repetition';
     values = {
-      'Sätze': sets,
-      'Wdh.': reps,
-      'Gewichte': weights,
+      'Sets': sets,
+      'Reps': reps,
+      'Weights': weights,
     };
   }
 
@@ -85,9 +85,9 @@ class WorkoutExerciseTypeRepetition extends WorkoutExerciseType {
   WorkoutExerciseTypeRepetition.fromJson(Map<String, dynamic> json) {
     name = json['type'];
     values = {
-      'Sätze': json['Sets'].toString(),
-      'Wdh.': json['Reps'].toString(),
-      'Gewichte': json['Weights'].toString(),
+      'Sets': json['Sets'].toString(),
+      'Reps': json['Reps'].toString(),
+      'Weights': json['Weights'].toString(),
     };
   }
 }

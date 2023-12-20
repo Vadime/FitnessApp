@@ -34,6 +34,8 @@ dependencies:
     sdk: flutter
   intl: ^0.18.1
   intl_translation: ^0.18.2
+  chat_gpt_sdk: ^2.2.5
+  dio: ^5.4.0
 
 dev_dependencies:
   flutter_test:

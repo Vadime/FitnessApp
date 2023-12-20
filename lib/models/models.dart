@@ -3,6 +3,7 @@ export 'src/exercise.dart';
 export 'src/exercise_muscles.dart';
 export 'src/feedback.dart';
 export 'src/friend.dart';
+export 'src/message.dart';
 export 'src/schedule.dart';
 export 'src/user.dart';
 export 'src/user_role.dart';

@@ -1,3 +1,6 @@
+import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
+import 'package:fitnessapp/database/database.dart';
+import 'package:fitnessapp/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -13,16 +16,6 @@ class UserHelpScreen extends StatelessWidget {
   }
 }
 
-class Message {
-  final String text;
-  final bool isUser;
-
-  const Message({
-    required this.text,
-    required this.isUser,
-  });
-}
-
 class ChatbotWidget extends StatefulWidget {
   const ChatbotWidget({Key? key}) : super(key: key);
 
@@ -31,49 +24,73 @@ class ChatbotWidget extends StatefulWidget {
 }
 
 class ChatbotWidgetState extends State<ChatbotWidget> {
-  final TextFieldController _textEditingController =
+  final TextFieldController messageController =
       TextFieldController('Type a message...');
-  List<Message>? _messages;
+  List<Message>? messages;
+
+  late final OpenAI openAI;
 
   @override
   void initState() {
-    _messages = [
-      const Message(text: 'Du Hurensohn', isUser: true),
-      const Message(text: 'Antworte mal', isUser: true),
-      const Message(text: 'Bitte nur fragen zu Fitness Themen', isUser: false),
-      const Message(
-        text: 'Wie berechnet ihr den Kaloriengebrauch',
-        isUser: true,
-      ),
-      const Message(
-        text:
-            'Durch die Yarak-Formel.\n\n Kcal = Gewicht * Alter * Hässlichkeit',
-        isUser: false,
-      ),
-      const Message(text: 'Ok danke', isUser: true),
-      const Message(text: 'Kein Problem', isUser: false),
-    ];
+    openAI = OpenAI.instance.build(
+      token: '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',
+      baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 5)),
+      enableLog: true,
+    );
+    initMessages();
 
     super.initState();
   }
 
-  void _sendMessage(String message) {
-    setState(() {
-      _messages ??= [];
-      _messages!.add(Message(text: message, isUser: true));
-    });
-    _textEditingController.clear();
+  void initMessages() async {
+    messages = await MessageRepository.messagesAsFuture;
+    setState(() {});
+  }
+
+  Future<String> genResponse(String text) async {
+    final request = CompleteText(
+      prompt: text,
+      maxTokens: 100,
+      model: TextDavinci3Model(),
+    );
+
+    CompleteResponse? response;
+    try {
+      response = await openAI.onCompletion(request: request);
+    } catch (e, s) {
+      Logging.logDetails('Error while generating response', e, s);
+      return 'Frag mich nicht du Hurensohn';
+    }
+    return response?.choices.first.text ?? 'Ich habe dich nicht verstanden';
+  }
+
+  void _sendMessage(String message) async {
+    messages ??= [];
+    var finalMessage = Message(text: message, isUser: true);
+    messages!.add(finalMessage);
+    // do it in parallel for faster response
+    MessageRepository.uploadMessage(finalMessage);
+    setState(() {});
+
+    messageController.clear();
+
+    String response = await genResponse(message);
+    var finalResponse = Message(text: response, isUser: false);
+    messages!.add(finalResponse);
+    // do it in parallel for faster response
+    MessageRepository.uploadMessage(finalResponse);
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (_messages == null)
+        if (messages == null)
           const Expanded(
             child: LoadingWidget(),
           )
-        else if (_messages!.isEmpty)
+        else if (messages!.isEmpty)
           const Expanded(
             child: InfoWidget('Das ist Hurensohn 👋\nDein Chatbot für Fitness'),
           )
@@ -86,25 +103,25 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
                 top: context.config.padding + context.topInset,
                 bottom: context.config.padding + context.bottomInset,
               ),
-              itemCount: _messages!.length,
+              itemCount: messages!.length,
               itemBuilder: (context, index) {
                 // schreibe den Sender über die Nachricht, wenn die vorherige Nachricht nicht vom selben Sender war
                 if (index > 0 &&
-                    _messages![index].isUser != _messages![index - 1].isUser) {
+                    messages![index].isUser != messages![index - 1].isUser) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      Text(_messages![index].isUser ? 'User:' : 'Hurensohn:'),
+                      Text(messages![index].isUser ? 'User:' : 'Hurensohn:'),
                       const SizedBox(height: 5),
                       ListTileWidget(
-                        title: _messages![index].text,
+                        title: messages![index].text,
                       ),
                     ],
                   );
                 } else {
                   return ListTileWidget(
-                    title: _messages![index].text,
+                    title: messages![index].text,
                   );
                 }
               },
@@ -115,13 +132,13 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
             const SizedBox(width: 20),
             Expanded(
               child: TextFieldWidget(
-                controller: _textEditingController,
+                controller: messageController,
               ),
             ),
             IconButton(
               icon: const Icon(Icons.send),
               onPressed: () {
-                _sendMessage(_textEditingController.text);
+                _sendMessage(messageController.text);
               },
             ),
             const SizedBox(width: 12),

@@ -56,7 +56,15 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
       filterExercises(searchController);
       setState(() {});
     });
-    //UserRepository.currentUserCustomExercisesAsFuture.then((value) => null);
+
+    UserRepository.currentUserCustomExercisesAsFuture.then((value) async {
+      for (var element in value) {
+        var image = await ExerciseRepository.getExerciseImage(element);
+        exercisesOth.add(ExerciseUI(element, image));
+        filteredExercisesOth.add(ExerciseUI(element, image));
+      }
+      setState(() {});
+    });
 
     ExerciseRepository.getExercises().then(
       (exercises) async {
@@ -191,12 +199,10 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
             style: context.textTheme.bodyMedium,
           ),
           const SizedBox(height: 10),
-
           // search bar
           TextFieldWidget(
             controller: searchController,
           ),
-
           const SizedBox(height: 10),
           if (filteredExercisesOth.isEmpty)
             SizedBox(

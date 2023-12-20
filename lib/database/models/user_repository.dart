@@ -587,6 +587,21 @@ class UserRepository {
     }
   }
 
+  static Future<Exercise?> getUsersExercise(String uid) async {
+    try {
+      var e = await Store.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .collection('exercises')
+          .doc(uid)
+          .get();
+      if (e.data() != null) return Exercise.fromJson(uid, e.data()!);
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+    return null;
+  }
+
   static Future<void> uploadUsersExercise(Exercise exercise) async {
     try {
       await Store.instance
