@@ -27,33 +27,30 @@ class UserWorkoutInProgressFinishedPopup extends StatelessWidget {
           'Du hast das Workout erfolgreich abgeschlossen. Wie schwer war es für dich?',
         ),
         const SizedBox(height: 10),
-        CardWidget.single(
-          padding: const EdgeInsets.all(5),
-          child: Row(
-            children: WorkoutDifficulty.values
-                .map(
-                  (e) => Expanded(
-                    child: ElevatedButtonWidget(
-                      e.str,
-                      margin: const EdgeInsets.all(5),
-                      onPressed: () async {
-                        await UserRepository.saveWorkoutStatistics(
-                          WorkoutStatistic(
-                            uid: '',
-                            workoutId: workout.uid,
-                            dateTime: DateTime.now(),
-                            difficulty: e,
-                          ),
-                        );
-                        Navigation.flush(
-                          widget: const HomeScreen(initialIndex: 4),
-                        );
-                      },
-                    ),
+        Row(
+          children: WorkoutDifficulty.values
+              .map(
+                (e) => Expanded(
+                  child: ElevatedButtonWidget(
+                    e.str,
+                    margin: const EdgeInsets.all(5),
+                    onPressed: () async {
+                      await UserRepository.saveWorkoutStatistics(
+                        WorkoutStatistic(
+                          uid: '',
+                          workoutId: workout.uid,
+                          dateTime: DateTime.now(),
+                          difficulty: e,
+                        ),
+                      );
+                      Navigation.flush(
+                        widget: const HomeScreen(initialIndex: 4),
+                      );
+                    },
                   ),
-                )
-                .toList(),
-          ),
+                ),
+              )
+              .toList(),
         ),
       ],
     );

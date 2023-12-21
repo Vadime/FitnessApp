@@ -1,4 +1,3 @@
-
 import 'package:widgets/widgets.dart';
 
 class MyFeedback {
@@ -24,7 +23,7 @@ class MyFeedback {
     return MyFeedback(
       name: json['name'],
       feedback: json['feedback'],
-      date: json['date'] ?? DateTime.now().str,
+      date: json['date'] ?? DateTime.now().ddMMYYYY,
     );
   }
 }

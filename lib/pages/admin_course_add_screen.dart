@@ -138,7 +138,7 @@ class _AdminCourseAddScreenState extends State<AdminCourseAddScreen> {
                 const TextWidget('Datum'),
                 const Spacer(),
                 TextButtonWidget(
-                  selectedDate.str,
+                  selectedDate.ddMMYYYY,
                   onPressed: () {
                     Navigation.pushDatePicker(
                       first: selectedDate.subtract(const Duration(days: 100)),

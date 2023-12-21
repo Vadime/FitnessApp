@@ -54,7 +54,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
         });
         await UserRepository.copyToPersonalWorkouts(widget.workout);
 
-        Navigation.flush(widget: const HomeScreen(initialIndex: 1));
+        Navigation.flush(widget: const HomeScreen(initialIndex: 0));
       },
     );
   }
@@ -113,7 +113,10 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
             ],
           ),
           const SizedBox(height: 20),
-          const TextWidget('Übungen'),
+          TextWidget(
+            'Übungen',
+            style: context.textTheme.bodyLarge,
+          ),
           const SizedBox(height: 10),
 
           // workout exercises
@@ -165,11 +168,16 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
     WorkoutExerciseUI e,
   ) =>
       Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 10),
-          ListTileWidget(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-            title: e.exerciseUI.exercise.name,
+          // ListTileWidget(
+          //   padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+          //   title: e.exerciseUI.exercise.name,
+          // ),
+          TextWidget(
+            e.exerciseUI.exercise.name,
+            style: context.textTheme.bodyLarge,
           ),
           const SizedBox(height: 10),
           Stack(

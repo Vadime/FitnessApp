@@ -249,7 +249,7 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
                   exercisesSel.map((e) => e.workoutExercise).toList(),
             );
             await widget.upload(workout);
-            Navigation.flush(widget: const HomeScreen(initialIndex: 1));
+            Navigation.flush(widget: const HomeScreen(initialIndex: 0));
           } catch (e) {
             ToastController().show(e);
           }

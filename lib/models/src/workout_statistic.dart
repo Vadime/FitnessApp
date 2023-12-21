@@ -6,6 +6,7 @@ class WorkoutStatistic {
   final String workoutId;
   final DateTime dateTime;
   final WorkoutDifficulty difficulty;
+
   /// for gamification
   final int points = 100;
 
@@ -29,7 +30,7 @@ class WorkoutStatistic {
   Map<String, dynamic> toJson() => {
         'uid': workoutId,
         'difficulty': difficulty.name,
-        'date': DateTime.now().str,
+        'date': DateTime.now().ddMMYYYY,
       };
 
   @override

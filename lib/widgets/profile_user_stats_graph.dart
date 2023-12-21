@@ -103,7 +103,7 @@ class ProfileUserStatsGraph extends StatelessWidget {
                     getTitlesWidget: (i, m) => Align(
                       alignment: Alignment.bottomCenter,
                       child: TextWidget(
-                        workoutCount[i.toInt()].key.strNotYear,
+                        workoutCount[i.toInt()].key.ddMM,
                         align: TextAlign.center,
                       ),
                     ),

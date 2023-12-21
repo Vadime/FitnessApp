@@ -9,10 +9,7 @@ class UserHelpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ScaffoldWidget(
-      title: 'Hilfe Center',
-      body: ChatbotWidget(),
-    );
+    return const ChatbotWidget();
   }
 }
 
@@ -25,15 +22,17 @@ class ChatbotWidget extends StatefulWidget {
 
 class ChatbotWidgetState extends State<ChatbotWidget> {
   final TextFieldController messageController =
-      TextFieldController('Type a message...');
+      TextFieldController('Schreibe eine Nachricht...');
   List<Message>? messages;
 
   late final OpenAI openAI;
 
+  final ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     openAI = OpenAI.instance.build(
-      token: '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',
+      token: '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',
       baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 5)),
       enableLog: true,
     );
@@ -42,9 +41,28 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   void initMessages() async {
     messages = await MessageRepository.messagesAsFuture;
     setState(() {});
+    scrollToBottom();
+  }
+
+  void scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   Future<String> genResponse(String text) async {
@@ -59,9 +77,11 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
       response = await openAI.onCompletion(request: request);
     } catch (e, s) {
       Logging.logDetails('Error while generating response', e, s);
-      return 'Frag mich nicht du Hurensohn';
+      return 'Es ist ein Fehler aufgetreten';
     }
-    return response?.choices.first.text ?? 'Ich habe dich nicht verstanden';
+
+    return response?.choices.first.text.trim() ??
+        'Ich habe dich nicht verstanden';
   }
 
   void _sendMessage(String message) async {
@@ -84,71 +104,134 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        if (messages == null)
-          const Expanded(
-            child: LoadingWidget(),
-          )
-        else if (messages!.isEmpty)
-          const Expanded(
-            child: InfoWidget('Das ist Hurensohn 👋\nDein Chatbot für Fitness'),
-          )
-        else
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.only(
-                left: context.config.padding,
-                right: context.config.padding,
-                top: context.config.padding + context.topInset,
-                bottom: context.config.padding + context.bottomInset,
+    return ScaffoldWidget(
+      title: 'Hilfe Center',
+      body: Builder(
+        builder: (context) {
+          return Stack(
+            children: [
+              if (messages == null)
+                const Expanded(
+                  child: LoadingWidget(),
+                )
+              else if (messages!.isEmpty)
+                const Expanded(
+                  child:
+                      InfoWidget('Das ist Bruno 👋\nDein Chatbot für Fitness'),
+                )
+              else
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    padding: EdgeInsets.only(
+                      left: context.config.padding,
+                      right: context.config.padding,
+                      top: context.config.padding + context.topInset - 10,
+                      // account for the textfield
+                      bottom: context.config.padding +
+                          context.bottomInset +
+                          56 +
+                          10,
+                    ),
+                    itemCount: messages!.length,
+                    itemBuilder: (context, index) {
+                      // Überprüfen, ob es die erste Nachricht des Tages ist
+                      bool isFirstMessageOfDay = index == 0 ||
+                          messages![index].timestamp.day !=
+                              messages![index - 1].timestamp.day;
+
+                      // Überprüfen, ob es die erste Nachricht ist oder ob die vorherige Nachricht von einem anderen Benutzer stammt
+                      bool shouldDisplayUser = index == 0 ||
+                          messages![index].isUser !=
+                              messages![index - 1].isUser;
+
+                      // schreibe den Sender über die Nachricht, wenn die vorherige Nachricht nicht vom selben Sender war
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          // Datum anzeigen, wenn es die erste Nachricht des Tages ist
+                          if (isFirstMessageOfDay)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                              child: Text(
+                                messages![index].timestamp.ddMMYYYY,
+                                style: context.textTheme.labelLarge,
+                              ),
+                            ),
+                          if (shouldDisplayUser || isFirstMessageOfDay)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                              child: Row(
+                                children: [
+                                  TextWidget(
+                                    messages![index].isUser ? 'Du' : 'Bruno',
+                                    style: context.textTheme.labelLarge,
+                                    color: messages![index].isUser
+                                        ? null
+                                        : Colors.orange,
+                                  ),
+                                  const Expanded(child: SizedBox(width: 10)),
+                                  TextWidget(
+                                    messages![index].timestamp.hhmm,
+                                    style: context.textTheme.labelSmall,
+                                    color: Colors.grey.shade400,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ListTileWidget(
+                            title: messages![index].text,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  // blur Background
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Theme.of(context)
+                            .scaffoldBackgroundColor
+                            .withOpacity(0),
+                        Theme.of(context).scaffoldBackgroundColor,
+                      ],
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      bottom: context.config.padding + context.bottomInset,
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: TextFieldWidget(
+                            controller: messageController,
+                            onSubmitted: _sendMessage,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.send),
+                          onPressed: () => _sendMessage(messageController.text),
+                        ),
+                        const SizedBox(width: 12),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-              itemCount: messages!.length,
-              itemBuilder: (context, index) {
-                // schreibe den Sender über die Nachricht, wenn die vorherige Nachricht nicht vom selben Sender war
-                if (index > 0 &&
-                    messages![index].isUser != messages![index - 1].isUser) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      Text(messages![index].isUser ? 'User:' : 'Hurensohn:'),
-                      const SizedBox(height: 5),
-                      ListTileWidget(
-                        title: messages![index].text,
-                      ),
-                    ],
-                  );
-                } else {
-                  return ListTileWidget(
-                    title: messages![index].text,
-                  );
-                }
-              },
-            ),
-          ),
-        Row(
-          children: [
-            const SizedBox(width: 20),
-            Expanded(
-              child: TextFieldWidget(
-                controller: messageController,
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.send),
-              onPressed: () {
-                _sendMessage(messageController.text);
-              },
-            ),
-            const SizedBox(width: 12),
-          ],
-        ),
-        const SafeArea(
-          top: false,
-          child: SizedBox(height: 20),
-        ),
-      ],
+            ],
+          );
+        },
+      ),
     );
   }
 }

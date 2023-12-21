@@ -42,15 +42,6 @@ class _UserHomeScreen extends StatelessWidget {
           title: 'Health',
           view: const UserHealthPage(),
           icon: Icons.apple_rounded,
-          primaryButton: ElevatedButtonWidget(
-            'Produkt hinzufügen',
-            onPressed: () {
-              Navigation.push(
-                widget: const UserHealthPage(),
-              );
-              return;
-            },
-          ),
           actions: [
             IconButtonWidget(
               Icons.edit_rounded,

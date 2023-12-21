@@ -6,6 +6,7 @@ import 'package:fitnessapp/pages/profile_password_change_popup.dart';
 import 'package:fitnessapp/pages/user_accunt_delete_popup.dart';
 import 'package:fitnessapp/pages/user_feedback_popup.dart';
 import 'package:fitnessapp/pages/user_help_screen.dart';
+import 'package:fitnessapp/pages/user_statistics_screen.dart';
 import 'package:fitnessapp/widgets/profile_header_widget.dart';
 import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,19 @@ class _UserProfilePageState extends State<UserProfilePage>
         ProfileUserStatsGraph(
           loader: UserRepository.getWorkoutDatesStatistics(),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextButtonWidget(
+            'Weitere Statistiken',
+            onPressed: () {
+              Navigation.push(
+                widget: const UserStatisticsScreen(),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 10),
         ListTileWidget(
           title: 'Nutzer Feedback',
           trailing: const Icon(

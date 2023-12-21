@@ -54,7 +54,7 @@ class _AdminCourseListPageState extends State<AdminCourseListPage>
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             TextWidget(
-              entry.course.date.str,
+              entry.course.date.ddMMYYYY,
               style: context.textTheme.labelSmall,
             ),
             const SizedBox(height: 10),

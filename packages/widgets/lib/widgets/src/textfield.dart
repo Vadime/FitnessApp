@@ -67,6 +67,12 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   bool firstBuild = true;
 
   @override
+  void dispose() {
+    widget.controller?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.maxWidth == null) {
       return _build(context);

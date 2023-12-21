@@ -12,3 +12,4 @@ export 'src/workout_difficulty.dart';
 export 'src/workout_exercise.dart';
 export 'src/workout_exercise_type.dart';
 export 'src/workout_statistic.dart';
+export 'src/meal.dart';

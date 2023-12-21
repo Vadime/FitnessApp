@@ -1,3 +1,6 @@
+import 'package:fitnessapp/models/macro.dart';
+import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/pages/user_health_add_meal_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -9,11 +12,15 @@ class UserHealthPage extends StatefulWidget {
 }
 
 class _UserHealthPageState extends State<UserHealthPage> {
-
   @override
   Widget build(BuildContext context) {
-    return ScrollViewWidget(
+    return ColumnWidget(
+      safeArea: true,
+      margin: const EdgeInsets.all(20),
       children: [
+        const Expanded(
+          child: SizedBox(height: 0),
+        ),
         Align(
           alignment: Alignment.centerLeft,
           child: TextButtonWidget(
@@ -74,36 +81,121 @@ class _UserHealthPageState extends State<UserHealthPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             makroScoreProgress(
-              title: 'Kohlenhydrate',
+              title: Macro.carbohydrate.str,
               value: 70,
               max: 100,
               context: context,
             ),
             const SizedBox(width: 20),
             makroScoreProgress(
-              title: 'Fette',
+              title: Macro.fat.str,
               value: 70,
               max: 100,
               context: context,
             ),
             const SizedBox(width: 20),
             makroScoreProgress(
-              title: 'Eiweisse',
+              title: Macro.protein.str,
               value: 70,
               max: 100,
               context: context,
             ),
           ],
         ),
-        const SizedBox(height: 20),
+        const Expanded(
+          flex: 2,
+          child: SizedBox(height: 20),
+        ),
         // Mahlzeiten mit ListTile
 
-        mealTile(title: 'Frühstück', subtitle: '400 / 700 kcal'),
-        mealTile(title: 'Mittagessen', subtitle: '400 / 700 kcal'),
-        mealTile(title: 'Abendessen', subtitle: '400 / 700 kcal'),
         mealTile(
-          title: 'Snacks',
+          title: Meal.breakfast.str,
           subtitle: '400 / 700 kcal',
+          meal: Meal.breakfast,
+        ),
+        mealTile(
+          title: Meal.lunch.str,
+          subtitle: '400 / 700 kcal',
+          meal: Meal.lunch,
+        ),
+        mealTile(
+          title: Meal.dinner.str,
+          subtitle: '400 / 700 kcal',
+          meal: Meal.dinner,
+        ),
+        mealTile(
+          title: Meal.snacks.str,
+          subtitle: '400 / 700 kcal',
+          meal: Meal.snacks,
+        ),
+        const Expanded(
+          child: SizedBox(height: 0),
+        ),
+      ],
+    );
+  }
+
+  Widget mealTable({required Meal meal}) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            TextWidget(
+              meal.str,
+              style: Theme.of(context).textTheme.headlineLarge,
+            ),
+            const Expanded(child: SizedBox(width: 20)),
+            ImageWidget(
+              NetworkImage(
+                mealImages[meal] ?? 'https://picsum.photos/200/300',
+              ),
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        const TableWidget(
+          rows: [
+            TableRowWidget(
+              cells: [
+                'Name',
+                'Menge',
+                'Kalorien',
+              ],
+            ),
+            TableRowWidget(
+              cells: [
+                'Apfel',
+                '1',
+                '100',
+              ],
+            ),
+            TableRowWidget(
+              cells: [
+                'Birne',
+                '1',
+                '100',
+              ],
+            ),
+            TableRowWidget(
+              cells: [
+                'Banane',
+                '1',
+                '100',
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        ElevatedButtonWidget(
+          '${meal.str} hinzufügen',
+          onPressed: () {
+            Navigation.push(widget: UserHealthAddMealScreen(meal: meal));
+          },
         ),
       ],
     );
@@ -163,17 +255,44 @@ class _UserHealthPageState extends State<UserHealthPage> {
     );
   }
 
+  Map<Meal, String> mealImages = {
+    Meal.breakfast:
+        'https://www.eismann.de/fileadmin/_processed_/c/1/csm_Fruehstueckorientalles800x1068_370d99660e.jpeg',
+    Meal.lunch: 'https://www.koch-mit.de/app/uploads/2020/01/jaegerpfanne.jpg',
+    Meal.dinner:
+        'https://image.brigitte.de/10925282/t/cE/v5/w1440/r1.5/-/20-minuten-rezept.jpg',
+    Meal.snacks:
+        'https://www.aviko.de/_next/image?url=https%3A%2F%2Faviko-eu.s3.eu-west-2.amazonaws.com%2Fgermany%2F2023-06%2F1._einfach_umsatzstark_-_snack_gedeck.png&w=1920&q=75',
+  };
+
   ListTileWidget mealTile({
     String title = 'Placeholder',
     String subtitle = 'Placeholder',
-    Function()? onPressed,
+    Meal? meal,
   }) {
     return ListTileWidget(
       title: title,
       subtitle: subtitle,
-      trailing: IconButtonWidget(
+      onTap: () {
+        if (meal == null) {
+          ToastController().show('Vallah Billah du hast noch nischt gefressen');
+          return;
+        }
+        Navigation.pushPopup(
+          widget: mealTable(meal: meal),
+        );
+      },
+      leading: ImageWidget(
+        NetworkImage(
+          mealImages[meal] ?? 'https://picsum.photos/200/300',
+        ),
+        width: 50,
+        height: 50,
+        fit: BoxFit.cover,
+      ),
+      trailing: Icon(
         Icons.arrow_forward_ios_rounded,
-        onPressed: onPressed,
+        color: Colors.grey.shade300,
       ),
     );
   }

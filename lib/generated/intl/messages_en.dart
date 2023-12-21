@@ -36,6 +36,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "sign_out": MessageLookupByLibrary.simpleMessage("Sign Out"),
         "sign_up": MessageLookupByLibrary.simpleMessage("Sign Up"),
         "skip_button": MessageLookupByLibrary.simpleMessage("Skip"),
-        "workout": MessageLookupByLibrary.simpleMessage("Workout")
+        "workout": MessageLookupByLibrary.simpleMessage("Workout"),
       };
 }

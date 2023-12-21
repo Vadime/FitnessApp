@@ -22,7 +22,7 @@ class Course {
   Map<String, dynamic> toJson() => {
         'name': name,
         'description': description,
-        'date': date.str,
+        'date': date.ddMMYYYY,
         'imageURL': imageURL,
         'userUIDS': userUIDS,
       };

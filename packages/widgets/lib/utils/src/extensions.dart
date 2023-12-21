@@ -73,10 +73,14 @@ extension StringExtension on String? {
 }
 
 extension DateTimeExtension on DateTime {
-  String get str =>
+  String get ddMMYYYY =>
       '${day.toString().padLeft(2, '0')}.${month.toString().padLeft(2, '0')}.${year.toString().padLeft(4, '0')}';
-  String get strNotYear =>
+
+  String get ddMM =>
       '${day.toString().padLeft(2, '0')}.${month.toString().padLeft(2, '0')}';
+
+  String get hhmm =>
+      '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
 }
 
 extension EdgeInsetsExtension on EdgeInsets {

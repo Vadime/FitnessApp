@@ -173,7 +173,7 @@ class ThemeConfig {
         bodyLarge: TextStyle(
           fontSize: 14,
           letterSpacing: 0,
-          fontWeight: FontWeight.normal,
+          fontWeight: FontWeight.bold,
           color: textColor(brightness),
         ),
         titleSmall: TextStyle(

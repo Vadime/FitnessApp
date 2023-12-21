@@ -33,7 +33,7 @@ class WorkoutDeletePopup extends StatelessWidget {
           backgroundColor: context.config.errorColor,
           onPressed: () async {
             await delete();
-            Navigation.flush(widget: const HomeScreen(initialIndex: 1));
+            Navigation.flush(widget: const HomeScreen(initialIndex: 0));
           },
         ),
       ],
