@@ -6,10 +6,8 @@ class UserStatisticsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      appBar: AppBarWidget(
-        'Weitere Statistiken',
-      ),
+    return const ScaffoldWidget(
+      title: 'Weitere Statistiken',
       body: FailWidget('In Arbeit'),
     );
   }

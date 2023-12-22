@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-Gender? genderFromString(String value) {
+Gender genderFromString(String value) {
   switch (value.toLowerCase()) {
     case 'male':
       return Gender.male;
     case 'female':
       return Gender.female;
-    case 'other':
-      return Gender.other;
     default:
-      return null;
+      return Gender.other;
   }
 }
-
 
 enum Gender { male, female, other }
 
@@ -24,8 +21,6 @@ extension GenderExtension on Gender? {
         return 'Male';
       case Gender.female:
         return 'Female';
-      case Gender.other:
-        return 'Other';
       default:
         return 'Unknown';
     }
@@ -43,5 +38,4 @@ extension GenderExtension on Gender? {
         return Icons.error;
     }
   }
-
 }

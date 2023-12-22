@@ -627,4 +627,5 @@ class UserRepository {
       throw handleException(e, s);
     }
   }
+
 }

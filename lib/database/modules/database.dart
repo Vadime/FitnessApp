@@ -19,6 +19,7 @@ part '../models/exercise_repository.dart';
 part '../models/feedback_repository.dart';
 part '../models/message_repository.dart';
 part '../models/user_repository.dart';
+part '../models/health_repository.dart';
 part '../models/workout_repository.dart';
 part '../models/workout_statistics_repository.dart';
 part 'auth.dart';

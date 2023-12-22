@@ -1,8 +1,10 @@
-import 'package:fitnessapp/models/macro.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/user_health_add_meal_screen.dart';
+import 'package:fitnessapp/pages/user_health_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
+
+import '../database/modules/database.dart';
 
 class UserHealthPage extends StatefulWidget {
   const UserHealthPage({super.key});
@@ -12,8 +14,57 @@ class UserHealthPage extends StatefulWidget {
 }
 
 class _UserHealthPageState extends State<UserHealthPage> {
+  // nutzer aus der datenbank holen
+  User? user;
+
+  // datum speichern
+  DateTime? date;
+
+  @override
+  void initState() {
+    user = UserRepository.currentUser!;
+    HealthRepository.init().then((_) => setState(() {}));
+    date = DateTime.now();
+    super.initState();
+  }
+
+  String get dateForHealthText => date!.ddMMYYYY == DateTime.now().ddMMYYYY
+      ? 'Heute'
+      : date!.ddMMYYYY ==
+              DateTime.now().subtract(const Duration(days: 1)).ddMMYYYY
+          ? 'Gestern'
+          : date!.ddMMYYYY ==
+                  DateTime.now().add(const Duration(days: 1)).ddMMYYYY
+              ? 'Morgen'
+              : date!.ddMMYYYY;
+
   @override
   Widget build(BuildContext context) {
+    if (user == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    if (HealthRepository.currentHealth == null) {
+      return ColumnWidget(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        margin: const EdgeInsets.all(20),
+        safeArea: true,
+        children: [
+          const PageDescription(
+            Icons.info_outline_rounded,
+            'Du hast noch keine Health Daten',
+          ),
+          TextButtonWidget(
+            'Health Daten hinzufügen',
+            onPressed: () {
+              Navigation.push(widget: const UserHealthEditScreen());
+            },
+          ),
+        ],
+      );
+    }
     return ColumnWidget(
       safeArea: true,
       margin: const EdgeInsets.all(20),
@@ -24,19 +75,20 @@ class _UserHealthPageState extends State<UserHealthPage> {
         Align(
           alignment: Alignment.centerLeft,
           child: TextButtonWidget(
-            'Heute',
+            dateForHealthText,
             onPressed: () {
               /// should go down the history in firebase, when the user started
               final DateTime first =
                   DateTime.now().subtract(const Duration(days: 7));
               final DateTime last = DateTime.now().add(const Duration(days: 7));
               Navigation.pushDatePicker(
-                initial: DateTime.now(),
+                initial: date,
                 first: first,
                 last: last,
-                onChanged: (date) {
-                  // need to update the day
-                  setState(() {});
+                onChanged: (newDate) {
+                  setState(() {
+                    date = newDate;
+                  });
                 },
               );
             },
@@ -48,19 +100,19 @@ class _UserHealthPageState extends State<UserHealthPage> {
             SizedBox(
               width: context.mediaQuery.size.width / 5,
               child: headlineWidget(
-                value: 1200,
+                value: 0,
                 description: 'gegessen',
                 context: context,
               ),
             ),
             Center(
               child: CircularProgressWidget(
-                0.7,
+                0,
                 thickness: 10,
                 margin: const EdgeInsets.all(20),
                 radius: context.mediaQuery.size.width / 5,
                 centerWidget: headlineWidget(
-                  value: 540,
+                  value: HealthRepository.currentHealth!.bmr,
                   description: 'übrig',
                   context: context,
                 ),
@@ -69,7 +121,7 @@ class _UserHealthPageState extends State<UserHealthPage> {
             SizedBox(
               width: context.mediaQuery.size.width / 5,
               child: headlineWidget(
-                value: 316,
+                value: 0,
                 description: 'verbrannt',
                 context: context,
               ),
@@ -82,22 +134,22 @@ class _UserHealthPageState extends State<UserHealthPage> {
           children: [
             makroScoreProgress(
               title: Macro.carbohydrate.str,
-              value: 70,
-              max: 100,
+              value: 0,
+              max: HealthRepository.currentHealth!.carbs,
               context: context,
             ),
             const SizedBox(width: 20),
             makroScoreProgress(
               title: Macro.fat.str,
-              value: 70,
-              max: 100,
+              value: 0,
+              max: HealthRepository.currentHealth!.fat,
               context: context,
             ),
             const SizedBox(width: 20),
             makroScoreProgress(
               title: Macro.protein.str,
-              value: 70,
-              max: 100,
+              value: 0,
+              max: HealthRepository.currentHealth!.protein,
               context: context,
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:widgets/widgets.dart';
 
 class Navigation {
@@ -72,6 +73,77 @@ class Navigation {
             onChanged?.call(date);
             Navigation.pop();
           }),
+    );
+  }
+
+  static void pushWeightPicker({
+    double initial = 70,
+    int first = 40,
+    int last = 200,
+    Function(double)? onChanged,
+    required Function(double) onSaved,
+  }) async {
+    return await pushPopup(
+      widget: StatefulBuilder(builder: (context, setState) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            DecimalNumberPicker(
+                minValue: first,
+                maxValue: last,
+                value: initial,
+                integerTextMapper: (v) => '$v kg',
+                decimalTextMapper: (v) => '${(int.parse(v) * 100).round()} g',
+                onChanged: (v) {
+                  setState(() {
+                    initial = v;
+                    onChanged?.call(v);
+                  });
+                }),
+            const SizedBox(height: 20),
+            ElevatedButtonWidget('Speichern', onPressed: () {
+              onSaved(initial);
+              Navigation.pop();
+            }),
+          ],
+        );
+      }),
+    );
+  }
+
+  static void pushHeightPicker({
+    int initial = 170,
+    int first = 120,
+    int last = 220,
+    Function(int)? onChanged,
+    required Function(int) onSaved,
+  }) async {
+    return await pushPopup(
+      widget: StatefulBuilder(builder: (context, setState) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            NumberPicker(
+                minValue: first,
+                maxValue: last,
+                value: initial,
+                textMapper: (v) => '$v cm',
+                onChanged: (v) {
+                  setState(() {
+                    initial = v;
+                    onChanged?.call(v);
+                  });
+                }),
+            const SizedBox(height: 20),
+            ElevatedButtonWidget('Speichern', onPressed: () {
+              onSaved(initial);
+              Navigation.pop();
+            }),
+          ],
+        );
+      }),
     );
   }
 

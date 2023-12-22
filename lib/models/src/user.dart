@@ -1,4 +1,5 @@
 import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/models/src/health.dart';
 
 extension ContactTypeExtension on ContactType {
   get str {
@@ -73,6 +74,7 @@ class User {
     required this.userRole,
     required this.imageURL,
   });
+  
   final String uid;
   final ContactMethod contactAdress;
   final String displayName;

@@ -46,7 +46,11 @@ class _UserHomeScreen extends StatelessWidget {
             IconButtonWidget(
               Icons.edit_rounded,
               onPressed: () {
-                ToastController().show('In Arbeit');
+                User? user = UserRepository.currentUser;
+                if (user == null) {
+                  return;
+                }
+                Navigation.push(widget: const UserHealthEditScreen());
               },
             ),
           ],

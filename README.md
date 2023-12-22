@@ -1,5 +1,8 @@
 # Fitness App
 
+
+# bei beintraining edit screen fehler 
+
 <div style="display: flex; align-items: center;">
     <img style="margin-right: 20px;" src="frontend/res/logo/foreground.png" alt="Image" width="128" height="128" />
     <p> The Fitness App is a mobile application built to help users track their fitness goals, plan workouts, and maintain a healthy lifestyle. The app has been developed using the Flutter framework for the frontend and Firebase for the backend. This README provides an overview of the project structure, setup instructions, and key features of the app. </p>
