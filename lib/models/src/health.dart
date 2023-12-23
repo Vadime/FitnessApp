@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fitnessapp/models/src/health_goal.dart';
 import 'package:widgets/widgets.dart';
 
@@ -14,6 +15,9 @@ class Health {
   /// helps calculating the [bmr]
   Gender gender;
 
+  /// health date to track the health over time
+  DateTime healthDate;
+
   /// goal
   HealthGoal goal;
 
@@ -27,6 +31,7 @@ class Health {
     required this.height,
     required this.birthDate,
     required this.gender,
+    required this.healthDate,
     this.goal = HealthGoal.stayFit,
     this.carbsPercent = 0.5,
     this.proteinPercent = 0.3,
@@ -42,6 +47,7 @@ class Health {
         carbsPercent: json['carbsPercent'] as double,
         proteinPercent: json['proteinPercent'] as double,
         fatPercent: json['fatPercent'] as double,
+        healthDate: (json['healthDate'] as Timestamp).toDate(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -53,6 +59,7 @@ class Health {
         'carbsPercent': carbsPercent,
         'proteinPercent': proteinPercent,
         'fatPercent': fatPercent,
+        'healthDate': Timestamp.fromDate(healthDate),
       };
 
   double get bmi => weight / (height * height);
@@ -86,12 +93,14 @@ class Health {
         height: height,
         birthDate: birthDate.copyWith(),
         gender: gender,
+        healthDate: healthDate.copyWith(),
       );
 
-  static Health empty() => Health(
+  static Health empty(DateTime date) => Health(
         weight: 70,
         height: 180,
         birthDate: DateTime(2000),
         gender: Gender.male,
+        healthDate: date,
       );
 }

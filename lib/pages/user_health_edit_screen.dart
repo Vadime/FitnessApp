@@ -19,7 +19,8 @@ class _UserHealthEditScreenState extends State<UserHealthEditScreen> {
 
   @override
   initState() {
-    health = HealthRepository.currentHealth?.copy() ?? Health.empty();
+    health =
+        HealthRepository.currentHealth?.copy() ?? Health.empty(DateTime.now());
     super.initState();
   }
 

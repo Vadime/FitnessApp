@@ -17,26 +17,29 @@ class _UserHealthPageState extends State<UserHealthPage> {
   // nutzer aus der datenbank holen
   User? user;
 
-  // datum speichern
-  DateTime? date;
-
   @override
   void initState() {
     user = UserRepository.currentUser!;
-    HealthRepository.init().then((_) => setState(() {}));
-    date = DateTime.now();
+    changeDate(DateTime.now());
     super.initState();
   }
 
-  String get dateForHealthText => date!.ddMMYYYY == DateTime.now().ddMMYYYY
+  String get dateForHealthText => HealthRepository
+              .currentHealth?.healthDate.ddMMYYYY ==
+          DateTime.now().ddMMYYYY
       ? 'Heute'
-      : date!.ddMMYYYY ==
+      : HealthRepository.currentHealth?.healthDate.ddMMYYYY ==
               DateTime.now().subtract(const Duration(days: 1)).ddMMYYYY
           ? 'Gestern'
-          : date!.ddMMYYYY ==
+          : HealthRepository.currentHealth?.healthDate.ddMMYYYY ==
                   DateTime.now().add(const Duration(days: 1)).ddMMYYYY
               ? 'Morgen'
-              : date!.ddMMYYYY;
+              : HealthRepository.currentHealth?.healthDate.ddMMYYYY ?? 'Heute';
+
+  void changeDate(DateTime newDate) async {
+    await HealthRepository.getHealthFromDate(newDate);
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,14 +85,10 @@ class _UserHealthPageState extends State<UserHealthPage> {
                   DateTime.now().subtract(const Duration(days: 7));
               final DateTime last = DateTime.now().add(const Duration(days: 7));
               Navigation.pushDatePicker(
-                initial: date,
+                initial: HealthRepository.currentHealth!.healthDate,
                 first: first,
                 last: last,
-                onChanged: (newDate) {
-                  setState(() {
-                    date = newDate;
-                  });
-                },
+                onChanged: changeDate,
               );
             },
           ),
@@ -162,22 +161,26 @@ class _UserHealthPageState extends State<UserHealthPage> {
 
         mealTile(
           title: Meal.breakfast.str,
-          subtitle: '400 / 700 kcal',
+          subtitle:
+              '0 / ${(HealthRepository.currentHealth!.bmr * 0.225).toInt()} kcal',
           meal: Meal.breakfast,
         ),
         mealTile(
           title: Meal.lunch.str,
-          subtitle: '400 / 700 kcal',
+          subtitle:
+              '0 / ${(HealthRepository.currentHealth!.bmr * 0.325).toInt()} kcal',
           meal: Meal.lunch,
         ),
         mealTile(
           title: Meal.dinner.str,
-          subtitle: '400 / 700 kcal',
+          subtitle:
+              '0 / ${(HealthRepository.currentHealth!.bmr * 0.275).toInt()} kcal',
           meal: Meal.dinner,
         ),
         mealTile(
           title: Meal.snacks.str,
-          subtitle: '400 / 700 kcal',
+          subtitle:
+              '0 / ${(HealthRepository.currentHealth!.bmr * 0.175).toInt()} kcal',
           meal: Meal.snacks,
         ),
         const Expanded(

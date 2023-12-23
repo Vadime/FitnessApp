@@ -46,6 +46,7 @@ class UserHealthAddMealScreen extends StatefulWidget {
 }
 
 class _UserHealthAddMealScreenState extends State<UserHealthAddMealScreen> {
+  late List<Product> filteredProducts;
   final List<Product> products = [
     Product(
       name: 'Banane',
@@ -77,6 +78,15 @@ class _UserHealthAddMealScreenState extends State<UserHealthAddMealScreen> {
     ),
   ];
 
+  TextFieldController searchController =
+      TextFieldController('Suche nach Lebensmittel...');
+
+  @override
+  void initState() {
+    filteredProducts = List.from(products);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScaffoldWidget(
@@ -91,151 +101,179 @@ class _UserHealthAddMealScreenState extends State<UserHealthAddMealScreen> {
       ],
       body: Builder(
         builder: (context) {
-          return ListView.builder(
-            padding: EdgeInsets.fromLTRB(
-              context.config.padding,
-              context.mediaQuery.padding.top + context.config.padding,
-              context.config.padding,
-              context.bottomInset + context.config.padding,
-            ),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              final product = products[index];
-              return ListTileWidget(
-                title: product.name,
-                subtitle: '${product.calories} kcal',
-                trailing: ImageWidget(
-                  product.imageUrl != null
-                      ? NetworkImage(product.imageUrl!)
-                      : null,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
+          return ListView(
+            physics: const ScrollPhysics(),
+            children: [
+              // search bar
+              TextFieldWidget(
+                controller: searchController,
+                margin: const EdgeInsets.all(20),
+                onChanged: (v) {
+                  /// search for products, update list
+                  setState(() {
+                    filteredProducts = products
+                        .where(
+                          (element) => element.name
+                              .toLowerCase()
+                              .contains(v.toLowerCase()),
+                        )
+                        .toList();
+                  });
+                },
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                padding: EdgeInsets.fromLTRB(
+                  context.config.padding,
+                  0,
+                  context.config.padding,
+                  context.config.padding,
                 ),
-                onTap: () {
-                  double amount = product.amount;
-
-                  /// add product to meal
-                  Navigation.pushPopup(
-                    widget: StatefulBuilder(
-                      builder: (context, setState) {
-                        double calcAmount = amount / product.amount;
-
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                TextWidget(
-                                  product.name,
-                                  style: context.textTheme.headlineLarge,
-                                ),
-                                const Expanded(child: SizedBox(width: 20)),
-                                if (product.imageUrl != null)
-                                  ImageWidget(
-                                    NetworkImage(product.imageUrl!),
-                                    width: 40,
-                                    height: 40,
-                                    fit: BoxFit.cover,
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            TableWidget(
-                              rows: [
-                                TableRowWidget(
-                                  cells: [
-                                    'Kalorien',
-                                    (product.calories * calcAmount)
-                                        .toStringAsFixed(2),
-                                  ],
-                                ),
-                                TableRowWidget(
-                                  cells: [
-                                    'Kohlenhydrate',
-                                    (product.carbs * calcAmount)
-                                        .toStringAsFixed(2),
-                                  ],
-                                ),
-                                TableRowWidget(
-                                  cells: [
-                                    'Protein',
-                                    (product.protein * calcAmount)
-                                        .toStringAsFixed(2),
-                                  ],
-                                ),
-                                TableRowWidget(
-                                  cells: [
-                                    'Fett',
-                                    (product.fat * calcAmount)
-                                        .toStringAsFixed(2),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            CardWidget(
-                              padding: const EdgeInsets.all(20),
-                              children: [
-                                Row(
-                                  children: [
-                                    const TextWidget(
-                                      'Menge',
-                                    ),
-                                    const Expanded(child: SizedBox(width: 20)),
-                                    TextWidget(
-                                      '$amount g',
-                                    ),
-                                  ],
-                                ),
-                                Slider(
-                                  min: 0,
-                                  max: 2000,
-                                  divisions: 100,
-                                  value: amount,
-                                  label: '${amount.round()}',
-                                  onChanged: (newAmount) {
-                                    setState(() {
-                                      amount = newAmount;
-                                    });
-                                  },
-                                  onChangeEnd: (newAmount) {
-                                    // Sie können hier zusätzliche Aktionen durchführen, nachdem der Benutzer die Interaktion beendet hat
-                                  },
-                                ),
-                                Row(
-                                  children: [
-                                    TextWidget(
-                                      '0 g',
-                                      color: Colors.grey.shade400,
-                                    ),
-                                    const Expanded(child: SizedBox(width: 20)),
-                                    TextWidget(
-                                      '2000 g',
-                                      color: Colors.grey.shade400,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            ElevatedButtonWidget(
-                              'Zum ${widget.meal.str} hinzufügen',
-                              onPressed: () {
-                                /// add product to meal
-                                Navigation.pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
+                itemCount: filteredProducts.length,
+                itemBuilder: (context, index) {
+                  final product = filteredProducts[index];
+                  return ListTileWidget(
+                    title: product.name,
+                    subtitle: '${product.calories} kcal',
+                    trailing: ImageWidget(
+                      product.imageUrl != null
+                          ? NetworkImage(product.imageUrl!)
+                          : null,
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
                     ),
+                    onTap: () {
+                      double amount = product.amount;
+
+                      /// add product to meal
+                      Navigation.pushPopup(
+                        widget: StatefulBuilder(
+                          builder: (context, setState) {
+                            double calcAmount = amount / product.amount;
+
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    TextWidget(
+                                      product.name,
+                                      style: context.textTheme.headlineLarge,
+                                    ),
+                                    const Expanded(child: SizedBox(width: 20)),
+                                    if (product.imageUrl != null)
+                                      ImageWidget(
+                                        NetworkImage(product.imageUrl!),
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                TableWidget(
+                                  rows: [
+                                    TableRowWidget(
+                                      cells: [
+                                        'Kalorien',
+                                        (product.calories * calcAmount)
+                                            .toStringAsFixed(2),
+                                      ],
+                                    ),
+                                    TableRowWidget(
+                                      cells: [
+                                        'Kohlenhydrate',
+                                        (product.carbs * calcAmount)
+                                            .toStringAsFixed(2),
+                                      ],
+                                    ),
+                                    TableRowWidget(
+                                      cells: [
+                                        'Protein',
+                                        (product.protein * calcAmount)
+                                            .toStringAsFixed(2),
+                                      ],
+                                    ),
+                                    TableRowWidget(
+                                      cells: [
+                                        'Fett',
+                                        (product.fat * calcAmount)
+                                            .toStringAsFixed(2),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                CardWidget(
+                                  padding: const EdgeInsets.all(20),
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const TextWidget(
+                                          'Menge',
+                                        ),
+                                        const Expanded(
+                                          child: SizedBox(width: 20),
+                                        ),
+                                        TextWidget(
+                                          '$amount g',
+                                        ),
+                                      ],
+                                    ),
+                                    Slider(
+                                      min: 0,
+                                      max: 2000,
+                                      divisions: 100,
+                                      value: amount,
+                                      label: '${amount.round()}',
+                                      onChanged: (newAmount) {
+                                        setState(() {
+                                          amount = newAmount;
+                                        });
+                                      },
+                                      onChangeEnd: (newAmount) {
+                                        // Sie können hier zusätzliche Aktionen durchführen, nachdem der Benutzer die Interaktion beendet hat
+                                      },
+                                    ),
+                                    Row(
+                                      children: [
+                                        TextWidget(
+                                          '0 g',
+                                          color: Colors.grey.shade400,
+                                        ),
+                                        const Expanded(
+                                          child: SizedBox(width: 20),
+                                        ),
+                                        TextWidget(
+                                          '2000 g',
+                                          color: Colors.grey.shade400,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 20),
+                                ElevatedButtonWidget(
+                                  'Zum ${widget.meal.str} hinzufügen',
+                                  onPressed: () {
+                                    /// add product to meal
+                                    Navigation.pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    },
                   );
                 },
-              );
-            },
+              ),
+            ],
           );
         },
       ),
