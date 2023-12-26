@@ -1,5 +1,6 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/src/health.dart';
+import 'package:fitnessapp/models/src/health_activity.dart';
 import 'package:fitnessapp/models/src/health_goal.dart';
 import 'package:fitnessapp/pages/home/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -126,6 +127,27 @@ class _UserHealthEditScreenState extends State<UserHealthEditScreen> {
                   setState(() {});
                 },
               ),
+              ListTileWidget(
+                title: 'Wie aktiv bist du Tagsüber?',
+                subtitle: health.activity.description,
+                titleStyle: context.textTheme.bodyLarge,
+                trailing: TextWidget(
+                  health.activity.str,
+                  style: context.textTheme.bodyMedium,
+                  margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                ),
+                onTap: () {
+                  // iteriere über alle enums
+                  // und erstelle eine liste mit den namen
+                  var oldActivity = health.activity;
+                  int newIndex =
+                      (oldActivity.index + 1) % HealthActivity.values.length;
+                  var newActivity = HealthActivity.values[newIndex];
+
+                  health.activity = newActivity;
+                  setState(() {});
+                },
+              ),
 
               const SizedBox(height: 20),
               // caluclated calories text
@@ -135,7 +157,7 @@ class _UserHealthEditScreenState extends State<UserHealthEditScreen> {
               ),
               const SizedBox(height: 10),
               Text(
-                health.bmr.toStringAsFixed(0),
+                health.totalCalories.toStringAsFixed(0),
                 style: context.textTheme.headlineLarge,
               ),
               const SizedBox(height: 10),

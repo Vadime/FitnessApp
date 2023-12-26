@@ -22,4 +22,15 @@ extension HealthGoalExtension on HealthGoal {
         return 'Fit bleiben';
     }
   }
+
+  double get calorieChange {
+    switch (this) {
+      case HealthGoal.gainWeight:
+        return 400;
+      case HealthGoal.loseWeight:
+        return -400;
+      default:
+        return 0;
+    }
+  }
 }

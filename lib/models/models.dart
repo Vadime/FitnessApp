@@ -5,6 +5,7 @@ export 'src/feedback.dart';
 export 'src/food.dart';
 export 'src/friend.dart';
 export 'src/health.dart';
+export 'src/health_activity.dart';
 export 'src/macro.dart';
 export 'src/meal_type.dart';
 export 'src/message.dart';
