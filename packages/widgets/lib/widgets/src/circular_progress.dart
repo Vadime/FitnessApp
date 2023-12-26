@@ -73,7 +73,10 @@ class CircularProgressWidget extends StatelessWidget {
                   CircularProgressIndicator(
                     value: value,
                     strokeWidth: thickness ?? 4,
-                    color: foregroundColor ?? Theme.of(context).primaryColor,
+                    color: foregroundColor ??
+                        ((progress > 1.0)
+                            ? Colors.red
+                            : Theme.of(context).primaryColor),
                     backgroundColor:
                         backgroundColor ?? Colors.grey.withOpacity(0.3),
                     strokeCap: StrokeCap.round,

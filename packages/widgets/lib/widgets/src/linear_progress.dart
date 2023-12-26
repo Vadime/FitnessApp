@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class LinearProgressWidget extends StatelessWidget {
-  final double? progress;
+  final double progress;
 
   /// The border radius of the progress indicator.
   final double? radius;
@@ -39,12 +39,15 @@ class LinearProgressWidget extends StatelessWidget {
             curve: Curves.easeInOut,
             tween: Tween<double>(
               begin: 0,
-              end: progress ?? 1,
+              end: progress,
             ),
             builder: (context, value, _) => LinearProgressIndicator(
-              value: progress == null ? null : value,
+              value: value,
               minHeight: thickness,
-              color: foregroundColor ?? Theme.of(context).primaryColor,
+              color: foregroundColor ??
+                  ((progress > 1.0)
+                      ? Colors.red
+                      : Theme.of(context).primaryColor),
               backgroundColor: backgroundColor ?? Colors.grey.withOpacity(0.3),
               borderRadius:
                   BorderRadius.circular(radius ?? context.config.radius),
