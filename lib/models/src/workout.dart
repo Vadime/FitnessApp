@@ -1,3 +1,4 @@
+import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/src/schedule.dart';
 import 'package:fitnessapp/models/src/workout_exercise.dart';
 
@@ -8,7 +9,7 @@ class Workout {
   final Schedule schedule;
   final List<WorkoutExercise> workoutExercises;
 
-  const Workout({
+  Workout({
     required this.uid,
     required this.name,
     required this.description,
@@ -25,7 +26,9 @@ class Workout {
       };
 
   // from json
-  factory Workout.fromJson(String uid, Map<String, dynamic> json) => Workout(
+  factory Workout.fromJson(String uid, Map<String, dynamic> json) {
+    try {
+      return Workout(
         uid: uid,
         name: json['name'],
         description: json['description'],
@@ -34,14 +37,26 @@ class Workout {
             .map((e) => WorkoutExercise.fromJson(e))
             .toList(),
       );
-
-  Workout copy() {
-    return Workout(
-      uid: uid,
-      name: name,
-      description: description,
-      schedule: schedule,
-      workoutExercises: workoutExercises.map((e) => e.copy()).toList(),
-    );
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
   }
+
+  // copy with
+  Workout copyWith({
+    String? uid,
+    String? name,
+    String? description,
+    Schedule? schedule,
+    List<WorkoutExercise>? workoutExercises,
+    DateTime? startTime,
+    DateTime? endTime,
+  }) =>
+      Workout(
+        uid: uid ?? this.uid,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        schedule: schedule ?? this.schedule,
+        workoutExercises: workoutExercises ?? this.workoutExercises,
+      );
 }

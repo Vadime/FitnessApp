@@ -31,6 +31,14 @@ class _UserWorkoutInProgressScreenState
   PartyController confettiController =
       PartyController(duration: const Duration(seconds: 2));
 
+  late final DateTime startTime;
+
+  @override
+  void initState() {
+    startTime = DateTime.now();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScaffoldWidget(
@@ -106,15 +114,19 @@ class _UserWorkoutInProgressScreenState
               ? 'Finish'
               : 'Next',
           onPressed: () async {
+            // Workout finished
             if (currentPageIndex ==
                 widget.workout.workoutExercises.length - 1) {
               confettiController.play();
               Navigation.pushPopup(
                 widget: UserWorkoutInProgressFinishedPopup(
+                  startTime: startTime,
+                  endTime: DateTime.now(),
                   workout: widget.workout,
                 ),
               );
             } else {
+              // Next exercise
               await pageController.nextPage(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,

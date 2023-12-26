@@ -18,7 +18,7 @@ class PageDescription extends StatelessWidget {
           const SizedBox(height: 40, child: VerticalDivider(width: 40)),
           TextWidget(
             text,
-            color: Colors.grey.shade300,
+            color: Colors.grey.withOpacity(0.5),
           ),
         ],
       ),

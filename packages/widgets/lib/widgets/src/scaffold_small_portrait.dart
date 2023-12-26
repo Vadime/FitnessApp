@@ -87,6 +87,7 @@ class ScaffoldSmallPortrait extends StatelessWidget {
       ? AppBarWidget(
           title!,
           onTitleTap: onTitleTap,
+          
           actions: [if (hasAppBarActions) actions!.first],
         )
       : null;

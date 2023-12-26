@@ -19,8 +19,8 @@ class _UserHealthEditScreenState extends State<UserHealthEditScreen> {
 
   @override
   initState() {
-    health =
-        HealthRepository.currentHealth?.copy() ?? Health.empty(DateTime.now());
+    health = HealthRepository.currentHealth?.copyWith() ??
+        Health.empty(DateTime.now());
     super.initState();
   }
 
@@ -30,10 +30,9 @@ class _UserHealthEditScreenState extends State<UserHealthEditScreen> {
       title: 'Health bearbeiten',
       body: Builder(
         builder: (context) {
-          return ColumnWidget(
+          return ScrollViewWidget(
             safeArea: true,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            margin: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             children: [
               ListTileWidget(
                 title: 'Gewicht',

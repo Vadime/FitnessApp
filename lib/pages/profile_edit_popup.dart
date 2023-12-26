@@ -124,13 +124,6 @@ class _ProfileEditPopupState extends State<ProfileEditPopup> {
     );
   }
 
-  @override
-  void dispose() {
-    nameBloc.dispose();
-    contactBloc.dispose();
-    super.dispose();
-  }
-
   Future<void> onPhoneVerifyCode(verificationId, token) async {
     Navigation.pushPopup(
       widget: VerifyPhoneCodeView(

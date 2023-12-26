@@ -13,7 +13,7 @@ class HealthRepository {
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('health')
-          .where('healthDate', isEqualTo: firestore.Timestamp.fromDate(date))
+          .where('date', isEqualTo: firestore.Timestamp.fromDate(date))
           .get();
       var json = snapshot.docs.firstOrNull?.data();
       // if json is null, return the health of the last day
@@ -23,7 +23,7 @@ class HealthRepository {
             .collection('users')
             .doc(UserRepository.currentUserUID)
             .collection('health')
-            .orderBy('healthDate', descending: true)
+            .orderBy('date', descending: true)
             .limit(1)
             .get();
 
@@ -35,7 +35,7 @@ class HealthRepository {
         return _currentHealth!;
       }
       _currentHealth = Health.fromJson(json);
-      _currentHealth!.healthDate = date;
+      _currentHealth!.date = date;
       return _currentHealth!;
     } catch (e, s) {
       throw handleException(e, s);
@@ -43,17 +43,17 @@ class HealthRepository {
   }
 
   static Future<void> updateHealth(Health health) async {
-    health.healthDate = DateTime(
-      health.healthDate.year,
-      health.healthDate.month,
-      health.healthDate.day,
+    health.date = DateTime(
+      health.date.year,
+      health.date.month,
+      health.date.day,
     );
     try {
       var snapshot = await Store.instance
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('health')
-          .where('healthDate', isEqualTo: Timestamp.fromDate(health.healthDate))
+          .where('date', isEqualTo: Timestamp.fromDate(health.date))
           .limit(1)
           .get();
       if (snapshot.docs.isEmpty) {

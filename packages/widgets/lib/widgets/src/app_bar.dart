@@ -19,7 +19,17 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Theme.of(context).scaffoldBackgroundColor,
+            Theme.of(context).scaffoldBackgroundColor.withOpacity(0),
+          ],
+        ),
+      ),
       padding: margin ??
           EdgeInsets.only(
             left: context.leftInset + context.config.paddingD,
@@ -32,20 +42,22 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
           data: context.mediaQuery.copyWith(
             padding: EdgeInsets.zero,
           ),
-          child: AppBar(
-            leading: leading,
-            surfaceTintColor: Colors.transparent,
-            title: GestureDetector(
-                onTap: onTitleTap,
-                child: TextWidget(
-                  title,
-                  color:
-                      onTitleTap == null ? null : context.config.primaryColor,
-                  align: TextAlign.center,
-                )),
-            actions: actions,
-            toolbarHeight: preferredSize.height - 10,
-          ),
+          child: Builder(builder: (context) {
+            return AppBar(
+              leading: leading,
+              surfaceTintColor: Colors.transparent,
+              title: GestureDetector(
+                  onTap: onTitleTap,
+                  child: TextWidget(
+                    title,
+                    color:
+                        onTitleTap == null ? null : context.config.primaryColor,
+                    align: TextAlign.center,
+                  )),
+              actions: actions,
+              toolbarHeight: preferredSize.height - 10,
+            );
+          }),
         ),
       ),
     );

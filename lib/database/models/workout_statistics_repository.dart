@@ -7,7 +7,8 @@ class WorkoutStatisticsRepository {
       var workouts = res.docs
           .map((e) => WorkoutStatistic.fromJson(e.id, e.data()))
           .toList();
-      workouts.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+      workouts.sort(
+          (a, b) => a.startTime?.compareTo(b.startTime ?? DateTime.now()) ?? 0);
       return workouts;
     } catch (e, s) {
       throw handleException(e, s);

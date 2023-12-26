@@ -117,10 +117,13 @@ class ThemeConfig {
   // gen ThemeData
   ThemeData genTheme(Brightness brightness) {
     return ThemeData(
+      brightness: brightness,
+
       canvasColor: backgroundColor(brightness),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       shadowColor: Colors.transparent,
       useMaterial3: true,
+
       // colors
       primaryColor: primaryColor,
       cardColor: cardColor(brightness),
@@ -289,6 +292,7 @@ class ThemeConfig {
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
       ),
+
       // textButton
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
@@ -371,9 +375,6 @@ class ThemeConfig {
         centerTitle: true,
         elevation: 0,
         backgroundColor: cardColor(brightness).withOpacity(opacity),
-        systemOverlayStyle: brightness == Brightness.light
-            ? SystemUiOverlayStyle.light
-            : SystemUiOverlayStyle.dark,
         iconTheme: IconThemeData(
           color: textColor(brightness),
         ),
@@ -385,6 +386,9 @@ class ThemeConfig {
           fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
+        systemOverlayStyle: brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
       ),
       // snackBar
       snackBarTheme: SnackBarThemeData(

@@ -1,6 +1,6 @@
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/pages/user_health_add_meal_screen.dart';
 import 'package:fitnessapp/pages/user_health_edit_screen.dart';
+import 'package:fitnessapp/pages/user_health_meal_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -14,41 +14,42 @@ class UserHealthPage extends StatefulWidget {
 }
 
 class _UserHealthPageState extends State<UserHealthPage> {
-  // nutzer aus der datenbank holen
-  User? user;
-
   @override
   void initState() {
-    user = UserRepository.currentUser!;
-    changeDate(DateTime.now());
+    doFuturesInSequell();
     super.initState();
   }
 
-  String get dateForHealthText => HealthRepository
-              .currentHealth?.healthDate.ddMMYYYY ==
-          DateTime.now().ddMMYYYY
-      ? 'Heute'
-      : HealthRepository.currentHealth?.healthDate.ddMMYYYY ==
-              DateTime.now().subtract(const Duration(days: 1)).ddMMYYYY
-          ? 'Gestern'
-          : HealthRepository.currentHealth?.healthDate.ddMMYYYY ==
-                  DateTime.now().add(const Duration(days: 1)).ddMMYYYY
-              ? 'Morgen'
-              : HealthRepository.currentHealth?.healthDate.ddMMYYYY ?? 'Heute';
-
-  void changeDate(DateTime newDate) async {
-    await HealthRepository.getHealthFromDate(newDate);
-    setState(() {});
+  doFuturesInSequell() async {
+    await FoodRepository.dailyUpdate();
+    await changeDate(
+      HealthRepository.currentHealth?.date ?? DateTime.now().dateOnly,
+    );
   }
+
+  Future changeDate(DateTime newDate) async {
+    await HealthRepository.getHealthFromDate(newDate);
+    await FoodRepository.getFoodFromDate(newDate);
+    if (mounted) setState(() {});
+  }
+
+  String get dateForHealthText =>
+      HealthRepository.currentHealth?.date.ddMMYYYY == DateTime.now().ddMMYYYY
+          ? 'Heute'
+          : HealthRepository.currentHealth?.date.ddMMYYYY ==
+                  DateTime.now().subtract(const Duration(days: 1)).ddMMYYYY
+              ? 'Gestern'
+              : HealthRepository.currentHealth?.date.ddMMYYYY ?? 'Heute';
 
   @override
   Widget build(BuildContext context) {
-    if (user == null) {
+    if (UserRepository.currentUser == null) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
-    if (HealthRepository.currentHealth == null) {
+    if (HealthRepository.currentHealth == null ||
+        FoodRepository.currentFood == null) {
       return ColumnWidget(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,57 +69,58 @@ class _UserHealthPageState extends State<UserHealthPage> {
         ],
       );
     }
-    return ColumnWidget(
+    return ScrollViewWidget(
       safeArea: true,
-      margin: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       children: [
-        const Expanded(
-          child: SizedBox(height: 0),
-        ),
+        // DatePicker
         Align(
           alignment: Alignment.centerLeft,
           child: TextButtonWidget(
             dateForHealthText,
             onPressed: () {
               /// should go down the history in firebase, when the user started
-              final DateTime first =
-                  DateTime.now().subtract(const Duration(days: 7));
-              final DateTime last = DateTime.now().add(const Duration(days: 7));
+
               Navigation.pushDatePicker(
-                initial: HealthRepository.currentHealth!.healthDate,
-                first: first,
-                last: last,
+                initial: HealthRepository.currentHealth!.date,
+                first: DateTime.now().subtract(const Duration(days: 7)),
+                last: DateTime.now(),
                 onChanged: changeDate,
               );
             },
           ),
         ),
+        const SizedBox(height: 20),
+        // Kalorien gegessen, übrig, verbrannt
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             SizedBox(
-              width: context.mediaQuery.size.width / 5,
+              width: (context.mediaQuery.size.width - 120) / 3,
               child: headlineWidget(
-                value: 0,
+                value: FoodRepository.currentFood?.totalCalories,
                 description: 'gegessen',
                 context: context,
               ),
             ),
+            const SizedBox(width: 20),
             Center(
               child: CircularProgressWidget(
-                0,
+                FoodRepository.currentFood!.totalCalories /
+                    HealthRepository.currentHealth!.totalCalories,
                 thickness: 10,
-                margin: const EdgeInsets.all(20),
-                radius: context.mediaQuery.size.width / 5,
+                radius: context.mediaQuery.size.width / 6,
                 centerWidget: headlineWidget(
-                  value: HealthRepository.currentHealth!.bmr,
+                  value: HealthRepository.currentHealth!.totalCalories -
+                      FoodRepository.currentFood!.totalCalories,
                   description: 'übrig',
                   context: context,
                 ),
               ),
             ),
+            const SizedBox(width: 20),
             SizedBox(
-              width: context.mediaQuery.size.width / 5,
+              width: (context.mediaQuery.size.width - 120) / 3,
               child: headlineWidget(
                 value: 0,
                 description: 'verbrannt',
@@ -127,137 +129,68 @@ class _UserHealthPageState extends State<UserHealthPage> {
             ),
           ],
         ),
+
         const SizedBox(height: 20),
+
+        // Makro Progresse
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             makroScoreProgress(
               title: Macro.carbohydrate.str,
-              value: 0,
+              value: FoodRepository.currentFood!.totalCarbs,
               max: HealthRepository.currentHealth!.carbs,
               context: context,
             ),
             const SizedBox(width: 20),
             makroScoreProgress(
               title: Macro.fat.str,
-              value: 0,
+              value: FoodRepository.currentFood!.totalFat,
               max: HealthRepository.currentHealth!.fat,
               context: context,
             ),
             const SizedBox(width: 20),
             makroScoreProgress(
               title: Macro.protein.str,
-              value: 0,
+              value: FoodRepository.currentFood!.totalProtein,
               max: HealthRepository.currentHealth!.protein,
               context: context,
             ),
           ],
         ),
-        const Expanded(
-          flex: 2,
-          child: SizedBox(height: 20),
-        ),
+        const SizedBox(height: 20),
+
         // Mahlzeiten mit ListTile
-
         mealTile(
-          title: Meal.breakfast.str,
+          title: MealType.breakfast.str,
           subtitle:
-              '0 / ${(HealthRepository.currentHealth!.bmr * 0.225).toInt()} kcal',
-          meal: Meal.breakfast,
-        ),
-        mealTile(
-          title: Meal.lunch.str,
-          subtitle:
-              '0 / ${(HealthRepository.currentHealth!.bmr * 0.325).toInt()} kcal',
-          meal: Meal.lunch,
+              '${FoodRepository.currentFood!.breakfastCalories.toInt()} / ${(HealthRepository.currentHealth!.breakfastCalories).toInt()} kcal',
+          mealType: MealType.breakfast,
         ),
         mealTile(
-          title: Meal.dinner.str,
+          title: MealType.lunch.str,
           subtitle:
-              '0 / ${(HealthRepository.currentHealth!.bmr * 0.275).toInt()} kcal',
-          meal: Meal.dinner,
+              '${FoodRepository.currentFood!.lunchCalories.toInt()} / ${(HealthRepository.currentHealth!.lunchCalories).toInt()} kcal',
+          mealType: MealType.lunch,
         ),
         mealTile(
-          title: Meal.snacks.str,
+          title: MealType.dinner.str,
           subtitle:
-              '0 / ${(HealthRepository.currentHealth!.bmr * 0.175).toInt()} kcal',
-          meal: Meal.snacks,
+              '${FoodRepository.currentFood!.dinnerCalories.toInt()} / ${(HealthRepository.currentHealth!.dinnerCalories).toInt()} kcal',
+          mealType: MealType.dinner,
         ),
-        const Expanded(
-          child: SizedBox(height: 0),
-        ),
-      ],
-    );
-  }
-
-  Widget mealTable({required Meal meal}) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          children: [
-            TextWidget(
-              meal.str,
-              style: Theme.of(context).textTheme.headlineLarge,
-            ),
-            const Expanded(child: SizedBox(width: 20)),
-            ImageWidget(
-              NetworkImage(
-                mealImages[meal] ?? 'https://picsum.photos/200/300',
-              ),
-              width: 40,
-              height: 40,
-              fit: BoxFit.cover,
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        const TableWidget(
-          rows: [
-            TableRowWidget(
-              cells: [
-                'Name',
-                'Menge',
-                'Kalorien',
-              ],
-            ),
-            TableRowWidget(
-              cells: [
-                'Apfel',
-                '1',
-                '100',
-              ],
-            ),
-            TableRowWidget(
-              cells: [
-                'Birne',
-                '1',
-                '100',
-              ],
-            ),
-            TableRowWidget(
-              cells: [
-                'Banane',
-                '1',
-                '100',
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        ElevatedButtonWidget(
-          '${meal.str} hinzufügen',
-          onPressed: () {
-            Navigation.push(widget: UserHealthAddMealScreen(meal: meal));
-          },
+        mealTile(
+          title: MealType.snacks.str,
+          subtitle:
+              '${FoodRepository.currentFood!.snacksCalories.toInt()} / ${(HealthRepository.currentHealth!.snacksCalories).toInt()} kcal',
+          mealType: MealType.snacks,
         ),
       ],
     );
   }
 
   Column headlineWidget({
-    double value = 0,
+    double? value = 0,
     String description = 'Placeholder',
     required BuildContext context,
   }) {
@@ -265,10 +198,13 @@ class _UserHealthPageState extends State<UserHealthPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
-          value.toInt().toString(),
-          style: Theme.of(context).textTheme.headlineLarge,
-        ),
+        if (value == null)
+          const LoadingWidget()
+        else
+          Text(
+            value.toInt().toString(),
+            style: Theme.of(context).textTheme.headlineLarge,
+          ),
         Text(
           description,
           style: Theme.of(context).textTheme.labelMedium,
@@ -302,7 +238,7 @@ class _UserHealthPageState extends State<UserHealthPage> {
           ),
           const SizedBox(height: 5),
           Text(
-            '${value.toInt()}/${max.toInt()} g',
+            '${value.toInt()} / ${max.toInt()} g',
             style: Theme.of(context).textTheme.labelMedium,
           ),
         ],
@@ -310,44 +246,31 @@ class _UserHealthPageState extends State<UserHealthPage> {
     );
   }
 
-  Map<Meal, String> mealImages = {
-    Meal.breakfast:
-        'https://www.eismann.de/fileadmin/_processed_/c/1/csm_Fruehstueckorientalles800x1068_370d99660e.jpeg',
-    Meal.lunch: 'https://www.koch-mit.de/app/uploads/2020/01/jaegerpfanne.jpg',
-    Meal.dinner:
-        'https://image.brigitte.de/10925282/t/cE/v5/w1440/r1.5/-/20-minuten-rezept.jpg',
-    Meal.snacks:
-        'https://www.aviko.de/_next/image?url=https%3A%2F%2Faviko-eu.s3.eu-west-2.amazonaws.com%2Fgermany%2F2023-06%2F1._einfach_umsatzstark_-_snack_gedeck.png&w=1920&q=75',
-  };
-
   ListTileWidget mealTile({
     String title = 'Placeholder',
     String subtitle = 'Placeholder',
-    Meal? meal,
+    required MealType mealType,
   }) {
     return ListTileWidget(
       title: title,
       subtitle: subtitle,
       onTap: () {
-        if (meal == null) {
-          ToastController().show('Vallah Billah du hast noch nischt gefressen');
-          return;
-        }
-        Navigation.pushPopup(
-          widget: mealTable(meal: meal),
+        Navigation.push(
+          widget: UserHealthMealInfoScreen(meal: mealType),
         );
       },
-      leading: ImageWidget(
-        NetworkImage(
-          mealImages[meal] ?? 'https://picsum.photos/200/300',
+      leading: FutureBuilder(
+        future: MealRepository.getImageForMealType(mealType),
+        builder: (context, snap) => ImageWidget(
+          snap.data != null ? NetworkImage(snap.data.toString()) : null,
+          width: 50,
+          height: 50,
+          fit: BoxFit.cover,
         ),
-        width: 50,
-        height: 50,
-        fit: BoxFit.cover,
       ),
       trailing: Icon(
         Icons.arrow_forward_ios_rounded,
-        color: Colors.grey.shade300,
+        color: Colors.grey.withOpacity(0.5),
       ),
     );
   }

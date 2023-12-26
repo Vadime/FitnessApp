@@ -13,14 +13,18 @@ import 'package:firebase_storage/firebase_storage.dart' as storage;
 import 'package:fitnessapp/database/modules/database_module.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:flutter/foundation.dart';
+import 'package:openfoodfacts/openfoodfacts.dart' as openfoodfacts;
 import 'package:widgets/widgets.dart';
 
 part '../models/course_repository.dart';
 part '../models/exercise_repository.dart';
 part '../models/feedback_repository.dart';
-part '../models/message_repository.dart';
-part '../models/user_repository.dart';
+part '../models/food_repository.dart';
 part '../models/health_repository.dart';
+part '../models/meal_repository.dart';
+part '../models/message_repository.dart';
+part '../models/product_repository.dart';
+part '../models/user_repository.dart';
 part '../models/workout_repository.dart';
 part '../models/workout_statistics_repository.dart';
 part 'auth.dart';
@@ -38,25 +42,25 @@ class Database extends DatabaseModule {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return const core.FirebaseOptions(
-          apiKey: 'AIzaSyBmU426TVziB9QrtOqwQxcjZEDuH63bfFo',
-          appId: '1:534633074686:android:de07d1fedd973d6e317aaf',
-          messagingSenderId: '534633074686',
-          projectId: 'fitnessapp-9dd39',
-          databaseURL:
-              'https://fitnessapp-9dd39-default-rtdb.europe-west1.firebasedatabase.app',
-          storageBucket: 'fitnessapp-9dd39.appspot.com',
+          apiKey: String.fromEnvironment('android_apiKey'),
+          appId: String.fromEnvironment('android_appId'),
+          messagingSenderId:
+              String.fromEnvironment('android_messagingSenderId'),
+          projectId: String.fromEnvironment('android_projectId'),
+          databaseURL: String.fromEnvironment('android_databaseURL'),
+          storageBucket: String.fromEnvironment('android_storageBucket'),
         );
       case TargetPlatform.iOS:
         return const core.FirebaseOptions(
-          apiKey: 'AIzaSyC2ABCt_uX1w_RjDwgkkAMB8K6Lny_sY-E',
-          appId: '1:534633074686:ios:c381d0e456202bdc317aaf',
-          messagingSenderId: '534633074686',
-          projectId: 'fitnessapp-9dd39',
-          databaseURL:
-              'https://fitnessapp-9dd39-default-rtdb.europe-west1.firebasedatabase.app',
-          storageBucket: 'fitnessapp-9dd39.appspot.com',
-          iosBundleId:
-              '534633074686-t6eupvdqbpru0d8i63edqn8jvonkrnnb.apps.googleusercontent.com',
+          apiKey: String.fromEnvironment('ios_apiKey'),
+          appId: String.fromEnvironment('ios_appId'),
+          messagingSenderId: String.fromEnvironment('ios_messagingSenderId'),
+          projectId: String.fromEnvironment('ios_projectId'),
+          databaseURL: String.fromEnvironment('ios_databaseURL'),
+          storageBucket: String.fromEnvironment('ios_storageBucket'),
+          androidClientId: String.fromEnvironment('ios_androidClientId'),
+          iosBundleId: String.fromEnvironment('ios_iosBundleId'),
+          iosClientId: String.fromEnvironment('ios_iosClientId'),
         );
       case TargetPlatform.macOS:
         throw UnsupportedError(

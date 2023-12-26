@@ -37,6 +37,8 @@ dependencies:
   chat_gpt_sdk: ^2.2.5
   dio: ^5.4.0
   numberpicker: ^2.1.2
+  openfoodfacts: ^3.2.1
+  flutter_barcode_scanner: ^2.0.0
 
 dev_dependencies:
   flutter_test:

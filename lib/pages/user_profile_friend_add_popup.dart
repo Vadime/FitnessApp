@@ -86,11 +86,4 @@ class _UserProfileFriendAddPopupState extends State<UserProfileFriendAddPopup> {
       ],
     );
   }
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    phoneController.dispose();
-    super.dispose();
-  }
 }

@@ -20,7 +20,6 @@ class TextFieldWidget extends StatefulWidget {
   final bool? enabled;
   final bool? enableInteractiveSelection;
   final GestureTapCallback? onTap;
-  final Iterable<String>? autofillHints;
   final EdgeInsets margin;
   final EdgeInsets? padding;
   final double? maxWidth;
@@ -42,7 +41,6 @@ class TextFieldWidget extends StatefulWidget {
     this.enabled,
     this.enableInteractiveSelection,
     this.onTap,
-    this.autofillHints,
     this.margin = EdgeInsets.zero,
     this.padding,
     this.maxWidth,
@@ -98,6 +96,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               child: GestureDetector(
                 onTap: widget.onTap,
                 child: TextField(
+                  
                   controller: widget.controller,
                   style: context.textTheme.bodyMedium,
                   decoration: InputDecoration(
@@ -131,7 +130,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
                   enableInteractiveSelection:
                       widget.enableInteractiveSelection ?? true,
                   //onTap: widget.onTap,
-                  autofillHints: widget.autofillHints,
+                  autofillHints: widget.controller?.autofillHints,
                 ),
               ),
             ),

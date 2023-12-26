@@ -6,8 +6,11 @@ import 'package:widgets/widgets.dart';
 
 class UserWorkoutInProgressFinishedPopup extends StatelessWidget {
   final Workout workout;
-
+  final DateTime startTime;
+  final DateTime endTime;
   const UserWorkoutInProgressFinishedPopup({
+    required this.startTime,
+    required this.endTime,
     required this.workout,
     super.key,
   });
@@ -39,8 +42,9 @@ class UserWorkoutInProgressFinishedPopup extends StatelessWidget {
                         WorkoutStatistic(
                           uid: '',
                           workoutId: workout.uid,
-                          dateTime: DateTime.now(),
                           difficulty: e,
+                          startTime: startTime,
+                          endTime: endTime,
                         ),
                       );
                       Navigation.flush(

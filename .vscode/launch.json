@@ -7,6 +7,9 @@
       "type": "dart",
       "program": "lib/main.dart",
       "flutterMode": "release",
+      "args": [
+        "--dart-define-from-file=prod.json",
+      ]
     },
     {
       "name": "Launch Debug",
@@ -14,6 +17,9 @@
       "type": "dart",
       "program": "lib/main.dart",
       "flutterMode": "debug",
+      "args": [
+        "--dart-define-from-file=prod.json",
+      ]
     },
     {
       "name": "Launch Profile",
@@ -21,6 +27,9 @@
       "type": "dart",
       "program": "lib/main.dart",
       "flutterMode": "profile",
+      "args": [
+        "--dart-define-from-file=prod.json",
+      ]
     },
   ],
 }

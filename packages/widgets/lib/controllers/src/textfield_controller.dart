@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:widgets/utils/utils.dart';
 
-
 class TextFieldController extends TextEditingController {
   final String? labelText;
   final TextInputType? keyboardType;
@@ -13,6 +12,7 @@ class TextFieldController extends TextEditingController {
   final List<TextInputFormatter>? inputFormatters;
   String? _extraError;
   bool Function(String text)? extraValidator;
+  final Iterable<String>? autofillHints;
 
   TextFieldController(
     this.labelText, {
@@ -22,6 +22,7 @@ class TextFieldController extends TextEditingController {
     this.obscureText = false,
     this.inputFormatters,
     this.extraValidator,
+    this.autofillHints,
     super.text,
   }) {
     visible = obscureText;
@@ -33,13 +34,12 @@ class TextFieldController extends TextEditingController {
     String? errorText = 'Invalid email',
     String? text,
   }) =>
-      TextFieldController(
-        labelText,
-        errorRegex: RegExp(r'^[\w\.-]+@[a-zA-ZäßüöÄÜÖ\d\.-]+\.[a-zA-Z]{2,}$'),
-        errorText: errorText,
-        keyboardType: TextInputType.emailAddress,
-        text: text,
-      );
+      TextFieldController(labelText,
+          errorRegex: RegExp(r'^[\w\.-]+@[a-zA-ZäßüöÄÜÖ\d\.-]+\.[a-zA-Z]{2,}$'),
+          errorText: errorText,
+          keyboardType: TextInputType.emailAddress,
+          text: text,
+          autofillHints: [AutofillHints.email]);
 
   // password congiuration
   factory TextFieldController.password({
@@ -54,6 +54,7 @@ class TextFieldController extends TextEditingController {
         keyboardType: TextInputType.visiblePassword,
         obscureText: true,
         text: text,
+        autofillHints: [AutofillHints.password],
       );
 
   // name congiuration
@@ -68,6 +69,7 @@ class TextFieldController extends TextEditingController {
         errorText: errorText,
         keyboardType: TextInputType.name,
         text: text,
+        autofillHints: [AutofillHints.name],
       );
 
   // phone congiuration
@@ -85,6 +87,7 @@ class TextFieldController extends TextEditingController {
         inputFormatters: [
           LengthLimitingTextInputFormatter(16),
         ],
+        autofillHints: [AutofillHints.telephoneNumber],
       );
 
   // one number congiuration
@@ -112,6 +115,7 @@ class TextFieldController extends TextEditingController {
         errorText: errorText,
         keyboardType: const TextInputType.numberWithOptions(signed: true),
         text: text,
+        autofillHints: [AutofillHints.oneTimeCode],
       );
 
   // iban congiuration
@@ -119,19 +123,21 @@ class TextFieldController extends TextEditingController {
     String? labelText = 'IBAN',
     String? errorText = 'Invalid IBAN',
     String? text = 'DE',
-  }) => TextFieldController(
-      labelText,
-      errorRegex: RegExp(r'^[A-Z]{2}[0-9]{2}[a-zA-Z0-9]{1,30}$'),
-      errorText: errorText,
-      keyboardType: TextInputType.text,
-      text: text,
-      extraValidator: isValidGermanIBAN,
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9\s]')),
-        LengthLimitingTextInputFormatter(27),
-        IbanFormatter(),
-      ],
-    );
+  }) =>
+      TextFieldController(
+        labelText,
+        errorRegex: RegExp(r'^[A-Z]{2}[0-9]{2}[a-zA-Z0-9]{1,30}$'),
+        errorText: errorText,
+        keyboardType: TextInputType.text,
+        text: text,
+        extraValidator: isValidGermanIBAN,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z0-9\s]')),
+          LengthLimitingTextInputFormatter(27),
+          IbanFormatter(),
+        ],
+        autofillHints: [AutofillHints.creditCardNumber],
+      );
 
   String? calcErrorText(bool allowEmpty) {
     if (_extraError != null) {

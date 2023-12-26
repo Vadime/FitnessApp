@@ -419,11 +419,12 @@ class UserRepository {
           .collection('users')
           .doc(uid)
           .collection('workoutStatistics')
+          .orderBy('startTime', descending: true)
           .get();
       var workouts = res.docs
           .map((e) => WorkoutStatistic.fromJson(e.id, e.data()))
           .toList();
-      workouts.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+
       return workouts;
     } catch (e, s) {
       throw handleException(e, s);
@@ -627,5 +628,4 @@ class UserRepository {
       throw handleException(e, s);
     }
   }
-
 }

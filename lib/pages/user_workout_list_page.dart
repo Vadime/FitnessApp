@@ -33,10 +33,10 @@ class _UserWorkoutListPageState extends State<UserWorkoutListPage>
   loadWorkouts() async {
     if (!mounted) return;
     userWorkouts = await UserRepository.currentUserCustomWorkoutsAsFuture;
-    filteredUserWorkouts = userWorkouts?.map((w) => w.copy()).toList();
+    filteredUserWorkouts = userWorkouts?.map((w) => w.copyWith()).toList();
     if (mounted) setState(() {});
     adminWorkouts = await WorkoutRepository.adminWorkoutsAsFuture;
-    filteredAdminWorkouts = adminWorkouts?.map((w) => w.copy()).toList();
+    filteredAdminWorkouts = adminWorkouts?.map((w) => w.copyWith()).toList();
     if (mounted) setState(() {});
   }
 

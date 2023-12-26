@@ -16,7 +16,7 @@ class Health {
   Gender gender;
 
   /// health date to track the health over time
-  DateTime healthDate;
+  DateTime date;
 
   /// goal
   HealthGoal goal;
@@ -31,7 +31,7 @@ class Health {
     required this.height,
     required this.birthDate,
     required this.gender,
-    required this.healthDate,
+    required this.date,
     this.goal = HealthGoal.stayFit,
     this.carbsPercent = 0.5,
     this.proteinPercent = 0.3,
@@ -47,7 +47,7 @@ class Health {
         carbsPercent: json['carbsPercent'] as double,
         proteinPercent: json['proteinPercent'] as double,
         fatPercent: json['fatPercent'] as double,
-        healthDate: (json['healthDate'] as Timestamp).toDate(),
+        date: (json['date'] as Timestamp).toDate().dateOnly,
       );
 
   Map<String, dynamic> toJson() => {
@@ -59,7 +59,7 @@ class Health {
         'carbsPercent': carbsPercent,
         'proteinPercent': proteinPercent,
         'fatPercent': fatPercent,
-        'healthDate': Timestamp.fromDate(healthDate),
+        'date': Timestamp.fromDate(date.dateOnly),
       };
 
   double get bmi => weight / (height * height);
@@ -87,20 +87,55 @@ class Health {
   /// get fat in g from [bmr] and [fatPercent]
   double get fat => bmr * fatPercent / 9.3;
 
-  // copy
-  Health copy() => Health(
-        weight: weight,
-        height: height,
-        birthDate: birthDate.copyWith(),
-        gender: gender,
-        healthDate: healthDate.copyWith(),
-      );
+  /// get total calories from [bmr]
+  /// 1g carbs = 4.1 calories
+  /// 1g protein = 4.1 calories
+  /// 1g fat = 9.3 calories
+  /// get total calories from [bmr]
+  double get totalCalories => bmr;
+
+  /// get breakfast calories from [totalCalories]
+  double get breakfastCalories => totalCalories * 0.225;
+
+  /// get lunch calories from [totalCalories]
+  double get lunchCalories => totalCalories * 0.325;
+
+  /// get dinner calories from [totalCalories]
+  double get dinnerCalories => totalCalories * 0.275;
+
+  /// get snacks calories from [totalCalories]
+  double get snacksCalories => totalCalories * 0.175;
+
+  // copyWith
+  Health copyWith({
+    double? weight,
+    int? height,
+    DateTime? birthDate,
+    Gender? gender,
+    DateTime? date,
+    HealthGoal? goal,
+    double? carbsPercent,
+    double? proteinPercent,
+    double? fatPercent,
+  }) {
+    return Health(
+      weight: weight ?? this.weight,
+      height: height ?? this.height,
+      birthDate: birthDate ?? this.birthDate,
+      gender: gender ?? this.gender,
+      date: date ?? this.date,
+      goal: goal ?? this.goal,
+      carbsPercent: carbsPercent ?? this.carbsPercent,
+      proteinPercent: proteinPercent ?? this.proteinPercent,
+      fatPercent: fatPercent ?? this.fatPercent,
+    );
+  }
 
   static Health empty(DateTime date) => Health(
         weight: 70,
         height: 180,
         birthDate: DateTime(2000),
         gender: Gender.male,
-        healthDate: date,
+        date: date,
       );
 }

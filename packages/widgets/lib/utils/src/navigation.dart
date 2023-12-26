@@ -23,35 +23,35 @@ class Navigation {
     bool dismissible = true,
   }) async {
     return await showModalBottomSheet(
-      context: c ?? context,
-      useRootNavigator: true,
-      backgroundColor: Colors.transparent,
-      showDragHandle: false,
-      isDismissible: dismissible,
-      isScrollControlled: true,
-      enableDrag: false,
-      barrierColor: (c ?? context).brightness == Brightness.light
-          ? Colors.black38
-          : Colors.white38,
-      builder: (context) => Container(
-        decoration: BoxDecoration(
-          color: context.theme.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(context.config.radius),
-        ),
-        padding: EdgeInsets.all(context.config.padding),
-        margin: EdgeInsets.fromLTRB(
-          // left
-          context.config.paddingH,
-          // top
-          context.mediaQuery.viewPadding.top + context.config.paddingH,
-          // right
-          context.config.paddingH,
-          // bottom
-          context.mediaQuery.viewPadding.bottom + context.config.paddingH,
-        ),
-        child: widget,
-      ),
-    );
+        context: c ?? context,
+        useRootNavigator: true,
+        backgroundColor: Colors.transparent,
+        showDragHandle: false,
+        isDismissible: dismissible,
+        isScrollControlled: true,
+        enableDrag: false,
+        barrierColor: (c ?? context).brightness == Brightness.light
+            ? Colors.black38
+            : Colors.white38,
+        builder: (context) => Container(
+              decoration: BoxDecoration(
+                color: context.theme.scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(context.config.radius),
+              ),
+              padding: EdgeInsets.all(context.config.padding),
+              margin: EdgeInsets.fromLTRB(
+                // left
+                context.config.paddingH,
+                // top
+
+                context.topInset + context.config.paddingH,
+                // right
+                context.config.paddingH,
+                // bottom
+                context.bottomInset + context.config.paddingH,
+              ),
+              child: widget,
+            ));
   }
 
   static void pushDatePicker({
@@ -63,16 +63,25 @@ class Navigation {
     /// for dirthdays use DatePickerMode.year
     DatePickerMode initialCalendarMode = DatePickerMode.day,
   }) async {
+    DateTime date = initial ?? DateTime.now();
     return await pushPopup(
-      widget: CalendarDatePicker(
-          initialDate: initial ?? DateTime.now(),
-          firstDate: first ?? DateTime(1900),
-          lastDate: last ?? DateTime.now().add(const Duration(days: 365)),
-          initialCalendarMode: initialCalendarMode,
-          onDateChanged: (date) {
-            onChanged?.call(date);
+      widget: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CalendarDatePicker(
+              initialDate: initial ?? DateTime.now(),
+              firstDate: first ?? DateTime(1900),
+              lastDate: last ?? DateTime.now().add(const Duration(days: 365)),
+              initialCalendarMode: initialCalendarMode,
+              onDateChanged: (newDate) => date = newDate),
+          const SizedBox(height: 20),
+          ElevatedButtonWidget('Auswählen', onPressed: () {
+            onChanged?.call(date.dateOnly);
             Navigation.pop();
           }),
+        ],
+      ),
     );
   }
 
@@ -102,7 +111,7 @@ class Navigation {
                   });
                 }),
             const SizedBox(height: 20),
-            ElevatedButtonWidget('Speichern', onPressed: () {
+            ElevatedButtonWidget('Auswählen', onPressed: () {
               onSaved(initial);
               Navigation.pop();
             }),
@@ -137,7 +146,7 @@ class Navigation {
                   });
                 }),
             const SizedBox(height: 20),
-            ElevatedButtonWidget('Speichern', onPressed: () {
+            ElevatedButtonWidget('Auswählen', onPressed: () {
               onSaved(initial);
               Navigation.pop();
             }),

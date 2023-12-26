@@ -18,24 +18,17 @@ class BottomNavigationBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-        //  Stack(
-        //   children: [
-        //     Align(
-        //       alignment: Alignment(
-        //         ((markedIndex) - 1).toDouble(),
-        //         0,
-        //       ),
-        //       child: Container(
-        //         height: 4,
-        //         width: 4,
-        //         decoration: BoxDecoration(
-        //           color: context.theme.primaryColor,
-        //           borderRadius: BorderRadius.circular(2),
-        //         ),
-        //       ),
-        //     ),
-        Padding(
+    return Container(
+      decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Theme.of(context).scaffoldBackgroundColor.withOpacity(0),
+                    Theme.of(context).scaffoldBackgroundColor,
+                  ],
+                ),
+              ),
       padding: EdgeInsets.only(
         left: context.leftInset + context.config.paddingD,
         bottom: context.mediaQuery.viewPadding.bottom + context.config.paddingH,
@@ -63,9 +56,6 @@ class BottomNavigationBarWidget extends StatelessWidget {
           ),
         ),
       ),
-    )
-        //   ],
-        // ),
-        ;
+    );
   }
 }

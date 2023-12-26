@@ -20,10 +20,12 @@ extension WidgetBuildContextExtensions on BuildContext {
       );
 
   /// get bottom inset quickly
-  double get bottomInset => MediaQuery.of(this).padding.bottom;
-  double get topInset => MediaQuery.of(this).padding.top;
-  double get leftInset => MediaQuery.of(this).padding.left;
-  double get rightInset => MediaQuery.of(this).padding.right;
+  double get bottomInset =>
+      MediaQuery.of(this).padding.bottom +
+      MediaQuery.of(this).viewInsets.bottom;
+  double get topInset => MediaQuery.of(this).viewPadding.top;
+  double get leftInset => MediaQuery.of(this).viewInsets.left;
+  double get rightInset => MediaQuery.of(this).viewInsets.right;
 
   /// get mediaQuery quickly
   MediaQueryData get mediaQuery => MediaQuery.of(this);
@@ -81,6 +83,10 @@ extension DateTimeExtension on DateTime {
 
   String get hhmm =>
       '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+
+  DateTime get dateOnly => DateTime(year, month, day);
+
+  DateTime get timeOnly => DateTime(0, 0, 0, hour, minute, second);
 }
 
 extension EdgeInsetsExtension on EdgeInsets {

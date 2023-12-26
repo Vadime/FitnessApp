@@ -33,3 +33,6 @@
 
 # Miscellaneous
 .DS_Store
+
+# all the API keys
+prod.json
