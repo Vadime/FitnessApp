@@ -39,6 +39,7 @@ dependencies:
   numberpicker: ^2.1.2
   openfoodfacts: ^3.2.1
   flutter_barcode_scanner: ^2.0.0
+  flutter_keyboard_visibility: ^6.0.0
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:widgets/widgets.dart';
 
 class UserHelpScreen extends StatelessWidget {
@@ -36,7 +37,15 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
       baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 5)),
       enableLog: true,
     );
+
     initMessages();
+
+    // scroll to bottom, when keyboard appears
+    KeyboardVisibilityController().onChange.listen((visible) {
+      if (visible) {
+        scrollToBottom(10);
+      }
+    });
 
     super.initState();
   }
@@ -50,19 +59,30 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
   void initMessages() async {
     messages = await MessageRepository.messagesAsFuture;
     setState(() {});
-    scrollToBottom();
+    // needs to be after messages are loaded in an async function
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollToBottom(100);
+    });
   }
 
-  void scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients) {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 400),
+  void scrollToBottom(double animAmount) async {
+    if (scrollController.hasClients) {
+      // init scroll
+      var currentMaxToScroll = 0.0;
+
+      while (scrollController.position.maxScrollExtent > currentMaxToScroll) {
+        if (!mounted) return;
+
+        currentMaxToScroll = scrollController.position.maxScrollExtent;
+
+        await scrollController.animateTo(
+          // add 100 to make a bounce effect
+          currentMaxToScroll + animAmount,
+          duration: const Duration(milliseconds: 100),
           curve: Curves.easeOut,
         );
       }
-    });
+    }
   }
 
   Future<String> genResponse(String text) async {

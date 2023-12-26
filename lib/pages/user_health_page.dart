@@ -111,9 +111,14 @@ class _UserHealthPageState extends State<UserHealthPage> {
                 thickness: 10,
                 radius: context.mediaQuery.size.width / 6,
                 centerWidget: headlineWidget(
-                  value: HealthRepository.currentHealth!.totalCalories -
-                      FoodRepository.currentFood!.totalCalories,
-                  description: 'übrig',
+                  value: (HealthRepository.currentHealth!.totalCalories -
+                          FoodRepository.currentFood!.totalCalories)
+                      .abs(),
+                  description: (FoodRepository.currentFood!.totalCalories /
+                              HealthRepository.currentHealth!.totalCalories >
+                          1)
+                      ? 'überschuss'
+                      : 'übrig',
                   context: context,
                 ),
               ),

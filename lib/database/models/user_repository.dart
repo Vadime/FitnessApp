@@ -420,6 +420,7 @@ class UserRepository {
           .doc(uid)
           .collection('workoutStatistics')
           .orderBy('startTime', descending: true)
+          .limit(14)
           .get();
       var workouts = res.docs
           .map((e) => WorkoutStatistic.fromJson(e.id, e.data()))

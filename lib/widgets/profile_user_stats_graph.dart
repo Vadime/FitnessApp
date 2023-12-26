@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/pages/user_statistics_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -78,8 +79,8 @@ class ProfileUserStatsGraph extends StatelessWidget {
                   barRods: List.generate(workoutsPerDay.length, (workoutIndex) {
                     WorkoutStatistic workout = workoutsPerDay[workoutIndex];
                     return BarChartRodData(
-                      fromY: workoutIndex.toDouble() + 0.05,
-                      toY: workoutIndex.toDouble() + 0.95,
+                      fromY: workoutIndex.toDouble(),
+                      toY: workoutIndex.toDouble() + 1,
                       color: workout.difficulty.getColor(context),
                       borderRadius: BorderRadius.circular(
                         context.config.radius,
@@ -95,7 +96,7 @@ class ProfileUserStatsGraph extends StatelessWidget {
                 leftTitles: const AxisTitles(),
                 rightTitles: const AxisTitles(),
                 topTitles: const AxisTitles(
-                  axisNameSize: 40,
+                  axisNameSize: 34,
                   axisNameWidget: BarChartWidgetLegend(),
                 ),
                 bottomTitles: AxisTitles(
@@ -126,25 +127,35 @@ class BarChartWidgetLegend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           for (var diff in WorkoutDifficulty.values) ...[
-            const SizedBox(width: 10),
             Container(
-              height: 10,
-              width: 10,
+              padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+              margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
               decoration: BoxDecoration(
                 color: diff.getColor(context),
                 borderRadius: BorderRadius.circular(context.config.radius),
               ),
+              alignment: Alignment.center,
+              child: FittedBox(
+                child: TextWidget(
+                  diff.str,
+                ),
+              ),
             ),
-            const SizedBox(width: 10),
-            TextWidget(diff.str),
-            const SizedBox(width: 10),
           ],
+          const Expanded(child: SizedBox()),
+          TextButtonWidget(
+            'Mehr',
+            onPressed: () {
+              Navigation.push(
+                widget: const UserStatisticsScreen(),
+              );
+            },
+          ),
         ],
       ),
     );
