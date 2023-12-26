@@ -1,5 +1,6 @@
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/user_health_add_meal_screen.dart';
+import 'package:fitnessapp/pages/user_health_add_new_meal_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:widgets/widgets.dart';
@@ -27,12 +28,10 @@ class _UserHealthMealInfoScreenState extends State<UserHealthMealInfoScreen> {
 
   @override
   void initState() {
-    ProductRepository.getProducts().then(
-      (value) => setState(() {
-        products = value;
-        filteredProducts = List.from(products!);
-      }),
-    );
+    setState(() {
+      products = ProductRepository.products;
+      filteredProducts = List.from(products!);
+    });
     super.initState();
   }
 
@@ -122,41 +121,63 @@ class _UserHealthMealInfoScreenState extends State<UserHealthMealInfoScreen> {
               });
             },
           ),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const ScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(
-              context.config.padding,
-              0,
-              context.config.padding,
-              context.config.padding,
-            ),
-            itemCount: filteredProducts.length,
-            itemBuilder: (context, index) {
-              final product = filteredProducts[index];
-              return ListTileWidget(
-                title: product.name,
-                subtitle: '${product.calories} kcal',
-                trailing: ImageWidget(
-                  product.imageUrl != null
-                      ? NetworkImage(product.imageUrl!)
-                      : null,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
+          if (filteredProducts.isEmpty)
+            Column(
+              children: [
+                const DescriptionWidget(
+                  Icons.error_rounded,
+                  'Keine Lebensmittel gefunden',
                 ),
-                onTap: () {
-                  /// add product to meal
-                  Navigation.push(
-                    widget: UserHealthAddMealScreen(
-                      meal: widget.meal,
-                      product: product,
-                    ),
-                  );
-                },
-              );
-            },
-          ),
+                const SizedBox(height: 20),
+                TextButtonWidget(
+                  'Lebensmittel hinzufügen',
+                  onPressed: () {
+                    Navigation.push(
+                      widget: UserHealthAddNewMealScreen(
+                        meal: widget.meal,
+                        searchName: searchController.text,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            )
+          else
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              padding: EdgeInsets.fromLTRB(
+                context.config.padding,
+                0,
+                context.config.padding,
+                context.config.padding,
+              ),
+              itemCount: filteredProducts.length,
+              itemBuilder: (context, index) {
+                final product = filteredProducts[index];
+                return ListTileWidget(
+                  title: product.name,
+                  subtitle: '${product.calories} kcal',
+                  trailing: ImageWidget(
+                    product.imageUrl != null
+                        ? NetworkImage(product.imageUrl!)
+                        : null,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                  onTap: () {
+                    /// add product to meal
+                    Navigation.push(
+                      widget: UserHealthAddMealScreen(
+                        meal: widget.meal,
+                        product: product,
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
         ],
       ),
     );

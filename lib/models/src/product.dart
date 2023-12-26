@@ -1,7 +1,7 @@
 class Product {
   final String name;
 
-  final String? imageUrl;
+  final String imageUrl;
 
   /// in kcal
   final double calories;
@@ -20,7 +20,7 @@ class Product {
 
   Product({
     required this.name,
-    this.imageUrl,
+    this.imageUrl = '',
     required this.calories,
     required this.carbs,
     required this.protein,
@@ -30,7 +30,7 @@ class Product {
 
   factory Product.fromJson(Map<String, Object?> json) => Product(
         name: json['name'].toString(),
-        imageUrl: json['imageUrl']?.toString(),
+        imageUrl: json['imageUrl'].toString(),
         calories: json['calories'] as double,
         carbs: json['carbs'] as double,
         protein: json['protein'] as double,
