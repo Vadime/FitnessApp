@@ -61,11 +61,11 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
     setState(() {});
     // needs to be after messages are loaded in an async function
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      scrollToBottom(100);
+      scrollToBottom(10);
     });
   }
 
-  void scrollToBottom(double animAmount) async {
+  Future<void> scrollToBottom(double animAmount) async {
     if (scrollController.hasClients) {
       // init scroll
       var currentMaxToScroll = 0.0;
@@ -116,13 +116,7 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
     messages ??= [];
     messages!.add(message);
     // scroll to bottom
-    if (scrollController.hasClients) {
-      scrollController.animateTo(
-        scrollController.position.maxScrollExtent + 100,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeOut,
-      );
-    }
+    scrollToBottom(10);
     // do it in parallel for faster response
     MessageRepository.uploadMessage(message);
     setState(() {});
@@ -133,82 +127,77 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
     return ScaffoldWidget(
       title: 'Hilfe Center',
       body: Stack(
+        fit: StackFit.expand,
         children: [
           if (messages == null)
-            const Expanded(
-              child: LoadingWidget(),
-            )
+            const LoadingWidget()
           else if (messages!.isEmpty)
-            const Expanded(
-              child: InfoWidget('Das ist Bruno 👋\nDein Chatbot für Fitness'),
-            )
+            const InfoWidget('Das ist Bruno 👋\nDein Chatbot für Fitness')
           else
-            Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                padding: EdgeInsets.only(
-                  left: context.config.padding,
-                  right: context.config.padding,
-                  // account for the appbar
-                  top: context.topInset + 56 + 10,
-                  // account for the textfield
-                  bottom: context.config.padding +
-                      context.mediaQuery.padding.bottom +
-                      56 +
-                      10,
-                ),
-                itemCount: messages!.length,
-                itemBuilder: (context, index) {
-                  // Überprüfen, ob es die erste Nachricht des Tages ist
-                  bool isFirstMessageOfDay = index == 0 ||
-                      messages![index].timestamp.day !=
-                          messages![index - 1].timestamp.day;
-
-                  // Überprüfen, ob es die erste Nachricht ist oder ob die vorherige Nachricht von einem anderen Benutzer stammt
-                  bool shouldDisplayUser = index == 0 ||
-                      messages![index].isUser != messages![index - 1].isUser;
-
-                  // schreibe den Sender über die Nachricht, wenn die vorherige Nachricht nicht vom selben Sender war
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      // Datum anzeigen, wenn es die erste Nachricht des Tages ist
-                      if (isFirstMessageOfDay)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-                          child: Text(
-                            messages![index].timestamp.ddMMYYYY,
-                            style: context.textTheme.labelLarge,
-                          ),
-                        ),
-                      if (shouldDisplayUser || isFirstMessageOfDay)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
-                          child: Row(
-                            children: [
-                              TextWidget(
-                                messages![index].isUser ? 'Du' : 'Bruno',
-                                style: context.textTheme.labelLarge,
-                                color: messages![index].isUser
-                                    ? null
-                                    : Colors.orange,
-                              ),
-                              const Expanded(child: SizedBox(width: 10)),
-                              TextWidget(
-                                messages![index].timestamp.hhmm,
-                                style: context.textTheme.labelSmall,
-                                color: Colors.grey.withOpacity(0.5),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ListTileWidget(
-                        title: messages![index].text,
-                      ),
-                    ],
-                  );
-                },
+            ListView.builder(
+              controller: scrollController,
+              padding: EdgeInsets.only(
+                left: context.config.padding,
+                right: context.config.padding,
+                // account for the appbar
+                top: context.topInset + 56 + 10,
+                // account for the textfield
+                bottom: context.config.padding +
+                    context.mediaQuery.padding.bottom +
+                    56 +
+                    10,
               ),
+              itemCount: messages!.length,
+              itemBuilder: (context, index) {
+                // Überprüfen, ob es die erste Nachricht des Tages ist
+                bool isFirstMessageOfDay = index == 0 ||
+                    messages![index].timestamp.day !=
+                        messages![index - 1].timestamp.day;
+
+                // Überprüfen, ob es die erste Nachricht ist oder ob die vorherige Nachricht von einem anderen Benutzer stammt
+                bool shouldDisplayUser = index == 0 ||
+                    messages![index].isUser != messages![index - 1].isUser;
+
+                // schreibe den Sender über die Nachricht, wenn die vorherige Nachricht nicht vom selben Sender war
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    // Datum anzeigen, wenn es die erste Nachricht des Tages ist
+                    if (isFirstMessageOfDay)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                        child: Text(
+                          messages![index].timestamp.ddMMYYYY,
+                          style: context.textTheme.labelLarge,
+                        ),
+                      ),
+                    if (shouldDisplayUser || isFirstMessageOfDay)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+                        child: Row(
+                          children: [
+                            TextWidget(
+                              messages![index].isUser ? 'Du' : 'Bruno',
+                              style: context.textTheme.labelLarge,
+                              color: messages![index].isUser
+                                  ? null
+                                  : Colors.orange,
+                            ),
+                            const Expanded(child: SizedBox(width: 10)),
+                            TextWidget(
+                              messages![index].timestamp.hhmm,
+                              style: context.textTheme.labelSmall,
+                              color: Colors.grey.withOpacity(0.5),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ListTileWidget(
+                      title: messages![index].text,
+                    ),
+                  ],
+                );
+              },
             ),
           Positioned(
             bottom: 0,
