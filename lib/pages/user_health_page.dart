@@ -87,24 +87,10 @@ class _UserHealthPageState extends State<UserHealthPage> {
       safeArea: true,
       padding: const EdgeInsets.all(20),
       children: [
-        // DatePicker
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButtonWidget(
-            dateForHealthText,
-            onPressed: () {
-              /// should go down the history in firebase, when the user started
+        ...waterProgress(),
 
-              Navigation.pushDatePicker(
-                initial: HealthRepository.currentHealth!.date,
-                first: DateTime.now().subtract(const Duration(days: 7)),
-                last: DateTime.now(),
-                onChanged: changeDate,
-              );
-            },
-          ),
-        ),
         const SizedBox(height: 20),
+
         // Kalorien gegessen, übrig, verbrannt
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -179,6 +165,7 @@ class _UserHealthPageState extends State<UserHealthPage> {
             ),
           ],
         ),
+
         const SizedBox(height: 20),
 
         // Mahlzeiten mit ListTile
@@ -206,9 +193,61 @@ class _UserHealthPageState extends State<UserHealthPage> {
               '${FoodRepository.currentFood!.snacksCalories.toInt()} / ${(HealthRepository.currentHealth!.snacksCalories).toInt()} kcal',
           mealType: MealType.snacks,
         ),
+        // DatePicker
+        ElevatedButtonWidget(
+          dateForHealthText,
+          margin: const EdgeInsets.all(20),
+          onPressed: () {
+            /// should go down the history in firebase, when the user started
+
+            Navigation.pushDatePicker(
+              initial: HealthRepository.currentHealth!.date,
+              first: DateTime.now().subtract(const Duration(days: 7)),
+              last: DateTime.now(),
+              onChanged: changeDate,
+            );
+          },
+        ),
       ],
     );
   }
+
+  List<Widget> waterProgress() => [
+        Row(
+          children: [
+            Text(
+              'Wasser',
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const Spacer(),
+            Text(
+              '${FoodRepository.currentFood!.water} / ${HealthRepository.currentHealth!.water} ml',
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
+          ],
+        ),
+        const SizedBox(height: 5),
+        LinearProgressWidget(
+          FoodRepository.currentFood!.water /
+              HealthRepository.currentHealth!.water,
+          thickness: 5,
+          foregroundColor: Colors.blue.shade300,
+        ),
+        const SizedBox(height: 5),
+        Align(
+          alignment: Alignment.centerRight,
+          child: TextWidget(
+            '100 ml trinken',
+            color: Colors.blue.shade300,
+            style: Theme.of(context).textTheme.labelLarge,
+            weight: FontWeight.bold,
+            onTap: () {
+              FoodRepository.addWater(100);
+              setState(() {});
+            },
+          ),
+        ),
+      ];
 
   Column headlineWidget({
     double? value = 0,

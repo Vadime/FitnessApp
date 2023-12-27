@@ -108,6 +108,9 @@ class Health {
   /// get snacks calories
   double get snacksCalories => totalCalories * 0.175;
 
+  /// get water in ml
+  int get water => (weight * 35).toInt();
+
   // copyWith
   Health copyWith({
     double? weight,

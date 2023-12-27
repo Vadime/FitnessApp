@@ -6,10 +6,11 @@ import 'package:fitnessapp/models/models.dart';
 class Food {
   final Map<MealType, List<Product>> products;
   DateTime date;
-
+  int water;
   Food({
     required this.products,
     required this.date,
+    this.water = 0,
   });
 
   factory Food.fromJson(Map<Object?, Object?> json) => Food(
@@ -22,6 +23,7 @@ class Food {
           ),
         ),
         date: (json['date'] as Timestamp).toDate(),
+        water: json['water'] as int,
       );
 
   Map<String, dynamic> toJson() => {
@@ -32,16 +34,19 @@ class Food {
           ),
         ),
         'date': Timestamp.fromDate(date),
+        'water': water,
       };
 
   // copyWith
   Food copyWith({
     Map<MealType, List<Product>>? products,
     DateTime? date,
+    int? water,
   }) {
     return Food(
       products: products ?? this.products,
       date: date ?? this.date,
+      water: water ?? this.water,
     );
   }
 
@@ -53,6 +58,7 @@ class Food {
           MealType.snacks: [],
         },
         date: date,
+        water: 0,
       );
 
   // calculate the total calories of all products

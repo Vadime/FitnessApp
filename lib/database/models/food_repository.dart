@@ -111,4 +111,31 @@ class FoodRepository {
       throw handleException(e, s);
     }
   }
+
+  static Future<void> addWater(int amount) {
+    try {
+      _currentFood ??= Food.empty(DateTime.now());
+      _currentFood!.water += amount;
+      return Store.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .collection('food')
+          .where('date', isEqualTo: Timestamp.fromDate(_currentFood!.date))
+          .limit(1)
+          .get()
+          .then((snapshot) async {
+        if (snapshot.docs.isEmpty) {
+          await Store.instance
+              .collection('users')
+              .doc(UserRepository.currentUserUID)
+              .collection('food')
+              .add(_currentFood!.toJson());
+        } else {
+          await snapshot.docs.first.reference.update(_currentFood!.toJson());
+        }
+      });
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
 }

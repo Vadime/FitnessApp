@@ -71,7 +71,11 @@ class ProductRepository {
         openfoodfacts.ProductQueryConfiguration(
       barcode,
       language: openfoodfacts.OpenFoodFactsLanguage.GERMAN,
-      fields: [openfoodfacts.ProductField.ALL],
+      fields: [
+        openfoodfacts.ProductField.NUTRITION_DATA,
+        openfoodfacts.ProductField.IMAGE_FRONT_URL,
+        openfoodfacts.ProductField.NAME,
+      ],
       version: openfoodfacts.ProductQueryVersion.v3,
     );
     final openfoodfacts.ProductResultV3 result =
