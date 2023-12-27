@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
-class ImageWidget extends StatelessWidget {
+class ImageWidget extends StatefulWidget {
   final ImageProvider? image;
   final double? width;
   final double? height;
@@ -9,6 +9,7 @@ class ImageWidget extends StatelessWidget {
   final EdgeInsets margin;
   final double? radius;
   final Function()? onTap;
+  final bool fitChangeEnabled;
   final Color? backgroundColor;
   const ImageWidget(
     this.image, {
@@ -19,32 +20,52 @@ class ImageWidget extends StatelessWidget {
     this.width,
     this.onTap,
     this.backgroundColor,
+    this.fitChangeEnabled = true,
     super.key,
   });
 
   @override
+  State<ImageWidget> createState() => _ImageWidgetState();
+}
+
+class _ImageWidgetState extends State<ImageWidget> {
+  late BoxFit fit;
+
+  @override
+  void initState() {
+    fit = widget.fit;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: margin,
+      padding: widget.margin,
       child: GestureDetector(
         onTap: () async {
-          if (onTap is Future Function()) {
-            LoadingController().loadingProcess(onTap);
+          if (widget.fitChangeEnabled) {
+            fit = fit == BoxFit.cover ? BoxFit.contain : BoxFit.cover;
+            setState(() {});
+          }
+
+          if (widget.onTap is Future Function()) {
+            LoadingController().loadingProcess(widget.onTap);
           } else {
-            onTap?.call();
+            widget.onTap?.call();
           }
         },
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(radius ?? context.config.radius),
+          borderRadius:
+              BorderRadius.circular(widget.radius ?? context.config.radius),
           child: Container(
-            color: backgroundColor,
-            child: image == null
+            color: widget.backgroundColor,
+            child: widget.image == null
                 ? buildWidget(context)
                 : Image(
-                    image: image!,
+                    image: widget.image!,
                     fit: fit,
-                    width: width,
-                    height: height,
+                    width: widget.width,
+                    height: widget.height,
                     errorBuilder: (context, error, stackTrace) =>
                         buildWidget(context),
                     frameBuilder:
@@ -61,6 +82,6 @@ class ImageWidget extends StatelessWidget {
 
   Widget buildWidget(BuildContext context) => Container(
       color: context.config.neutralColor.withOpacity(0.2),
-      width: width,
-      height: height);
+      width: widget.width,
+      height: widget.height);
 }

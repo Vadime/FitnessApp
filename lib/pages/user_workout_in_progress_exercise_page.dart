@@ -1,9 +1,10 @@
 import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/pages/exercise_type_change_popup.dart';
 import 'package:fitnessapp/utils/workout_exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
-class UserWorkoutInProgressExercisePage extends StatelessWidget {
+class UserWorkoutInProgressExercisePage extends StatefulWidget {
   final WorkoutExerciseUI exercise;
   const UserWorkoutInProgressExercisePage({
     required this.exercise,
@@ -11,119 +12,104 @@ class UserWorkoutInProgressExercisePage extends StatelessWidget {
   });
 
   @override
+  State<UserWorkoutInProgressExercisePage> createState() =>
+      _UserWorkoutInProgressExercisePageState();
+}
+
+class _UserWorkoutInProgressExercisePageState
+    extends State<UserWorkoutInProgressExercisePage> {
+  @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
-      child: OrientationBuilderWidget(
-        portraitBuilder: smallExercise,
-        landscapeBuilder: mediumExercise,
-      ),
+      padding: const EdgeInsets.all(10),
+      child: smallExercise(context),
     );
   }
 
   Widget smallExercise(context) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ImageWidget(
-            exercise.exerciseUI.image == null
-                ? null
-                : MemoryImage(exercise.exerciseUI.image!),
-            height: 200,
-          ),
-          const Expanded(child: SizedBox(height: 20)),
-          // alle daten in tabelle anzeigen
-          TableWidget(
-            columnWidths: const {
-              0: FlexColumnWidth(1),
-              1: FlexColumnWidth(2),
-            },
-            rows: [
-              TableRowWidget(
-                cells: ['Name', exercise.exerciseUI.exercise.name],
-              ),
-              TableRowWidget(
-                cells: [
-                  'Beschreibung',
-                  exercise.exerciseUI.exercise.description,
-                ],
-              ),
-              ...exercise.workoutExercise.type.values.entries
-                  .map(
-                    (e) => TableRowWidget(
+          Expanded(
+            child: ListView(
+              children: [
+                ImageWidget(
+                  widget.exercise.exerciseUI.image == null
+                      ? null
+                      : MemoryImage(widget.exercise.exerciseUI.image!),
+                  height: 200,
+                  margin: const EdgeInsets.all(10),
+                ),
+                // alle daten in tabelle anzeigen
+                TableWidget(
+                  margin: const EdgeInsets.all(10),
+                  columnWidths: const {
+                    0: FlexColumnWidth(1),
+                    1: FlexColumnWidth(2),
+                  },
+                  rows: [
+                    TableRowWidget(
+                      cells: ['Name', widget.exercise.exerciseUI.exercise.name],
+                    ),
+                    TableRowWidget(
                       cells: [
-                        e.key,
-                        e.value,
+                        'Beschreibung',
+                        widget.exercise.exerciseUI.exercise.description,
                       ],
                     ),
-                  )
-                  .toList(),
-              TableRowWidget(
-                cells: [
-                  'Muskelgruppen',
-                  exercise.exerciseUI.exercise.muscles
-                      .map((e) => e.str)
-                      .join(', '),
-                ],
-              ),
-            ],
-          ),
-          const Spacer(),
-        ],
-      );
-
-  Widget mediumExercise(context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: ImageWidget(
-              exercise.exerciseUI.image == null
-                  ? null
-                  : MemoryImage(exercise.exerciseUI.image!),
-              height: 200,
+                    // ...exercise.workoutExercise.type.values.entries
+                    //     .map(
+                    //       (e) => TableRowWidget(
+                    //         cells: [
+                    //           e.key,
+                    //           e.value,
+                    //         ],
+                    //       ),
+                    //     )
+                    //     .toList(),
+                    TableRowWidget(
+                      cells: [
+                        'Muskelgruppen',
+                        widget.exercise.exerciseUI.exercise.muscles
+                            .map((e) => e.str)
+                            .join(', '),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 20),
-          Expanded(
-            child: SingleChildScrollView(
-              child: TableWidget(
-                columnWidths: const {
-                  0: FlexColumnWidth(1),
-                  1: FlexColumnWidth(2),
-                },
-                rows: [
-                  TableRowWidget(
-                    cells: [
-                      'Name',
-                      exercise.exerciseUI.exercise.name,
-                    ],
-                  ),
-                  TableRowWidget(
-                    cells: [
-                      'Beschreibung',
-                      exercise.exerciseUI.exercise.description,
-                    ],
-                  ),
-                  ...exercise.workoutExercise.type.values.entries
-                      .map(
-                        (e) => TableRowWidget(
-                          cells: [
-                            e.key,
-                            e.value,
-                          ],
+          CardWidget.single(
+            margin: const EdgeInsets.all(10),
+            child: Row(
+              children: [
+                ...widget.exercise.workoutExercise.type.values.entries
+                    .map(
+                      (e) => Flexible(
+                        child: TextFieldWidget(
+                          controller: TextFieldController(e.key, text: e.value),
+                          enabled: false,
                         ),
-                      )
-                      .toList(),
-                  TableRowWidget(
-                    cells: [
-                      'Muskelgruppen',
-                      exercise.exerciseUI.exercise.muscles
-                          .map((e) => e.str)
-                          .join(', '),
-                    ],
-                  ),
-                ],
-              ),
+                      ),
+                    )
+                    .toList(),
+                IconButtonWidget(
+                  Icons.edit_rounded,
+                  onPressed: () {
+                    Navigation.pushPopup(
+                      widget: ExerciseTypeChangePopup(
+                        type: widget.exercise.workoutExercise.type,
+                        parentState: setState,
+                        onTypeChanged: (type) {
+                          widget.exercise.workoutExercise.type = type;
+                          setState(() {});
+                        },
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(width: 10),
+              ],
             ),
           ),
         ],

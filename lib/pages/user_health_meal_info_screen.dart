@@ -159,9 +159,7 @@ class _UserHealthMealInfoScreenState extends State<UserHealthMealInfoScreen> {
                   title: product.name,
                   subtitle: '${product.calories} kcal',
                   trailing: ImageWidget(
-                    product.imageUrl != null
-                        ? NetworkImage(product.imageUrl!)
-                        : null,
+                    NetworkImage(product.imageUrl),
                     width: 50,
                     height: 50,
                     fit: BoxFit.cover,

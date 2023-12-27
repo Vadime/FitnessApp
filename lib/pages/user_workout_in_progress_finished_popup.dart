@@ -1,17 +1,20 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/home/home_screen.dart';
+import 'package:fitnessapp/utils/workout_exercise_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class UserWorkoutInProgressFinishedPopup extends StatelessWidget {
   final Workout workout;
+  final List<WorkoutExerciseUI> exercises;
   final DateTime startTime;
   final DateTime endTime;
   const UserWorkoutInProgressFinishedPopup({
     required this.startTime,
     required this.endTime,
     required this.workout,
+    required this.exercises,
     super.key,
   });
 
@@ -41,7 +44,10 @@ class UserWorkoutInProgressFinishedPopup extends StatelessWidget {
                       await UserRepository.saveWorkoutStatistics(
                         WorkoutStatistic(
                           uid: '',
-                          workoutId: workout.uid,
+                          workout: workout,
+                          exercises: exercises
+                              .map((e) => e.exerciseUI.exercise)
+                              .toList(),
                           difficulty: e,
                           startTime: startTime,
                           endTime: endTime,

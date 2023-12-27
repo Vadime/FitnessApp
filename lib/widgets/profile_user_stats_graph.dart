@@ -19,11 +19,11 @@ class ProfileUserStatsGraph extends StatelessWidget {
     Map<DateTime, List<WorkoutStatistic>> map = {};
     // count number of workouts done in one day
     for (WorkoutStatistic stat in stats) {
-      if (map.containsKey(stat.startTime)) {
-        map[stat.startTime]!.add(stat);
+      if (map.containsKey(stat.startTime?.dateOnly)) {
+        map[stat.startTime!.dateOnly]!.add(stat);
       } else {
         if (stat.startTime != null) {
-          map.putIfAbsent(stat.startTime!, () => [stat]);
+          map.putIfAbsent(stat.startTime!.dateOnly, () => [stat]);
         }
       }
     }

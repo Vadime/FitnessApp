@@ -57,6 +57,8 @@ class Workout {
         name: name ?? this.name,
         description: description ?? this.description,
         schedule: schedule ?? this.schedule,
-        workoutExercises: workoutExercises ?? this.workoutExercises,
+        workoutExercises: workoutExercises ??
+            this.workoutExercises.map((e) => e.copyWith()).toList(),
       );
+
 }

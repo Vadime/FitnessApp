@@ -31,11 +31,15 @@ class WorkoutExercise {
         type: WorkoutExerciseType.fromJson(json['type']),
       );
 
-  WorkoutExercise copy() {
+  WorkoutExercise copyWith({
+    String? exerciseUID,
+    int? index,
+    WorkoutExerciseType? type,
+  }) {
     return WorkoutExercise(
-      exerciseUID: exerciseUID,
-      index: index,
-      type: type.copy(),
+      exerciseUID: exerciseUID ?? this.exerciseUID,
+      index: index ?? this.index,
+      type: type ?? this.type.copy(),
     );
   }
 }

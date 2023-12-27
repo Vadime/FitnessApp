@@ -33,6 +33,8 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
 
   Uint8List? imageFile;
 
+  double caloriesBurned = 0;
+
   @override
   void initState() {
     super.initState();
@@ -86,6 +88,7 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
               id,
               imageFile!,
             ),
+            caloriesBurned: caloriesBurned,
           );
 
           try {
@@ -141,6 +144,52 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
             buttons: [
               for (var type in ExerciseMuscles.values)
                 ButtonData(type.str, type),
+            ],
+          ),
+          const SizedBox(height: 20),
+          CardWidget(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Row(
+                children: [
+                  const TextWidget(
+                    'Kalorienverbrauch',
+                  ),
+                  const Expanded(
+                    child: SizedBox(width: 20),
+                  ),
+                  TextWidget(
+                    '$caloriesBurned kcal',
+                  ),
+                ],
+              ),
+              Slider(
+                min: 0,
+                max: 1000,
+                divisions: 50,
+                value: caloriesBurned,
+                label: '${caloriesBurned.round()}',
+                onChanged: (newValue) {
+                  setState(() {
+                    caloriesBurned = newValue;
+                  });
+                },
+              ),
+              Row(
+                children: [
+                  TextWidget(
+                    '0 g',
+                    color: Colors.grey.withOpacity(0.5),
+                  ),
+                  const Expanded(
+                    child: SizedBox(width: 20),
+                  ),
+                  TextWidget(
+                    '1000 g',
+                    color: Colors.grey.withOpacity(0.5),
+                  ),
+                ],
+              ),
             ],
           ),
         ],

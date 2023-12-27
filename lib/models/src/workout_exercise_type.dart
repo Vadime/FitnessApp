@@ -11,6 +11,8 @@ abstract class WorkoutExerciseType {
         return WorkoutExerciseTypeDuration.fromJson(json);
       case 'Repetition':
         return WorkoutExerciseTypeRepetition.fromJson(json);
+      case 'Cardio':
+        return WorkoutExerciseTypeCardio.fromJson(json);
       default:
         throw Exception('Unknown WorkoutExerciseType');
     }
@@ -22,9 +24,37 @@ abstract class WorkoutExerciseType {
         return WorkoutExerciseTypeDuration.fromJson(toJson());
       case 'Repetition':
         return WorkoutExerciseTypeRepetition.fromJson(toJson());
+      case 'Cardio':
+        return WorkoutExerciseTypeCardio.fromJson(toJson());
       default:
         throw Exception('Unknown WorkoutExerciseType');
     }
+  }
+}
+
+class WorkoutExerciseTypeCardio extends WorkoutExerciseType {
+  WorkoutExerciseTypeCardio(
+    min,
+  ) {
+    name = 'Cardio';
+    values = {
+      'Minutes': min,
+    };
+  }
+
+  WorkoutExerciseTypeCardio.empty() : this('10');
+
+  @override
+  Map<String, dynamic> toJson() => {
+        'type': name,
+        ...values,
+      };
+
+  WorkoutExerciseTypeCardio.fromJson(Map<String, dynamic> json) {
+    name = json['type'];
+    values = {
+      'Minutes': json['Minutes'].toString(),
+    };
   }
 }
 

@@ -50,7 +50,7 @@ class _AdminWorkoutListPageState extends State<AdminWorkoutListPage>
           padding: const EdgeInsets.all(20),
           onTap: () => Navigation.push(
             widget: AdminWorkoutAddScreen(
-              workout: workouts![index],
+              workout: workouts![index].copyWith(),
             ),
           ),
         );

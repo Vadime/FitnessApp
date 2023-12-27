@@ -14,6 +14,7 @@ class UserHealthPage extends StatefulWidget {
 }
 
 class _UserHealthPageState extends State<UserHealthPage> {
+  double burnedCalories = 0;
   @override
   void initState() {
     doFuturesInSequell();
@@ -28,8 +29,21 @@ class _UserHealthPageState extends State<UserHealthPage> {
   }
 
   Future changeDate(DateTime newDate) async {
+    newDate = newDate.dateOnly;
     await HealthRepository.getHealthFromDate(newDate);
+    if (mounted) setState(() {});
+
     await FoodRepository.getFoodFromDate(newDate);
+    if (mounted) setState(() {});
+
+    // calc burned calories from workoutstatistics
+    var stats =
+        await UserRepository.getWorkoutStatisticsFromDate(date: newDate);
+    for (var stat in stats) {
+      for (var exercise in stat.exercises) {
+        burnedCalories += exercise.caloriesBurned;
+      }
+    }
     if (mounted) setState(() {});
   }
 
@@ -112,10 +126,12 @@ class _UserHealthPageState extends State<UserHealthPage> {
                 radius: context.mediaQuery.size.width / 6,
                 centerWidget: headlineWidget(
                   value: (HealthRepository.currentHealth!.totalCalories -
-                          FoodRepository.currentFood!.totalCalories)
+                          FoodRepository.currentFood!.totalCalories +
+                          burnedCalories)
                       .abs(),
                   description: (FoodRepository.currentFood!.totalCalories /
-                              HealthRepository.currentHealth!.totalCalories >
+                              (HealthRepository.currentHealth!.totalCalories +
+                                  burnedCalories) >
                           1)
                       ? 'überschuss'
                       : 'übrig',
@@ -127,7 +143,7 @@ class _UserHealthPageState extends State<UserHealthPage> {
             SizedBox(
               width: (context.mediaQuery.size.width - 120) / 3,
               child: headlineWidget(
-                value: 0,
+                value: burnedCalories,
                 description: 'verbrannt',
                 context: context,
               ),

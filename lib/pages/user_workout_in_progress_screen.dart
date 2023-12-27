@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_exercise_page.dart';
 import 'package:fitnessapp/pages/user_workout_in_progress_finished_popup.dart';
@@ -33,16 +35,49 @@ class _UserWorkoutInProgressScreenState
 
   late final DateTime startTime;
 
+  late final StreamController<int> _streamController;
+
   @override
   void initState() {
     startTime = DateTime.now();
+    _streamController = StreamController<int>();
+    Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      if (!_streamController.isClosed) {
+        _streamController.add(t.tick);
+      }
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _streamController.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScaffoldWidget(
       title: widget.workout.name,
+      actions: [
+        StreamBuilder(
+          stream: _streamController.stream,
+          builder: (context, snapshot) {
+            int differenceInSeconds =
+                DateTime.now().difference(startTime).inSeconds;
+            String minutes =
+                (differenceInSeconds ~/ 60).toString().padLeft(2, '0');
+            String seconds =
+                (differenceInSeconds % 60).toString().padLeft(2, '0');
+            return TextWidget(
+              '$minutes:$seconds',
+              margin: const EdgeInsets.only(right: 10),
+              color: Colors.white,
+              weight: FontWeight.bold,
+            );
+          },
+        ),
+      ],
       body: widget.exercises.isEmpty
           ? const FailWidget('Keine Informationen konnten geladen werden')
           : SafeArea(
@@ -79,10 +114,6 @@ class _UserWorkoutInProgressScreenState
                         ],
                       ),
                       const SizedBox(height: 10),
-                      const SafeArea(
-                        top: false,
-                        child: SizedBox(),
-                      ),
                     ],
                   ),
                   Align(
@@ -117,12 +148,14 @@ class _UserWorkoutInProgressScreenState
             // Workout finished
             if (currentPageIndex ==
                 widget.workout.workoutExercises.length - 1) {
+              _streamController.close();
               confettiController.play();
               Navigation.pushPopup(
                 widget: UserWorkoutInProgressFinishedPopup(
                   startTime: startTime,
                   endTime: DateTime.now(),
                   workout: widget.workout,
+                  exercises: widget.exercises,
                 ),
               );
             } else {

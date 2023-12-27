@@ -65,12 +65,6 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   bool firstBuild = true;
 
   @override
-  void dispose() {
-    widget.controller?.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (widget.maxWidth == null) {
       return _build(context);
@@ -96,7 +90,6 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               child: GestureDetector(
                 onTap: widget.onTap,
                 child: TextField(
-                  
                   controller: widget.controller,
                   style: context.textTheme.bodyMedium,
                   decoration: InputDecoration(

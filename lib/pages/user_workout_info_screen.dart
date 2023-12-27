@@ -37,7 +37,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
       onPressed: () async {
         Navigation.push(
           widget: UserWorkoutAddScreen(
-            workout: widget.workout,
+            workout: widget.workout.copyWith(),
           ),
         );
       },
@@ -68,12 +68,17 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
         }
         Navigation.push(
           widget: UserWorkoutInProgressScreen(
-            workout: widget.workout,
-            exercises: exercises!,
+            workout: widget.workout.copyWith(),
+            exercises: exercises!.map((e) => e.copyWith()).toList(),
           ),
         );
       },
     );
+  }
+
+  String getCaloriesBurned(Workout workout) {
+    if (exercises?.isEmpty ?? true) return '0 kcal';
+    return '${exercises?.map((e) => e.exerciseUI.exercise.caloriesBurned).reduce((e1, e2) => e1 + e2).toStringAsFixed(0) ?? '0'} kcal';
   }
 
   @override
@@ -109,6 +114,12 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
               ),
               TableRowWidget(
                 cells: ['Zeitplan', widget.workout.schedule.str],
+              ),
+              TableRowWidget(
+                cells: [
+                  'Kalorien',
+                  getCaloriesBurned(widget.workout),
+                ],
               ),
             ],
           ),
@@ -167,59 +178,37 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
   Widget exerciseListTile(
     WorkoutExerciseUI e,
   ) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      CardWidget(
+        margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         children: [
-          const SizedBox(height: 10),
-          // ListTileWidget(
-          //   padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-          //   title: e.exerciseUI.exercise.name,
-          // ),
-          TextWidget(
-            e.exerciseUI.exercise.name,
-            style: context.textTheme.bodyLarge,
+          ListTileWidget(
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+            title: e.exerciseUI.exercise.name,
+            subtitle: e.exerciseUI.exercise.description,
+            subtitleMaxLines: 2,
+            trailing: ImageWidget(
+              e.exerciseUI.image == null
+                  ? null
+                  : MemoryImage(e.exerciseUI.image!),
+              margin: const EdgeInsets.only(left: 10, right: 10),
+              height: 50,
+              width: 50,
+            ),
           ),
-          const SizedBox(height: 10),
-          Stack(
+          Row(
             children: [
-              TableWidget(
-                columnWidths: const {
-                  0: FlexColumnWidth(1),
-                  1: FlexColumnWidth(2),
-                },
-                rows: [
-                  TableRowWidget(
-                    cells: [
-                      'Beschreibung',
-                      e.exerciseUI.exercise.description,
-                    ],
-                  ),
-                  ...e.workoutExercise.type.values.entries
-                      .map(
-                        (e) => TableRowWidget(
-                          cells: [
-                            e.key,
-                            e.value,
-                          ],
-                        ),
-                      )
-                      .toList(),
-                ],
-              ),
-              Positioned(
-                right: 20,
-                bottom: 20,
-                child: ImageWidget(
-                  e.exerciseUI.image == null
-                      ? null
-                      : MemoryImage(e.exerciseUI.image!),
-                  height: 50,
-                  width: 50,
-                ),
-              ),
+              ...e.workoutExercise.type.values.entries
+                  .map(
+                    (e) => Flexible(
+                      child: TextFieldWidget(
+                        controller: TextFieldController(e.key, text: e.value),
+                        enabled: false,
+                      ),
+                    ),
+                  )
+                  .toList(),
             ],
           ),
-          const SizedBox(height: 10),
         ],
       );
 }

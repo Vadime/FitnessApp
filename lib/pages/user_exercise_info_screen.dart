@@ -63,56 +63,35 @@ class _UserExerciseInfoScreenState extends State<UserExerciseInfoScreen> {
       body: ScrollViewWidget(
         maxInnerWidth: 600,
         children: [
-          Container(
+          ImageWidget(
+            widget.imageFile == null ? null : MemoryImage(widget.imageFile!),
             height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: context.theme.cardColor,
-              image: widget.imageFile == null
-                  ? null
-                  : DecorationImage(
-                      image: MemoryImage(widget.imageFile!),
-                      fit: BoxFit.cover,
-                    ),
-            ),
           ),
           const SizedBox(height: 20),
           CardWidget.single(
-            padding: const EdgeInsets.all(10),
-            child: Table(
-              columnWidths: const {
-                0: FlexColumnWidth(1),
-                1: FlexColumnWidth(2),
-              },
-              children: [
-                TableRow(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(10),
-                      child: TextWidget('Beschreibung'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: TextWidget(widget.exercise.description),
-                    ),
-                  ],
-                ),
-                TableRow(
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(10),
-                      child: TextWidget('Muskelgruppen'),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: TextWidget(
-                        widget.exercise.muscles.map((e) => e.str).join(', '),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            padding: const EdgeInsets.all(20),
+            child: TextWidget(widget.exercise.description),
+          ),
+          const SizedBox(height: 20),
+          TableWidget(
+            columnWidths: const {
+              0: FlexColumnWidth(1),
+              1: FlexColumnWidth(2),
+            },
+            rows: [
+              TableRowWidget(
+                cells: [
+                  'Muskelgruppen',
+                  widget.exercise.muscles.map((e) => e.str).join(', '),
+                ],
+              ),
+              TableRowWidget(
+                cells: [
+                  'Kalorien',
+                  '${widget.exercise.caloriesBurned.toStringAsFixed(0)} kcal',
+                ],
+              ),
+            ],
           ),
         ],
       ),

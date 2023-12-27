@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
 import 'package:widgets/widgets.dart';
 
 class ListTileWidget extends StatelessWidget {
@@ -17,6 +18,7 @@ class ListTileWidget extends StatelessWidget {
   final List<Widget>? slideMenuItems;
   final Color? foregroundColor;
   final TextStyle? titleStyle;
+  final int? subtitleMaxLines;
   const ListTileWidget({
     this.margin = const EdgeInsets.fromLTRB(0, 2, 0, 2),
     this.padding = const EdgeInsets.fromLTRB(10, 10, 20, 10),
@@ -33,6 +35,7 @@ class ListTileWidget extends StatelessWidget {
     this.slideMenuItems,
     this.foregroundColor,
     this.titleStyle,
+    this.subtitleMaxLines,
     super.key,
   });
 
@@ -72,11 +75,31 @@ class ListTileWidget extends StatelessWidget {
                         color: foregroundColor,
                       ),
                     if (subtitle != null)
-                      TextWidget(
-                        subtitle!,
-                        style: context.textTheme.bodySmall,
-                        overflow: subtitleOverflow,
-                      ),
+                      if (subtitleMaxLines != null)
+                        ReadMoreText(
+                          subtitle!,
+                          style: context.textTheme.bodySmall,
+                          trimLines: subtitleMaxLines!,
+                          trimMode: TrimMode.Line,
+                          trimCollapsedText: 'Mehr',
+                          trimExpandedText: 'Weniger',
+                          moreStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
+                          lessStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange,
+                          ),
+                        )
+                      else
+                        TextWidget(
+                          subtitle!,
+                          style: context.textTheme.bodySmall,
+                          overflow: subtitleOverflow,
+                        ),
                   ],
                 ),
               ),

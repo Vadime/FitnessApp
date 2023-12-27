@@ -32,6 +32,7 @@ class WorkoutExerciseNotSelectedWidget extends StatelessWidget {
               width: 40,
             ),
       subtitle: entry.exercise.description,
+      subtitleMaxLines: 2,
       onTap: () {
         exercisesOth.removeWhere((e) => e.exercise.uid == entry.exercise.uid);
         exercisesSel.add(

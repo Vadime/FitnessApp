@@ -432,6 +432,28 @@ class UserRepository {
     }
   }
 
+  static Future<List<WorkoutStatistic>> getWorkoutStatisticsFromDate({
+    String? uid,
+    required DateTime date,
+  }) async {
+    try {
+      uid ??= currentUserUID;
+      var res = await Store.instance
+          .collection('users')
+          .doc(uid)
+          .collection('workoutStatistics')
+          .where('date', isEqualTo: date.dateOnly)
+          .get();
+      var workouts = res.docs
+          .map((e) => WorkoutStatistic.fromJson(e.id, e.data()))
+          .toList();
+
+      return workouts;
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
+
   static Future<void> addFavoriteExercise(String exerciseUID) async {
     try {
       await Store.instance

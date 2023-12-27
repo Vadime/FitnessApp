@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
@@ -30,6 +32,8 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
 
   final ScrollController scrollController = ScrollController();
 
+  late StreamSubscription<bool> keyboardSubscription;
+
   @override
   void initState() {
     openAI = OpenAI.instance.build(
@@ -41,7 +45,7 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
     initMessages();
 
     // scroll to bottom, when keyboard appears
-    KeyboardVisibilityController().onChange.listen((visible) {
+    keyboardSubscription = KeyboardVisibilityController().onChange.listen((visible) {
       if (visible) {
         scrollToBottom(10);
       }
@@ -52,6 +56,7 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
 
   @override
   void dispose() {
+    keyboardSubscription.cancel();
     scrollController.dispose();
     super.dispose();
   }

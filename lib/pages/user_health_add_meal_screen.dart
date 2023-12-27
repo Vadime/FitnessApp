@@ -37,12 +37,11 @@ class _UserHealthAddMealScreenState extends State<UserHealthAddMealScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (widget.product.imageUrl != null)
-            ImageWidget(
-              NetworkImage(widget.product.imageUrl!),
-              height: 250,
-              fit: BoxFit.cover,
-            ),
+          ImageWidget(
+            NetworkImage(widget.product.imageUrl),
+            height: 250,
+            fit: BoxFit.cover,
+          ),
           const SizedBox(height: 20),
           TableWidget(
             margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -61,14 +60,14 @@ class _UserHealthAddMealScreenState extends State<UserHealthAddMealScreen> {
               ),
               TableRowWidget(
                 cells: [
-                  'Protein',
-                  (widget.product.protein * calcAmount).toStringAsFixed(2),
+                  'Fett',
+                  (widget.product.fat * calcAmount).toStringAsFixed(2),
                 ],
               ),
               TableRowWidget(
                 cells: [
-                  'Fett',
-                  (widget.product.fat * calcAmount).toStringAsFixed(2),
+                  'Protein',
+                  (widget.product.protein * calcAmount).toStringAsFixed(2),
                 ],
               ),
             ],
@@ -131,6 +130,7 @@ class _UserHealthAddMealScreenState extends State<UserHealthAddMealScreen> {
           var p = widget.product.copyWith(
             calories: calcAmount * widget.product.calories,
             carbs: calcAmount * widget.product.carbs,
+            fat: calcAmount * widget.product.fat,
             protein: calcAmount * widget.product.protein,
             amount: amount,
           );
