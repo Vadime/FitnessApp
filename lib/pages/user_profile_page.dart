@@ -1,13 +1,8 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
-import 'package:fitnessapp/pages/branding_popup.dart';
-import 'package:fitnessapp/pages/profile_edit_popup.dart';
-import 'package:fitnessapp/pages/profile_password_change_popup.dart';
-import 'package:fitnessapp/pages/user_accunt_delete_popup.dart';
-import 'package:fitnessapp/pages/user_feedback_popup.dart';
-import 'package:fitnessapp/pages/user_help_screen.dart';
 import 'package:fitnessapp/widgets/profile_header_widget.dart';
-import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
+import 'package:fitnessapp/widgets/user_weight_graph.dart';
+import 'package:fitnessapp/widgets/user_workout_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -20,6 +15,22 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage>
     with AutomaticKeepAliveClientMixin {
+  List<WorkoutStatistic>? statistics;
+  List<Health>? healthList;
+
+  @override
+  void initState() {
+    UserRepository.getWorkoutDatesStatistics().then((value) {
+      statistics = value;
+      setState(() {});
+    });
+    HealthRepository.getHealthHistory().then((value) {
+      healthList = value;
+      setState(() {});
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -30,89 +41,54 @@ class _UserProfilePageState extends State<UserProfilePage>
       children: [
         ProfileHeaderWidget(currentUser: currentUser),
         const SizedBox(height: 20),
-        ProfileUserStatsGraph(
-          loader: UserRepository.getWorkoutDatesStatistics(),
-        ),
-        const SizedBox(height: 10),
-        ListTileWidget(
-          title: 'Nutzer Feedback',
-          trailing: const Icon(
-            Icons.feedback_rounded,
-          ),
-          onTap: () => Navigation.pushPopup(
-            widget: const UserFeedbackPopup(),
-          ),
-        ),
-        const SizedBox(height: 20),
-        ThemeSelectionComponent(
-          controller: ThemeController.of(context),
-        ),
-        const SizedBox(height: 20),
-        CardWidget(
+        Row(
           children: [
-            ListTileWidget(
-              title: 'Profil bearbeiten',
-              trailing: const Icon(
-                Icons.edit_rounded,
-              ),
-              onTap: () async {
-                await Navigation.pushPopup(
-                  widget: const ProfileEditPopup(4),
-                  c: context,
-                );
-              },
-            ),
-            ListTileWidget(
-              title: 'Passwort ändern',
-              trailing: const Icon(
-                Icons.password_rounded,
-              ),
-              onTap: () => Navigation.pushPopup(
-                widget: const ProfilePasswordChangePopup(),
+            Expanded(
+              child: ColumnWidget(
+                margin: const EdgeInsets.all(10),
+                children: [
+                  Text(
+                    currentUser!.createdAt!.ddMMYYYY,
+                    style: context.textTheme.bodyLarge,
+                  ),
+                  Text('Member since', style: context.textTheme.labelSmall),
+                ],
               ),
             ),
-            ListTileWidget(
-              title: 'Ausloggen',
-              trailing: const Icon(
-                Icons.logout_rounded,
+            const SizedBox(
+              height: 40,
+              child: VerticalDivider(),
+            ),
+            Expanded(
+              child: ColumnWidget(
+                margin: const EdgeInsets.all(10),
+                children: [
+                  Text(
+                    statistics?.length.toString() ?? '0',
+                    style: context.textTheme.bodyLarge,
+                  ),
+                  Text('Workouts done', style: context.textTheme.labelSmall),
+                ],
               ),
-              onTap: () => UserRepository.signOutCurrentUser(),
             ),
           ],
         ),
         const SizedBox(height: 20),
-        CardWidget(
-          children: [
-            ListTileWidget(
-              title: 'Help Center',
-              trailing: Icon(
-                Icons.help_center_rounded,
-                color: context.config.primaryColor,
-              ),
-              onTap: () {
-                // delete user from firebase auth
-                Navigation.push(
-                  widget: const UserHelpScreen(),
-                );
-              },
-            ),
-            ListTileWidget(
-              title: 'Account löschen',
-              trailing: Icon(
-                Icons.delete_rounded,
-                color: context.config.errorColor,
-              ),
-              onTap: () {
-                // delete user from firebase auth
-                Navigation.pushPopup(
-                  widget: const UserAccountDeletePopup(),
-                );
-              },
-            ),
-          ],
+        TextWidget(
+          'Statistiken',
+          style: context.textTheme.labelLarge,
         ),
         const SizedBox(height: 20),
-        const BrandingWidget(),
+        if (statistics != null)
+          UserWorkoutGraph(
+            statistics: statistics!,
+          ),
+        const SizedBox(height: 20),
+        if (healthList != null)
+          UserWeightGraph(
+            healthList: healthList!,
+          ),
+        const SizedBox(height: 20),
       ],
     );
   }

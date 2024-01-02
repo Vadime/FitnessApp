@@ -72,6 +72,7 @@ class User {
     required this.displayName,
     required this.userRole,
     required this.imageURL,
+    required this.createdAt,
   });
 
   final String uid;
@@ -79,4 +80,5 @@ class User {
   final String displayName;
   final UserRole userRole;
   final String? imageURL;
+  final DateTime? createdAt;
 }

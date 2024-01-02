@@ -20,9 +20,7 @@ extension WidgetBuildContextExtensions on BuildContext {
       );
 
   /// get bottom inset quickly
-  double get bottomInset =>
-      MediaQuery.of(this).padding.bottom +
-      MediaQuery.of(this).viewInsets.bottom;
+  double get bottomInset => MediaQuery.of(this).viewPadding.bottom;
   double get topInset => MediaQuery.of(this).viewPadding.top;
   double get leftInset => MediaQuery.of(this).viewInsets.left;
   double get rightInset => MediaQuery.of(this).viewInsets.right;

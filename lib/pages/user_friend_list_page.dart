@@ -1,5 +1,6 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
+import 'package:fitnessapp/widgets/friend_graph_popup.dart';
 import 'package:fitnessapp/widgets/friend_stats_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
@@ -99,6 +100,14 @@ class _UserFriendListPageState extends State<UserFriendListPage>
               subtitle: 'Score: ${friends![i].score}',
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+              onTap: () {
+                Navigation.pushPopup(
+                  widget: FriendGraphPopup(
+                    friend: friends![i].friend,
+                    statitics: friends![i].stats,
+                  ),
+                );
+              },
               leading: TextWidget(
                 (i + 1).toString(),
                 color: context.config.neutralColor,

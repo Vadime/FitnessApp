@@ -45,7 +45,8 @@ class ChatbotWidgetState extends State<ChatbotWidget> {
     initMessages();
 
     // scroll to bottom, when keyboard appears
-    keyboardSubscription = KeyboardVisibilityController().onChange.listen((visible) {
+    keyboardSubscription =
+        KeyboardVisibilityController().onChange.listen((visible) {
       if (visible) {
         scrollToBottom(10);
       }

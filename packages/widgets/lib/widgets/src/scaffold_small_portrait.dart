@@ -58,7 +58,7 @@ class ScaffoldSmallPortrait extends StatelessWidget {
                       (hasPrimaryButton ? 56 : 0),
                 ),
               ),
-              child: body),
+              child: Builder(builder: (context) => body)),
           Positioned(
             bottom: context.bottomInset +
                 (hasNav ? barHeights(context) : 0) +
@@ -87,7 +87,6 @@ class ScaffoldSmallPortrait extends StatelessWidget {
       ? AppBarWidget(
           title!,
           onTitleTap: onTitleTap,
-          
           actions: [if (hasAppBarActions) actions!.first],
         )
       : null;

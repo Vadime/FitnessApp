@@ -63,17 +63,27 @@ class _UserHomeScreen extends StatelessWidget {
             IconButtonWidget(
               Icons.add_rounded,
               onPressed: () {
-                Navigation.pushPopup(
-                  widget: const UserProfileFriendAddPopup(),
+                Navigation.push(
+                  widget: const UserProfileFriendAddScreen(),
                 );
                 return;
               },
             ),
           ],
         ),
-        const BottomNavigationView(
+        BottomNavigationView(
           title: 'Profil',
-          view: UserProfilePage(),
+          view: const UserProfilePage(),
+          actions: [
+            IconButtonWidget(
+              Icons.settings_rounded,
+              onPressed: () {
+                Navigation.push(
+                  widget: const UserSettingsScreen(),
+                );
+              },
+            ),
+          ],
           icon: Icons.person_rounded,
         ),
       ],

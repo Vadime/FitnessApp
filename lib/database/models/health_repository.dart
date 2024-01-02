@@ -71,4 +71,18 @@ class HealthRepository {
       throw handleException(e, s);
     }
   }
+
+  static Future<List<Health>> getHealthHistory() async {
+    try {
+      final snapshot = await Store.instance
+          .collection('users')
+          .doc(UserRepository.currentUserUID)
+          .collection('health')
+          .orderBy('date', descending: false)
+          .get();
+      return snapshot.docs.map((e) => Health.fromJson(e.data())).toList();
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
 }

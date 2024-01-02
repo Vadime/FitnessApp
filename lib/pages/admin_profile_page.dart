@@ -5,7 +5,7 @@ import 'package:fitnessapp/pages/branding_popup.dart';
 import 'package:fitnessapp/pages/profile_edit_popup.dart';
 import 'package:fitnessapp/pages/profile_password_change_popup.dart';
 import 'package:fitnessapp/widgets/profile_header_widget.dart';
-import 'package:fitnessapp/widgets/profile_user_stats_graph.dart';
+import 'package:fitnessapp/widgets/user_workout_graph.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
@@ -18,6 +18,17 @@ class AdminProfilePage extends StatefulWidget {
 
 class _AdminProfilePageState extends State<AdminProfilePage>
     with AutomaticKeepAliveClientMixin {
+  List<WorkoutStatistic>? statistics;
+
+  @override
+  void initState() {
+    WorkoutStatisticsRepository.getWorkoutDatesStatistics().then((value) {
+      statistics = value;
+      setState(() {});
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -28,9 +39,10 @@ class _AdminProfilePageState extends State<AdminProfilePage>
       children: [
         ProfileHeaderWidget(currentUser: currentUser),
         const SizedBox(height: 20),
-        ProfileUserStatsGraph(
-          loader: WorkoutStatisticsRepository.getWorkoutDatesStatistics(),
-        ),
+        if (statistics != null)
+          UserWorkoutGraph(
+            statistics: statistics!,
+          ),
         const SizedBox(height: 20),
         ListTileWidget(
           title: 'Nutzer Feedback',

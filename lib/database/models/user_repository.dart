@@ -138,6 +138,7 @@ class UserRepository {
       displayName: user.displayName ?? '-',
       userRole: UserRole.user,
       imageURL: user.photoURL,
+      createdAt: user.metadata.creationTime,
     );
   }
 
@@ -419,7 +420,7 @@ class UserRepository {
           .collection('users')
           .doc(uid)
           .collection('workoutStatistics')
-          .orderBy('startTime', descending: true)
+          .orderBy('startTime')
           .limit(14)
           .get();
       var workouts = res.docs
@@ -650,5 +651,27 @@ class UserRepository {
     } catch (e, s) {
       throw handleException(e, s);
     }
+  }
+
+  static Future<List<Friend>> searchUsersByEmail(String text) async {
+    return [
+      Friend(
+        uid: '1',
+        displayName: 'Test User',
+        contactMethod: ContactMethod.email('c'),
+        imageURL: null,
+      ),
+    ];
+  }
+
+  static Future<List<Friend>> searchUsersByPhone(String text) async {
+    return [
+      Friend(
+        uid: '1',
+        displayName: 'Test User',
+        contactMethod: ContactMethod.phone('c'),
+        imageURL: null,
+      ),
+    ];
   }
 }
