@@ -59,11 +59,16 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
     );
   }
 
+  bool notLoadedYet() =>
+      exercises == null ||
+      widget.workout.workoutExercises.length != exercises!.length;
+
   Widget startWorkoutButton() {
     return ElevatedButtonWidget(
       'Start Workout',
+      backgroundColor: notLoadedYet() ? context.theme.disabledColor : null,
       onPressed: () {
-        if (exercises == null) {
+        if (notLoadedYet()) {
           return;
         }
         Navigation.push(
@@ -156,7 +161,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
     exercises ??= [];
     for (WorkoutExercise w in widget.workout.workoutExercises) {
       var exercise = await ExerciseRepository.getExercise(w.exerciseUID);
-      var image = await ExerciseRepository.getExerciseImage(exercise);
+      var image = await ExerciseRepository.getExerciseImages(exercise);
       if (exercise != null) {
         exercises!.add(WorkoutExerciseUI(ExerciseUI(exercise, image), w));
       }
@@ -165,7 +170,7 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
 
     for (WorkoutExercise w in widget.workout.workoutExercises) {
       var exercise = await UserRepository.getUsersExercise(w.exerciseUID);
-      var image = await ExerciseRepository.getExerciseImage(exercise);
+      var image = await ExerciseRepository.getExerciseImages(exercise);
       if (exercise != null) {
         exercises!.add(WorkoutExerciseUI(ExerciseUI(exercise, image), w));
       }
@@ -187,9 +192,9 @@ class _UserWorkoutInfoScreenState extends State<UserWorkoutInfoScreen> {
             subtitle: e.exerciseUI.exercise.description,
             subtitleMaxLines: 2,
             trailing: ImageWidget(
-              e.exerciseUI.image == null
+              e.exerciseUI.images == null
                   ? null
-                  : MemoryImage(e.exerciseUI.image!),
+                  : MemoryImage(e.exerciseUI.images!.first),
               margin: const EdgeInsets.only(left: 10, right: 10),
               height: 50,
               width: 50,

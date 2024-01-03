@@ -25,9 +25,9 @@ class WorkoutExerciseSelectedWidget extends StatelessWidget {
         ListTileWidget(
           title: entry.exerciseUI.exercise.name,
           trailing: ImageWidget(
-            entry.exerciseUI.image == null
+            entry.exerciseUI.images == null
                 ? null
-                : MemoryImage(entry.exerciseUI.image!),
+                : MemoryImage(entry.exerciseUI.images!.first),
             margin: const EdgeInsets.only(left: 10),
             height: 50,
             width: 50,
@@ -74,7 +74,7 @@ class WorkoutExerciseSelectedWidget extends StatelessWidget {
                 exercisesOth.add(
                   ExerciseUI(
                     entry.exerciseUI.exercise,
-                    entry.exerciseUI.image,
+                    entry.exerciseUI.images,
                   ),
                 );
                 parentState(() {});

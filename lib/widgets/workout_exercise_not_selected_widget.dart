@@ -24,10 +24,10 @@ class WorkoutExerciseNotSelectedWidget extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
       title: entry.exercise.name,
-      leading: entry.image == null
+      leading: entry.images == null
           ? null
           : ImageWidget(
-              MemoryImage(entry.image!),
+              MemoryImage(entry.images!.first),
               height: 40,
               width: 40,
             ),
@@ -39,7 +39,7 @@ class WorkoutExerciseNotSelectedWidget extends StatelessWidget {
           WorkoutExerciseUI(
             ExerciseUI(
               entry.exercise,
-              entry.image,
+              entry.images,
             ),
             WorkoutExercise(
               exerciseUID: entry.exercise.uid,

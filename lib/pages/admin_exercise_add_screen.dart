@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 
 class AdminExerciseAddScreen extends StatelessWidget {
   final Exercise? exercise;
-  final Uint8List? imageFile;
+  final List<Uint8List>? imageFiles;
   const AdminExerciseAddScreen({
     this.exercise,
-    this.imageFile,
+    this.imageFiles,
     super.key,
   });
 
@@ -18,7 +18,7 @@ class AdminExerciseAddScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ExerciseAddScreen(
       exercise: exercise,
-      imageFile: imageFile,
+      imageFiles: imageFiles,
       upload: (newExercise) async {
         await ExerciseRepository.uploadExercise(newExercise);
       },

@@ -100,14 +100,16 @@ class _UserFriendListPageState extends State<UserFriendListPage>
               subtitle: 'Score: ${friends![i].score}',
               padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
               margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-              onTap: () {
-                Navigation.pushPopup(
-                  widget: FriendGraphPopup(
-                    friend: friends![i].friend,
-                    statitics: friends![i].stats,
-                  ),
-                );
-              },
+              onTap: friendIsUser(friends![i])
+                  ? null
+                  : () {
+                      Navigation.pushPopup(
+                        widget: FriendGraphPopup(
+                          friend: friends![i].friend,
+                          statitics: friends![i].stats,
+                        ),
+                      );
+                    },
               leading: TextWidget(
                 (i + 1).toString(),
                 color: context.config.neutralColor,

@@ -37,12 +37,18 @@ class LoginScreen extends StatelessWidget {
           },
         );
       },
+      onAppleLogin: () async {
+        await UserRepository.signInWithApple();
+      },
+      onGoogleLogin: () async {
+        await UserRepository.signInWithGoogle();
+      },
     );
   }
 
   void onPhoneVerifyCode(verificationId, token) {
     Navigation.pop();
-    Navigation.pushPopup(
+    Navigation.push(
       widget: VerifyPhoneCodeView(
         verifyPhoneCode: (code) async {
           await UserRepository.verifyPhoneCode(

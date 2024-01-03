@@ -25,98 +25,103 @@ class _UserWeightGraphState extends State<UserWeightGraph> {
     var weightData = widget.healthList.map((e) => e.weight).toList();
     return SizedBox(
       height: 200,
-      child: LineChart(
-        LineChartData(
-          lineBarsData: [
-            LineChartBarData(
-              spots: [
-                for (var i = 0; i < weightData.length; i++)
-                  FlSpot(i.toDouble(), weightData[i].toDouble()),
+      child: Builder(
+        builder: (context) {
+          if (weightData.isEmpty) return const SizedBox();
+          return LineChart(
+            LineChartData(
+              lineBarsData: [
+                LineChartBarData(
+                  spots: [
+                    for (var i = 0; i < weightData.length; i++)
+                      FlSpot(i.toDouble(), weightData[i].toDouble()),
+                  ],
+                  isCurved: true,
+                  color: Colors.orange,
+                  barWidth: 2,
+                  isStrokeCapRound: true,
+                  dotData: const FlDotData(
+                    show: true,
+                  ),
+                  belowBarData: BarAreaData(show: false),
+                ),
               ],
-              isCurved: true,
-              color: Colors.orange,
-              barWidth: 2,
-              isStrokeCapRound: true,
-              dotData: const FlDotData(
+              lineTouchData: LineTouchData(
+                touchTooltipData: LineTouchTooltipData(
+                  tooltipBgColor: context.config.cardColor(context.brightness),
+                  tooltipPadding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                  //fitInsideVertically: true,
+                  fitInsideHorizontally: true,
+                  tooltipRoundedRadius: context.config.radius,
+                  tooltipHorizontalOffset: 0,
+                  tooltipMargin: 20,
+                  getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                    return touchedBarSpots.map((barSpot) {
+                      return LineTooltipItem(
+                        '${barSpot.y} kg',
+                        context.textTheme.labelSmall!,
+                      );
+                    }).toList();
+                  },
+                ),
+              ),
+              titlesData: FlTitlesData(
                 show: true,
-              ),
-              belowBarData: BarAreaData(show: false),
-            ),
-          ],
-          lineTouchData: LineTouchData(
-            touchTooltipData: LineTouchTooltipData(
-              tooltipBgColor: Colors.white,
-              tooltipPadding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-              //fitInsideVertically: true,
-              fitInsideHorizontally: true,
-              tooltipRoundedRadius: context.config.radius,
-              tooltipHorizontalOffset: 0,
-              tooltipMargin: 20,
-              getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
-                return touchedBarSpots.map((barSpot) {
-                  return LineTooltipItem(
-                    '${barSpot.y} kg',
-                    context.textTheme.labelSmall!,
-                  );
-                }).toList();
-              },
-            ),
-          ),
-          titlesData: FlTitlesData(
-            show: true,
-            leftTitles: AxisTitles(
-              axisNameWidget: Text(
-                'Gewicht (kg)',
-                style: context.textTheme.labelMedium,
-              ),
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 30,
-                getTitlesWidget: (value, meta) =>
-                    // distinguish between whole and decimal numbers
-                    value % 1 == 0
-                        ? TextWidget(
-                            // get decimal from value
+                leftTitles: AxisTitles(
+                  axisNameWidget: Text(
+                    'Gewicht (kg)',
+                    style: context.textTheme.labelMedium,
+                  ),
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 30,
+                    getTitlesWidget: (value, meta) =>
+                        // distinguish between whole and decimal numbers
+                        value % 1 == 0
+                            ? TextWidget(
+                                // get decimal from value
 
-                            value.toStringAsFixed(0),
-                            style: context.textTheme.labelSmall,
-                          )
-                        : TextWidget(
-                            value.toStringAsFixed(1),
-                            style: context.textTheme.labelSmall,
-                          ),
-              ),
-            ),
-            rightTitles: const AxisTitles(),
-            topTitles: const AxisTitles(
-              axisNameSize: 40,
-              axisNameWidget: LineChartWidgetLegend(),
-            ),
-            bottomTitles: AxisTitles(
-              axisNameSize: 20,
-              axisNameWidget: bottomAxisName(),
-              sideTitles: SideTitles(
-                showTitles: true,
-                interval: 1,
-                getTitlesWidget: (i, m) => SizedBox(
-                  width: spaceForDate,
-                  child: FittedBox(
-                    child: TextWidget(
-                      widget.healthList[i.toInt()].date.ddMM,
-                      style: context.textTheme.labelSmall,
+                                value.toStringAsFixed(0),
+                                style: context.textTheme.labelSmall,
+                              )
+                            : TextWidget(
+                                value.toStringAsFixed(1),
+                                style: context.textTheme.labelSmall,
+                              ),
+                  ),
+                ),
+                rightTitles: const AxisTitles(),
+                topTitles: const AxisTitles(
+                  axisNameSize: 40,
+                  axisNameWidget: LineChartWidgetLegend(),
+                ),
+                bottomTitles: AxisTitles(
+                  axisNameSize: 20,
+                  axisNameWidget: bottomAxisName(),
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    interval: 1,
+                    getTitlesWidget: (i, m) => SizedBox(
+                      width: spaceForDate,
+                      child: FittedBox(
+                        child: TextWidget(
+                          widget.healthList[i.toInt()].date.ddMM,
+                          style: context.textTheme.labelSmall,
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
+              borderData: FlBorderData(show: false),
+              gridData: const FlGridData(show: true),
+              minX: 0,
+              maxX: weightData.length.toDouble() - 1,
+              minY: weightData.reduce(min).toDouble(),
+              maxY: weightData.reduce(max).toDouble(),
             ),
-          ),
-          borderData: FlBorderData(show: false),
-          gridData: const FlGridData(show: true),
-          minX: 0,
-          maxX: weightData.length.toDouble() - 1,
-          minY: weightData.reduce(min).toDouble(),
-          maxY: weightData.reduce(max).toDouble(),
-        ),
+          );
+        },
       ),
     );
   }

@@ -17,18 +17,24 @@ class _SendPhoneCodeViewState extends State<SendPhoneCodeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        TextFieldWidget(
-          controller: phone,
-          autofocus: true,
+    return ScaffoldWidget(
+      title: 'Phone Sign In',
+      primaryButton: ElevatedButtonWidget('Send Code',
+          onPressed: () async => await widget.onSendPhoneCode(phone)),
+      body: SafeArea(
+        child: ColumnWidget(
+          margin: EdgeInsets.all(context.config.padding),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Spacer(),
+            TextFieldWidget(
+              controller: phone,
+              autofocus: true,
+            ),
+            const Spacer(),
+          ],
         ),
-        SizedBox(height: context.config.padding),
-        ElevatedButtonWidget('Send Code',
-            onPressed: () async => await widget.onSendPhoneCode(phone))
-      ],
+      ),
     );
   }
 }

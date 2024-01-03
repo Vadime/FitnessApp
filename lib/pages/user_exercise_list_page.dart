@@ -146,7 +146,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
     filteredYourExercises ??= [];
     for (int i = 0; i < yourExerciseList.length; i++) {
       var image =
-          await ExerciseRepository.getExerciseImage(yourExerciseList[i]);
+          await ExerciseRepository.getExerciseImages(yourExerciseList[i]);
       yourExercises!.add(ExerciseUI(yourExerciseList[i], image));
       filteredYourExercises!.add(ExerciseUI(yourExerciseList[i], image));
       setState(() {});
@@ -172,7 +172,7 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
     filteredOtherExercises ??= [];
     for (int i = 0; i < otherExerciseList.length; i++) {
       var image =
-          await ExerciseRepository.getExerciseImage(otherExerciseList[i]);
+          await ExerciseRepository.getExerciseImages(otherExerciseList[i]);
 
       bool isFavorite = favoriteUIDS.contains(otherExerciseList[i].uid);
       if (isFavorite) {
@@ -195,10 +195,10 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
         contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
         subtitleOverflow: TextOverflow.ellipsis,
         title: entry.exercise.name,
-        trailing: entry.image == null
+        trailing: entry.images == null
             ? null
             : ImageWidget(
-                MemoryImage(entry.image!),
+                MemoryImage(entry.images!.first),
                 height: 50,
                 width: 50,
                 margin: const EdgeInsets.all(10),
@@ -208,11 +208,11 @@ class _UserExerciseListPageState extends State<UserExerciseListPage>
           widget: (editable)
               ? UserExerciseAddScreen(
                   exercise: entry.exercise,
-                  imageFile: entry.image,
+                  imageFiles: entry.images,
                 )
               : UserExerciseInfoScreen(
                   exercise: entry.exercise,
-                  imageFile: entry.image,
+                  imageFile: entry.images?.first,
                   isFavorite: isFavorite,
                 ),
         ),

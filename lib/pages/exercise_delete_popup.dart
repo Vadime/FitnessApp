@@ -34,7 +34,7 @@ class ExerciseDeletePopup extends StatelessWidget {
           onPressed: () async {
             if (exercise != null) {
               try {
-                await ExerciseRepository.deleteExerciseImage(exercise!);
+                await ExerciseRepository.deleteExerciseImages(exercise!);
                 await delete();
               } catch (e) {
                 ToastController().show(e);

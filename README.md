@@ -1,6 +1,5 @@
 # Fitness App
 
-
 # bei beintraining edit screen fehler 
 
 <div style="display: flex; align-items: center;">

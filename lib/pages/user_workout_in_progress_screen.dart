@@ -72,7 +72,6 @@ class _UserWorkoutInProgressScreenState
             return TextWidget(
               '$minutes:$seconds',
               margin: const EdgeInsets.only(right: 10),
-              color: Colors.white,
               weight: FontWeight.bold,
             );
           },

@@ -2,8 +2,8 @@ import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/admin_user_feedback_screen.dart';
 import 'package:fitnessapp/pages/branding_popup.dart';
-import 'package:fitnessapp/pages/profile_edit_popup.dart';
-import 'package:fitnessapp/pages/profile_password_change_popup.dart';
+import 'package:fitnessapp/pages/profile_edit_screen.dart';
+import 'package:fitnessapp/pages/profile_password_change_screen.dart';
 import 'package:fitnessapp/widgets/profile_header_widget.dart';
 import 'package:fitnessapp/widgets/user_workout_graph.dart';
 import 'package:flutter/material.dart';
@@ -65,8 +65,7 @@ class _AdminProfilePageState extends State<AdminProfilePage>
               trailing: const Icon(
                 Icons.edit_rounded,
               ),
-              onTap: () =>
-                  Navigation.pushPopup(widget: const ProfileEditPopup(3)),
+              onTap: () => Navigation.push(widget: const ProfileEditScreen(3)),
             ),
             ListTileWidget(
               title: 'Passwort ändern',
@@ -76,8 +75,8 @@ class _AdminProfilePageState extends State<AdminProfilePage>
                 Icons.password_rounded,
               ),
               // sign out user from firebase auth
-              onTap: () => Navigation.pushPopup(
-                widget: const ProfilePasswordChangePopup(),
+              onTap: () => Navigation.push(
+                widget: const ProfilePasswordChangeScreen(),
               ),
             ),
           ],

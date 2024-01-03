@@ -4,7 +4,7 @@ class Exercise {
   final String uid;
   final String name;
   final String description;
-  final String? imageURL;
+  final List<String>? imageURLs;
   final List<ExerciseMuscles> muscles;
   final double caloriesBurned;
 
@@ -20,7 +20,7 @@ class Exercise {
     required this.uid,
     required this.name,
     required this.description,
-    this.imageURL,
+    this.imageURLs,
     required this.muscles,
     required this.caloriesBurned,
   });
@@ -29,7 +29,7 @@ class Exercise {
         'uid': uid,
         'name': name,
         'description': description,
-        'imageURL': imageURL,
+        'imageURLs': imageURLs,
         'muscles': muscles.map((e) => e.index).toList(),
         'caloriesBurned': caloriesBurned,
       };
@@ -38,7 +38,9 @@ class Exercise {
         uid: uid,
         name: json['name'],
         description: json['description'],
-        imageURL: json['imageURL'],
+        imageURLs: (json['imageURLs'] as List<dynamic>?)
+            ?.map((e) => e.toString())
+            .toList(),
         muscles: (json['muscles'] as List<dynamic>)
             .map((e) => ExerciseMuscles.values[e])
             .toList(),
@@ -51,14 +53,14 @@ class Exercise {
     String? uid,
     String? name,
     String? description,
-    String? imageURL,
+    List<String>? imageURLs,
     List<ExerciseMuscles>? muscles,
   }) {
     return Exercise(
       uid: uid ?? this.uid,
       name: name ?? this.name,
       description: description ?? this.description,
-      imageURL: imageURL ?? this.imageURL,
+      imageURLs: imageURLs ?? this.imageURLs,
       muscles: muscles ?? List.from(this.muscles),
       caloriesBurned: caloriesBurned,
     );

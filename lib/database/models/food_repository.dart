@@ -20,7 +20,7 @@ class FoodRepository {
         .collection('users')
         .doc(UserRepository.currentUserUID)
         .collection('food')
-        .where('date', isEqualTo: Timestamp.fromDate(today))
+        .where('date', isEqualTo: firestore.Timestamp.fromDate(today))
         .get();
 
     var json = snapshot.docs.firstOrNull?.data();
@@ -48,7 +48,7 @@ class FoodRepository {
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('food')
-          .where('date', isEqualTo: Timestamp.fromDate(date.dateOnly))
+          .where('date', isEqualTo: firestore.Timestamp.fromDate(date.dateOnly))
           .get();
       var json = snapshot.docs.firstOrNull?.data();
       // Logging.log('FOOD_____${date.dateOnly}');
@@ -93,7 +93,7 @@ class FoodRepository {
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('food')
-          .where('date', isEqualTo: Timestamp.fromDate(_currentFood!.date))
+          .where('date', isEqualTo: firestore.Timestamp.fromDate(_currentFood!.date))
           .limit(1)
           .get();
       // if the food does not exist, add it to the database
@@ -120,7 +120,7 @@ class FoodRepository {
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('food')
-          .where('date', isEqualTo: Timestamp.fromDate(_currentFood!.date))
+          .where('date', isEqualTo: firestore.Timestamp.fromDate(_currentFood!.date))
           .limit(1)
           .get()
           .then((snapshot) async {

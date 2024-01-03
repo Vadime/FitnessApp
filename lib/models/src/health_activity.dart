@@ -8,13 +8,13 @@ enum HealthActivity {
 
 HealthActivity healthActivityFromString(String? str) {
   switch (str) {
-    case 'HealthActivity.light':
+    case 'light':
       return HealthActivity.light;
-    case 'HealthActivity.moderate':
+    case 'moderate':
       return HealthActivity.moderate;
-    case 'HealthActivity.heavy':
+    case 'heavy':
       return HealthActivity.heavy;
-    case 'HealthActivity.extreme':
+    case 'extreme':
       return HealthActivity.extreme;
     default:
       return HealthActivity.none;
@@ -45,6 +45,8 @@ extension HealthActivityExtension on HealthActivity {
         return 400;
       case HealthActivity.heavy:
         return 600;
+      case HealthActivity.extreme:
+        return 800;
       default:
         return 0;
     }

@@ -32,11 +32,12 @@ class _UserWorkoutInProgressExercisePageState
           Expanded(
             child: ListView(
               children: [
-                ImageWidget(
-                  widget.exercise.exerciseUI.image == null
-                      ? null
-                      : MemoryImage(widget.exercise.exerciseUI.image!),
+                ImagesWidget(
+                  widget.exercise.exerciseUI.images
+                      ?.map((e) => MemoryImage(e))
+                      .toList(),
                   height: 200,
+                  width: 200,
                   margin: const EdgeInsets.all(10),
                 ),
                 // alle daten in tabelle anzeigen

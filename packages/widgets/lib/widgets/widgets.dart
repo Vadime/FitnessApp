@@ -19,6 +19,7 @@ export 'src/footer.dart';
 export 'src/icon.dart';
 export 'src/icon_button.dart';
 export 'src/image.dart';
+export 'src/images.dart';
 export 'src/initials.dart';
 export 'src/line_chart.dart';
 export 'src/linear_progress.dart';

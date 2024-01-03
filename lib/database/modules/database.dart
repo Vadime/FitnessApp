@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'dart:isolate';
 
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart' as functions;
 import 'package:firebase_analytics/firebase_analytics.dart' as analytics;
 import 'package:firebase_auth/firebase_auth.dart' as auth;

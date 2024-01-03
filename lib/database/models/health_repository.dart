@@ -53,7 +53,7 @@ class HealthRepository {
           .collection('users')
           .doc(UserRepository.currentUserUID)
           .collection('health')
-          .where('date', isEqualTo: Timestamp.fromDate(health.date))
+          .where('date', isEqualTo: firestore.Timestamp.fromDate(health.date))
           .limit(1)
           .get();
       if (snapshot.docs.isEmpty) {

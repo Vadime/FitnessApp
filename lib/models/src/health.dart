@@ -65,7 +65,7 @@ class Health {
         'proteinPercent': proteinPercent,
         'fatPercent': fatPercent,
         'date': Timestamp.fromDate(date.dateOnly),
-        'activity': activity.toString(),
+        'activity': activity.name,
       };
 
   double get bmi => weight / (height * height);
@@ -119,6 +119,7 @@ class Health {
     Gender? gender,
     DateTime? date,
     HealthGoal? goal,
+    HealthActivity? activity,
     double? carbsPercent,
     double? proteinPercent,
     double? fatPercent,
@@ -133,6 +134,7 @@ class Health {
       carbsPercent: carbsPercent ?? this.carbsPercent,
       proteinPercent: proteinPercent ?? this.proteinPercent,
       fatPercent: fatPercent ?? this.fatPercent,
+      activity: activity ?? this.activity,
     );
   }
 

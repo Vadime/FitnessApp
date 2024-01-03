@@ -4,18 +4,18 @@ import 'package:fitnessapp/models/models.dart';
 
 class ExerciseUI {
   final Exercise exercise;
-  final Uint8List? image;
+  final List<Uint8List>? images;
 
-  const ExerciseUI(this.exercise, this.image);
+  const ExerciseUI(this.exercise, this.images);
 
   // copyWith
   ExerciseUI copyWith({
     Exercise? exercise,
-    Uint8List? image,
+    List<Uint8List>? images,
   }) {
     return ExerciseUI(
       exercise ?? this.exercise.copyWith(),
-      image ?? this.image,
+      images ?? List<Uint8List>.from(this.images ?? []),
     );
   }
 }

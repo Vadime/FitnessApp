@@ -34,6 +34,8 @@ dependencies:
   test: ^1.24.3
   numberpicker: ^2.1.2
   readmore: ^2.2.0
+  sign_in_with_apple: ^5.0.0
+  flutter_keyboard_visibility: ^6.0.0
   
 dev_dependencies:
   flutter_test:

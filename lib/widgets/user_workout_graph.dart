@@ -92,7 +92,7 @@ class _UserWorkoutGraphState extends State<UserWorkoutGraph> {
             },
             enabled: true,
             touchTooltipData: BarTouchTooltipData(
-              tooltipBgColor: Colors.white,
+              tooltipBgColor: context.config.cardColor(context.brightness),
               tooltipPadding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
               tooltipMargin: 2,
               fitInsideVertically: true,

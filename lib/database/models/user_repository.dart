@@ -18,6 +18,30 @@ class UserRepository {
     }
   }
 
+  static Future<User?> signInWithApple() async {
+    try {
+      await Auth.instance.signInWithProvider(
+        auth.AppleAuthProvider(),
+      );
+      await checkAuthenticationState();
+      return currentUser;
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
+
+  static Future<User?> signInWithGoogle() async {
+    try {
+      await Auth.instance.signInWithProvider(
+        auth.GoogleAuthProvider(),
+      );
+      await checkAuthenticationState();
+      return currentUser;
+    } catch (e, s) {
+      throw handleException(e, s);
+    }
+  }
+
   static Future<void> loginWithPhoneNumber({
     required String phoneNumber,
     required Function(String verificationId, int? token) onCodeSent,
@@ -82,11 +106,16 @@ class UserRepository {
       );
       // firebase function aufrufen um user role zu setzen
       var value = await Functions.instance.httpsCallable('addUserRole').call({
-        'uid': cred.user!.uid,
+        'uid': cred.user?.uid,
       });
       // auf fehler von firebase function prüfen
       if (value.data['error'] != null) throw Exception(value.data['error']);
+
+      // send email verification Email, and do not let the user continue until he verified his email
+      await cred.user?.sendEmailVerification();
+
       await checkAuthenticationState();
+
       return currentUser;
     } catch (e, s) {
       throw handleException(e, s);

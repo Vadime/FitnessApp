@@ -59,7 +59,7 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
 
     UserRepository.currentUserCustomExercisesAsFuture.then((value) async {
       for (var element in value) {
-        var image = await ExerciseRepository.getExerciseImage(element);
+        var image = await ExerciseRepository.getExerciseImages(element);
         exercisesOth.add(ExerciseUI(element, image));
         filteredExercisesOth.add(ExerciseUI(element, image));
       }
@@ -75,7 +75,7 @@ class _WorkoutAddScreenState extends State<WorkoutAddScreen> {
         // Get exercises for workout
         for (int i = 0; i < exercises.length; i++) {
           Exercise exercise = exercises[i];
-          var image = await ExerciseRepository.getExerciseImage(exercise);
+          var image = await ExerciseRepository.getExerciseImages(exercise);
           var workoutExercise = selectedExercises.firstWhere(
             (e) => e.exerciseUID == exercise.uid,
             orElse: () => WorkoutExercise.empty(),

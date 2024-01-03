@@ -26,8 +26,8 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage>
     var exerciseList = await ExerciseRepository.getExercises();
     exercises ??= [];
     for (Exercise exercise in exerciseList) {
-      var image = await ExerciseRepository.getExerciseImage(exercise);
-      exercises!.add(ExerciseUI(exercise, image));
+      var images = await ExerciseRepository.getExerciseImages(exercise);
+      exercises!.add(ExerciseUI(exercise, images));
       setState(() {});
     }
     setState(() {});
@@ -57,10 +57,10 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage>
           contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
           subtitleOverflow: TextOverflow.ellipsis,
           title: exercise.exercise.name,
-          trailing: exercise.image == null
+          trailing: exercise.images == null
               ? null
               : ImageWidget(
-                  MemoryImage(exercise.image!),
+                  MemoryImage(exercise.images!.first),
                   height: 50,
                   width: 50,
                   margin: const EdgeInsets.all(10),
@@ -69,7 +69,7 @@ class _AdminExerciseListPageState extends State<AdminExerciseListPage>
           onTap: () => Navigation.push(
             widget: AdminExerciseAddScreen(
               exercise: exercise.exercise,
-              imageFile: exercise.image,
+              imageFiles: exercise.images,
             ),
           ),
         );

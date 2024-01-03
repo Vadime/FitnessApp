@@ -3,48 +3,45 @@ import 'package:fitnessapp/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
-class UserFeedbackPopup extends StatefulWidget {
-  const UserFeedbackPopup({super.key});
+class UserFeedbackScreen extends StatefulWidget {
+  const UserFeedbackScreen({super.key});
 
   @override
-  State<UserFeedbackPopup> createState() => _UserFeedbackPopupState();
+  State<UserFeedbackScreen> createState() => _UserFeedbackScreenState();
 }
 
-class _UserFeedbackPopupState extends State<UserFeedbackPopup> {
+class _UserFeedbackScreenState extends State<UserFeedbackScreen> {
   final TextFieldController _feedbackController =
       TextFieldController('Feedback');
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        TextWidget('Nutzer Feedback', style: context.textTheme.titleLarge),
-        const SizedBox(height: 20),
-        TextFieldWidget(
+    return ScaffoldWidget(
+      title: 'Nutzer Feedback',
+      primaryButton: ElevatedButtonWidget(
+        'Senden',
+        onPressed: () async {
+          // check if feedback is empty
+          if (!_feedbackController.isValid()) return;
+
+          await FeedbackRepository.addFeedback(
+            MyFeedback(
+              name: UserRepository.currentUser!.displayName,
+              feedback: _feedbackController.text,
+              date: DateTime.now().ddMMYYYY,
+            ),
+          );
+
+          // pop screen
+          Navigation.pop();
+        },
+      ),
+      body: Center(
+        child: TextFieldWidget(
+          margin: const EdgeInsets.all(20),
           controller: _feedbackController,
           maxLines: null,
         ),
-        const SizedBox(height: 20),
-        ElevatedButtonWidget(
-          'Senden',
-          onPressed: () async {
-            // check if feedback is empty
-            if (!_feedbackController.isValid()) return;
-
-            await FeedbackRepository.addFeedback(
-              MyFeedback(
-                name: UserRepository.currentUser!.displayName,
-                feedback: _feedbackController.text,
-                date: DateTime.now().ddMMYYYY,
-              ),
-            );
-
-            // pop screen
-            Navigation.pop();
-          },
-        ),
-      ],
+      ),
     );
   }
 }

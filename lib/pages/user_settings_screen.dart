@@ -1,7 +1,7 @@
 import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/pages/branding_popup.dart';
-import 'package:fitnessapp/pages/profile_edit_popup.dart';
-import 'package:fitnessapp/pages/profile_password_change_popup.dart';
+import 'package:fitnessapp/pages/profile_edit_screen.dart';
+import 'package:fitnessapp/pages/profile_password_change_screen.dart';
 import 'package:fitnessapp/pages/user_accunt_delete_popup.dart';
 import 'package:fitnessapp/pages/user_feedback_popup.dart';
 import 'package:fitnessapp/pages/user_help_screen.dart';
@@ -39,9 +39,8 @@ class UserSettingsScreen extends StatelessWidget {
                   Icons.edit_rounded,
                 ),
                 onTap: () async {
-                  await Navigation.pushPopup(
-                    widget: const ProfileEditPopup(4),
-                    c: context,
+                  await Navigation.push(
+                    widget: const ProfileEditScreen(4),
                   );
                 },
               ),
@@ -50,8 +49,8 @@ class UserSettingsScreen extends StatelessWidget {
                 trailing: const Icon(
                   Icons.password_rounded,
                 ),
-                onTap: () => Navigation.pushPopup(
-                  widget: const ProfilePasswordChangePopup(),
+                onTap: () => Navigation.push(
+                  widget: const ProfilePasswordChangeScreen(),
                 ),
               ),
               ListTileWidget(
@@ -76,8 +75,8 @@ class UserSettingsScreen extends StatelessWidget {
                 trailing: const Icon(
                   Icons.feedback_rounded,
                 ),
-                onTap: () => Navigation.pushPopup(
-                  widget: const UserFeedbackPopup(),
+                onTap: () => Navigation.push(
+                  widget: const UserFeedbackScreen(),
                 ),
               ),
               ListTileWidget(

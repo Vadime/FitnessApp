@@ -4,18 +4,18 @@ import 'package:fitnessapp/database/database.dart';
 import 'package:fitnessapp/models/models.dart';
 import 'package:fitnessapp/pages/exercise_delete_popup.dart';
 import 'package:fitnessapp/pages/home/home_screen.dart';
-import 'package:fitnessapp/widgets/upload_file.dart';
+import 'package:fitnessapp/widgets/upload_files.dart';
 import 'package:flutter/material.dart';
 import 'package:widgets/widgets.dart';
 
 class ExerciseAddScreen extends StatefulWidget {
   final Exercise? exercise;
-  final Uint8List? imageFile;
+  final List<Uint8List>? imageFiles;
   final Future Function(Exercise newExercise) upload;
   final Future Function()? delete;
   const ExerciseAddScreen({
     this.exercise,
-    this.imageFile,
+    this.imageFiles,
     required this.upload,
     required this.delete,
     super.key,
@@ -31,14 +31,14 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
 
   late MultiSelectionController<ExerciseMuscles> musclesController;
 
-  Uint8List? imageFile;
+  List<Uint8List>? imageFiles;
 
   double caloriesBurned = 0;
 
   @override
   void initState() {
     super.initState();
-    imageFile = widget.imageFile;
+    imageFiles = widget.imageFiles;
     nameBloc = TextFieldController.name(
       text: widget.exercise?.name,
     );
@@ -67,7 +67,7 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
             );
           }
 
-          if (imageFile == null) {
+          if (imageFiles == null) {
             return ToastController().show('Bitte wähle ein Bild aus');
           }
           // generate id, for storage and firestore
@@ -84,9 +84,9 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
             name: nameBloc.text,
             description: descriptionBloc.text,
             muscles: musclesController.state,
-            imageURL: await ExerciseRepository.uploadExerciseImage(
+            imageURLs: await ExerciseRepository.uploadExerciseImages(
               id,
-              imageFile!,
+              imageFiles!,
             ),
             caloriesBurned: caloriesBurned,
           );
@@ -121,10 +121,10 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
       body: ScrollViewWidget(
         maxInnerWidth: 600,
         children: [
-          UploadFile(
-            imageFile: imageFile,
-            onChanged: (file) {
-              imageFile = file;
+          UploadFiles(
+            imageFiles: imageFiles,
+            onChanged: (files) {
+              imageFiles = files;
             },
           ),
           const SizedBox(height: 20),
@@ -165,7 +165,7 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
               ),
               Slider(
                 min: 0,
-                max: 1000,
+                max: 500,
                 divisions: 50,
                 value: caloriesBurned,
                 label: '${caloriesBurned.round()}',
@@ -178,14 +178,14 @@ class _ExerciseAddScreenState extends State<ExerciseAddScreen> {
               Row(
                 children: [
                   TextWidget(
-                    '0 g',
+                    '0 kcal',
                     color: Colors.grey.withOpacity(0.5),
                   ),
                   const Expanded(
                     child: SizedBox(width: 20),
                   ),
                   TextWidget(
-                    '1000 g',
+                    '500 kcal',
                     color: Colors.grey.withOpacity(0.5),
                   ),
                 ],

@@ -66,7 +66,6 @@ class _UserHomeScreen extends StatelessWidget {
                 Navigation.push(
                   widget: const UserProfileFriendAddScreen(),
                 );
-                return;
               },
             ),
           ],

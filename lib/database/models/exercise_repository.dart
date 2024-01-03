@@ -29,29 +29,42 @@ class ExerciseRepository {
     await collectionReference.doc(exercise.uid).set(exercise.toJson());
   }
 
-  static Future<String> uploadExerciseImage(
+  static Future<List<String>> uploadExerciseImages(
     String exerciseUID,
-    Uint8List imageFile,
+    List<Uint8List> imageFile,
   ) async {
     try {
-      return await (await Storage.instance
-              .ref('exercises/$exerciseUID')
-              .putData(imageFile))
-          .ref
-          .getDownloadURL();
+      List<String> urls = [];
+      for (int i = 0; i < imageFile.length; i++) {
+        var image = imageFile[i];
+        urls.add(
+          await (await Storage.instance
+                  .ref('exercises/$exerciseUID/$i')
+                  .putData(image))
+              .ref
+              .getDownloadURL(),
+        );
+      }
+      return urls;
     } catch (e, s) {
       throw handleException(e, s);
     }
   }
 
-  static Future<Uint8List?> getExerciseImage(Exercise? exercise) async {
-    if (exercise?.imageURL == null) return null;
-    try {
-      return await Storage.instance.refFromURL(exercise!.imageURL!).getData();
-    } catch (e, s) {
-      handleException(e, s);
-      return null;
+  static Future<List<Uint8List>?> getExerciseImages(Exercise? exercise) async {
+    if (exercise?.imageURLs == null) return null;
+    List<Uint8List> images = [];
+    for (var url in exercise!.imageURLs!) {
+      try {
+        var data = await Storage.instance.refFromURL(url).getData();
+        if (data == null) continue;
+        images.add(data);
+      } catch (e, s) {
+        handleException(e, s);
+        continue;
+      }
     }
+    return images;
   }
 
   // Nimm alle Exercises aus einer Collection
@@ -67,10 +80,12 @@ class ExerciseRepository {
     }
   }
 
-  static Future<void> deleteExerciseImage(Exercise exercise) async {
-    if (exercise.imageURL == null) return;
+  static Future<void> deleteExerciseImages(Exercise exercise) async {
+    if (exercise.imageURLs == null) return;
     try {
-      await Storage.instance.refFromURL(exercise.imageURL!).delete();
+      for (var url in exercise.imageURLs ?? []) {
+        await Storage.instance.refFromURL(url).delete();
+      }
     } catch (e, s) {
       throw handleException(e, s);
     }

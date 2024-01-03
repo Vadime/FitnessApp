@@ -15,26 +15,30 @@ class _VerifyPhoneCodeViewState extends State<VerifyPhoneCodeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const TextWidget('Code sent'),
-        SizedBox(height: context.config.padding),
-        TextFieldWidget(
-          controller: code,
+    return ScaffoldWidget(
+      title: 'Verify Code',
+      primaryButton: ElevatedButtonWidget('Login', onPressed: () async {
+        if (!code.isValid()) return;
+        try {
+          await widget.verifyPhoneCode(code);
+        } catch (e) {
+          code.setError(e.toString());
+          return;
+        }
+      }),
+      body: SafeArea(
+        child: ColumnWidget(
+          margin: EdgeInsets.all(context.config.padding),
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Spacer(),
+            TextFieldWidget(
+              controller: code,
+            ),
+            const Spacer(),
+          ],
         ),
-        SizedBox(height: context.config.padding),
-        ElevatedButtonWidget('Login', onPressed: () async {
-          if (!code.isValid()) return;
-          try {
-            await widget.verifyPhoneCode(code);
-          } catch (e) {
-            code.setError(e.toString());
-            return;
-          }
-        }),
-      ],
+      ),
     );
   }
 }

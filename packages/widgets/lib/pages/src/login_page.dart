@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:widgets/widgets.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,6 +14,7 @@ class LoginPage extends StatefulWidget {
   final dynamic Function(TextFieldController email) onEmailSendPassword;
   final dynamic Function(TextFieldController phone) onPhoneSendCode;
   final dynamic Function()? onAppleLogin;
+  final dynamic Function()? onGoogleLogin;
   final Widget? termsScreen;
 
   const LoginPage({
@@ -21,6 +25,7 @@ class LoginPage extends StatefulWidget {
     required this.onEmailSendPassword,
     required this.onPhoneSendCode,
     this.onAppleLogin,
+    this.onGoogleLogin,
     super.key,
   });
 
@@ -40,11 +45,29 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey _signInKey = GlobalKey<SignInViewState>();
   final GlobalKey _sendPasswordKey = GlobalKey<SendPasswordViewState>();
 
+  late StreamSubscription<bool> keyboardSubscription;
+
+  bool keyboardVisible = false;
+
   @override
   void initState() {
-    super.initState();
     pageController = PageController(initialPage: widget.initialPage);
     pageController.addListener(() => setState(() {}));
+
+    keyboardSubscription =
+        KeyboardVisibilityController().onChange.listen((visible) {
+      setState(() {
+        keyboardVisible = visible;
+      });
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    keyboardSubscription.cancel();
+    super.dispose();
   }
 
   @override
@@ -176,19 +199,19 @@ class _LoginPageState extends State<LoginPage> {
                 context.config.paddingH,
               ),
             ),
-            const DividerWidget('Or Login with'),
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                  context.config.paddingH, 0, context.config.paddingH, 0),
-              child: Row(
-                children: [
-                  // other authentication providers possible
-                  Expanded(
-                    child: ThirdPartyLoginButton(
-                      'Phone',
-                      Icons.phone_rounded,
+            if (!keyboardVisible) const DividerWidget('Or Login with'),
+            if (!keyboardVisible)
+              Padding(
+                padding: EdgeInsets.fromLTRB(context.config.paddingH, 0,
+                    context.config.paddingH, context.config.paddingH),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // other authentication providers possible
+                    ThirdPartyLoginButton(
+                      ThirdPartyLoginType.phone,
                       onPressed: () async =>
-                          Navigation.pushPopup(widget: SendPhoneCodeView(
+                          Navigation.push(widget: SendPhoneCodeView(
                         onSendPhoneCode: (phone) async {
                           TextInput.finishAutofillContext();
                           FocusScope.of(context).unfocus();
@@ -204,13 +227,13 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       )),
                     ),
-                  ),
-                  if (widget.onAppleLogin != null)
-                    Expanded(
-                      child: ThirdPartyLoginButton('Apple', Icons.apple_rounded,
+
+                    if (widget.onAppleLogin != null)
+                      ThirdPartyLoginButton(ThirdPartyLoginType.apple,
                           onPressed: () async {
                         TextInput.finishAutofillContext();
                         FocusScope.of(context).unfocus();
+
                         try {
                           await widget.onAppleLogin!();
                         } catch (e) {
@@ -218,10 +241,22 @@ class _LoginPageState extends State<LoginPage> {
                           return;
                         }
                       }),
-                    ),
-                ],
+                    if (widget.onGoogleLogin != null)
+                      ThirdPartyLoginButton(ThirdPartyLoginType.google,
+                          onPressed: () async {
+                        TextInput.finishAutofillContext();
+                        FocusScope.of(context).unfocus();
+
+                        try {
+                          await widget.onGoogleLogin!();
+                        } catch (e) {
+                          ToastController().show(e);
+                          return;
+                        }
+                      }),
+                  ],
+                ),
               ),
-            ),
           ],
         ),
       );
@@ -370,8 +405,7 @@ class _LoginPageState extends State<LoginPage> {
                           // other authentication providers possible
                           Expanded(
                             child: ThirdPartyLoginButton(
-                              'Phone',
-                              Icons.phone_rounded,
+                              ThirdPartyLoginType.phone,
                               onPressed: () async => Navigation.pushPopup(
                                   widget: SendPhoneCodeView(
                                 onSendPhoneCode: (phone) async {
@@ -393,12 +427,27 @@ class _LoginPageState extends State<LoginPage> {
                           if (widget.onAppleLogin != null)
                             Expanded(
                               child: ThirdPartyLoginButton(
-                                  'Apple', Icons.apple_rounded,
+                                  ThirdPartyLoginType.apple,
                                   onPressed: () async {
                                 TextInput.finishAutofillContext();
                                 FocusScope.of(context).unfocus();
                                 try {
                                   await widget.onAppleLogin!();
+                                } catch (e) {
+                                  ToastController().show(e);
+                                  return;
+                                }
+                              }),
+                            ),
+                          if (widget.onGoogleLogin != null)
+                            Expanded(
+                              child: ThirdPartyLoginButton(
+                                  ThirdPartyLoginType.google,
+                                  onPressed: () async {
+                                TextInput.finishAutofillContext();
+                                FocusScope.of(context).unfocus();
+                                try {
+                                  await widget.onGoogleLogin!();
                                 } catch (e) {
                                   ToastController().show(e);
                                   return;
