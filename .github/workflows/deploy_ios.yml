@@ -1,1 +1,42 @@
+name: Build and Deploy to TestFlight
+
+#on:
+#  push:
+#    branches:
+#      - main # Ändern Sie dies entsprechend Ihrer Hauptentwicklungszweig-Bezeichnung
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.16.0' # Aktualisieren Sie dies entsprechend Ihrer Flutter-Version
+
+    - name: Install Dependencies
+      run: flutter pub get
+
+    - name: Build iOS
+      run: flutter build ios
+
+    - name: Create IPA
+      run: |
+        cd ios
+        xcodebuild clean archive -workspace Runner.xcworkspace -scheme Runner -archivePath build/Runner.xcarchive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+        xcodebuild -exportArchive -archivePath build/Runner.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath build
+
+    - name: Upload to TestFlight
+      uses: wzieba/Fastlane-iTunesConnect-Deliver@2
+      with:
+        subcommand: 'beta'
+        username: ${{ secrets.APPLE_ID }}
+        app_identifier: 'your.app.bundle.identifier'
+        groups: 'YourTestFlightGroup'
+        ipa: 'ios/build/Runner.ipa'
+        skip_deploy: true
 
